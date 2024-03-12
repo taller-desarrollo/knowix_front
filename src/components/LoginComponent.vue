@@ -4,5 +4,10 @@
         <button>
             <router-link to="/home">Home</router-link>
         </button>
+
+        <button>
+            <router-link to="/new-course">Crear curso Nuevo</router-link>
+        </button>
+
     </div>
 </template>
