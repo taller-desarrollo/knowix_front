@@ -1,21 +1,22 @@
 <template>
     <div>
         <div class="navbar">
-            <button class="general" @click="login">Log In</button>
+            <button class="general" @click="routes('/home')">Log In</button>
         </div>
-        <h1>Login</h1>
+        <div class="content">
+            <h1>Log In</h1>
+        </div>
     </div>
 </template>
 
 <script>
+import { route } from '../scripts/route.js';
+
 export default {
-    name: 'LoginComponent',
     methods: {
-        login() {
-            this.$router.go(-1);
-            this.$router.replace('/home');
+        routes(path) {
+            route(this, path);
         },
     },
 };
 </script>
-

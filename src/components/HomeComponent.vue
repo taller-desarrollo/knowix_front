@@ -1,21 +1,18 @@
 <template>
     <div>
-        <div class="navbar">
-            <button class="cancel" @click="logout">Log Out</button>
+        <NavBarComponent />
+        <div class="content">
+            <h1>Home</h1>
         </div>
-        <h1>Home</h1>
     </div>
 </template>
 
 <script>
+import NavBarComponent from './NavBarComponent.vue';
 
 export default {
-    name: 'NavBarComponent',
-    methods: {
-        logout() {
-            this.$router.go(-1);
-            this.$router.replace('/');
-        },
+    components: {
+        NavBarComponent,
     },
 };
 </script>
