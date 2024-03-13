@@ -2,6 +2,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 20px;
+    color: #fff;
+    padding: 10px;
 }
 
 .menu-toggle {
@@ -12,41 +15,60 @@
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.menu-toggle:hover {
+    background-color: #2c304a;
 }
 
 .navbar {
     display: flex;
     justify-content: space-between;
-    align-items: end;
-    padding: 20px;
+    align-items: center;
+    padding: 10px 20px;
     background-color: #1f2235;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .optionsNavBar {
     display: none;
-    flex-direction: column;
     position: absolute;
     background-color: #1f2235;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    top: 60px;
-    left: 0;
-    padding: 10px 0;
-    border-radius: 0 0 10px 10px;
+    width: 200px;
+    top: 50px;
+    right: 20px;
+    border-radius: 5px;
+    z-index: 1000;
 }
 
-.optionsNavBar a, .optionsNavBar button {
+.optionsNavBar a {
     text-align: center;
     display: block;
-    width: 100%;
-    padding: 10px 0;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #fff;
+    transition: background-color 0.3s;
+    text-decoration: none;
 }
 
-.optionsNavBar a:hover, .optionsNavBar button:hover {
-    background-color: #292f56;
+.optionsNavBar a:hover {
+    text-decoration: underline;
+    background-color: #35384e;
+    scale: 1.1;
+}
+
+.optionsNavBar a:last-child {
+    background-color: #a81106;
+}
+
+.optionsNavBar a:last-child:hover {
+    background-color: #f44336;
+    scale: 1.05;
+    text-decoration: none;
 }
 
 .optionsNavBar.visible {
-    display: flex;
+    display: block;
 }

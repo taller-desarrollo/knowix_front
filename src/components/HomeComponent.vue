@@ -1,3 +1,5 @@
+HomeComponent.vue:
+
 <template>
     <div>
         <NavBarComponent />
