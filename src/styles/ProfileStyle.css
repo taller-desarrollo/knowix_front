@@ -1,0 +1,77 @@
+.container-perfil {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 2% auto;
+    max-width: 1200px;
+}
+
+.profile {
+    background-color: rgba(255, 255, 255, 0.486);
+    flex: 1 1 300px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile h1, .profile h2, .profile h3 {
+    color: #333;
+}
+
+@media screen and (min-width: 500px) {
+    .profile {
+        flex: 0 0 40%;
+    }
+}
+
+@media (max-width: 850px) {
+    .profile {
+        flex: 0 0 90%;
+    }
+}
+
+.formulario-perfil {
+    display: flex;
+    flex-direction: column;
+}
+
+.formulario-perfil label {
+    font-weight: 500;
+    margin: 10px 0 5px;
+}
+
+.formulario-perfil input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+.img-auth {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+.photouser {
+    width: 150px !important;
+    height: auto !important;
+}
+
+.edit{
+    display: flex;
+    justify-content: space-between;
+}
+
+.editbutton {
+    padding: auto;
+    height: 25px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: bold;
+}

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeComponent from '../components/HomeComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue';
 import Error404Component from '@/components/Error404Component.vue';
+import ProfileComponent from '@/components/ProfileComponent.vue';
 import CourseFormComponent from '@/components/CourseFormComponent.vue'; // Importa el componente del formulario
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
         path: '/:pathMatch(.*)*',
         component: Error404Component,
         name: 'error404',
+    },
+    {
+        path: '/profile',
+        component: ProfileComponent,
+        name: 'profile',
     },
 ];
 
