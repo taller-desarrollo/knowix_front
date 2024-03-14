@@ -3,7 +3,7 @@ import HomeComponent from '../components/HomeComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue';
 import Error404Component from '@/components/Error404Component.vue';
 import ProfileComponent from '@/components/ProfileComponent.vue';
-import CourseFormComponent from '@/components/CourseFormComponent.vue'; // Importa el componente del formulario
+import CourseFormComponent from '@/components/CourseFormComponent.vue';
 
 const routes = [
     {
@@ -12,12 +12,12 @@ const routes = [
         name: 'home',
     },
     {
-        path: '/login',
+        path: '/',
         component: LoginComponent,
         name: 'login',
     },
     {
-        path: '/new-course', // Ruta para el formulario del nuevo curso
+        path: '/new-course',
         component: CourseFormComponent,
         name: 'new-course',
     },
