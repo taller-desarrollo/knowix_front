@@ -69,7 +69,7 @@ export default {
     methods: {
         updateLinks(newLinks) {
             this.socialLinks = { ...this.socialLinks, ...newLinks };
-            this.$forceUpdate(); // Fuerza la actualización para reflejar los cambios
+            this.$forceUpdate();
         },
     },
     mounted() {
