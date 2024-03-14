@@ -1,77 +1,149 @@
 .container-perfil {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin: 2% auto;
-    max-width: 1200px;
-}
-
-.profile {
-    background-color: rgba(255, 255, 255, 0.486);
-    flex: 1 1 300px;
-    margin: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2% auto;
+    max-width: 900px;
 }
 
-.profile h1, .profile h2, .profile h3 {
+.profile1 {
+    background-color: #ffffff79;
     color: #333;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
-@media screen and (min-width: 500px) {
-    .profile {
-        flex: 0 0 40%;
-    }
+.profile1:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 850px) {
-    .profile {
-        flex: 0 0 90%;
-    }
+.profile1 h1, .profile1 h2 {
+    margin-bottom: 0.5rem;
 }
 
 .formulario-perfil {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .formulario-perfil label {
-    font-weight: 500;
-    margin: 10px 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
 }
 
-.formulario-perfil input {
+.formulario-perfil input, .up-profile input {
     width: 100%;
     padding: 15px;
-    margin-bottom: 5px;
     box-sizing: border-box;
     border-radius: 20px;
     border: 1px solid #ccc;
 }
 
-.img-auth {
+.formulario-perfil input[readonly] {
+    background: #eee;
+    cursor: default;
+}
+
+.networks button {
+    background-color: #5c6bc0;
+    color: #fff;
+    border: none;
+    font-weight: bolder;
+    padding: 10px 15px;
+    margin-top: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.networks button:hover {
+    background-color: #3f51b5;
+    font-weight: bold;
+}
+
+.social-links {
     display: flex;
     justify-content: center;
-    margin: 10px 0;
+    align-items: center;
 }
+
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    background-color: #eee;
+    color: #333;
+    border-radius: 50%;
+    margin: 0 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.social-links a:hover {
+    background-color: #ddd;
+}
+
+.social-links img {
+    width: 40px;
+    height: 40px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .container-perfil {
+        flex-direction: column;
+    }
+
+    .profile1 {
+        width: 90%;
+        margin-bottom: 1rem;
+    }
+}
+
+.edit, .nameemail, .social-links {
+    margin-bottom: 1rem;
+}
+
+.up-profile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .photouser {
-    width: 150px !important;
+    width: 130px !important;
     height: auto !important;
 }
 
-.edit{
+.img-auth {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    margin-right: 60px;
+    margin-left: 50px;
+    flex-direction: column;
 }
 
-.editbutton {
-    padding: auto;
-    height: 25px;
-    border: none;
-    cursor: pointer;
-    border-radius: 10px;
-    font-weight: bold;
+.nameemail {
+    margin-right: 50px;
+}
+
+.networks {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
