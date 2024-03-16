@@ -5,7 +5,7 @@
       :id="id"
       :placeholder="placeholder"
       :maxlength="maxlength"
-      :value="value"
+      :value="modelValue"
       @input="handleInput"
       :class="{ 'has-error': error }"
     ></textarea>
@@ -32,7 +32,7 @@ export default {
       type: String,
       default: "",
     },
-    value: {
+    modelValue: { // Cambiado de 'value' a 'modelValue'
       type: String,
       default: "",
     },
@@ -45,15 +45,10 @@ export default {
       default: "",
     },
   },
-  computed: {
-    characterCount() {
-      return this.value.length;
-    },
-  },
   methods: {
     handleInput(event) {
-      // Emitir el valor del texto actualizado al componente padre
-      this.$emit("input", event.target.value);
+      // Emitir el evento 'update:modelValue' para actualizar el valor en el componente padre
+      this.$emit("update:modelValue", event.target.value);
     },
   },
 };

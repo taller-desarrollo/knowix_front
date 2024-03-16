@@ -29,13 +29,14 @@ inputTextColor="#000"
     <div class="card-body" :style="{ color: bodyTextColor }">
       <p>{{ description }}</p>
       <InputVue
-  v-if="inputType === 'text' || inputType === 'number'"
-  :id="inputId"
-  :placeholder="inputPlaceholder"
-  :type="inputType"
-  v-model.number="inputValue" 
-  :style="{ borderColor: inputBorderColor, color: inputTextColor }"
-/>
+        v-if="inputType === 'text' || inputType === 'number'"
+        :id="inputId"
+        :placeholder="inputPlaceholder"
+        :type="inputType"
+        :modelValue="inputValue"
+        @update:modelValue="(val) => (inputValue = val)"
+        :style="{ borderColor: inputBorderColor, color: inputTextColor }"
+      />
 
       <DropdownVue
         v-else-if="inputType === 'dropdown'"
@@ -45,14 +46,15 @@ inputTextColor="#000"
         :style="{ borderColor: inputBorderColor, color: inputTextColor }"
       />
       <LargeTextInput
-        v-else-if="inputType === 'largeText'"
-        :id="inputId"
-        :placeholder="inputPlaceholder"
-        :value="inputValue"
-        @input="updateInputValue"
-        :maxlength="maxlength"
-        :style="{ borderColor: inputBorderColor, color: inputTextColor }"
-      />
+  v-else-if="inputType === 'largeText'"
+  :id="inputId"
+  :placeholder="inputPlaceholder"
+  :modelValue="inputValue" 
+  @update:modelValue="(val) => (inputValue = val)"
+  :maxlength="maxlength"
+  :style="{ borderColor: inputBorderColor, color: inputTextColor }"
+/>
+
     </div>
   </div>
 </template>
@@ -90,11 +92,20 @@ export default {
     bodyTextColor: String,
     inputBorderColor: String,
     inputTextColor: String,
+    modelValue: [String, Number],
   },
   data() {
     return {
-      inputValue: "",
+      inputValue: this.modelValue, 
     };
+  },
+  watch: {
+    modelValue(newVal) {
+      this.inputValue = newVal;
+    },
+    inputValue(newVal) {
+      this.$emit('update:modelValue', newVal); // Asegúrate de emitir 'update:modelValue'
+    }
   },
 };
 </script>

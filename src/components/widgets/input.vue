@@ -30,7 +30,7 @@ export default {
       type: String,
       default: "",
     },
-    value: {
+    modelValue: {
       type: [String, Number],
       default: "",
     },
@@ -46,35 +46,29 @@ export default {
 
   data() {
     return {
-      internalValue: this.value,
+      internalValue: this.modelValue, // Cambia de this.value a this.modelValue
     };
   },
   methods: {
-  updateValue(event) {
-    // Emite el valor actual al componente padre.
-    this.$emit('input', event.target.value);
+    updateValue(event) {
+      this.$emit("update:modelValue", event.target.value); // Cambia 'input' por 'update:modelValue'
+    },
+
+    formatValue() {
+      if (this.type === "number") {
+        this.internalValue = parseFloat(this.internalValue).toFixed(2);
+        this.$emit("update:modelValue", this.internalValue);
+      }
+    },
   },
-  formatValue() {
-    if (this.type === 'number') {
-      this.internalValue = parseFloat(this.internalValue).toFixed(2);
-      this.$emit('input', this.internalValue);
-    }
-  },
-},
   watch: {
-    value(val) {
+    modelValue(val) {
       this.internalValue = val;
     },
     internalValue(newVal) {
-      if (this.type === 'number') {
-        // Redondea a dos decimales si el tipo es número
-        const match = newVal.match(/^-?\d*(\.\d{0,2})?/);
-        this.internalValue = match ? match[0] : '';
-      }
-      this.$emit('input', this.internalValue);
-    }
+      this.$emit("update:modelValue", newVal); // Asegúrate de emitir 'update:modelValue'
+    },
   },
-
 };
 </script>
 

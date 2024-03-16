@@ -7,6 +7,7 @@
           description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
           inputPlaceholder="Nombre del curso"
           width="45%"
+          v-model="courseDetails.courseName"
         />
 
         <CardComponent
@@ -15,6 +16,7 @@
           inputPlaceholder="Bs. 0.00"
           inputType="number"
           width="45%"
+          v-model="courseDetails.basePrice"
         />
 
         <CardComponent
@@ -28,6 +30,7 @@
             { id: 2, text: 'Inglés' },
             { id: 3, text: 'Italiano' },
           ]"
+          v-model="courseDetails.courseLanguage"
         />
 
         <CardComponent
@@ -41,6 +44,7 @@
             { id: 2, text: 'Diseño' },
             { id: 3, text: 'Marketing' },
           ]"
+          v-model="courseDetails.courseCategory"
         />
 
         <CardComponent
@@ -50,6 +54,7 @@
           inputPlaceholder="Escribe la descripción aquí..."
           maxlength="300"
           width="45%"
+          v-model="courseDetails.detailedDescription"
         />
 
         <CardComponent
@@ -59,12 +64,21 @@
           inputPlaceholder="Escribe los requerimientos aquí..."
           maxlength="500"
           width="45%"
+          v-model="courseDetails.courseRequirements"
         />
       </div>
     </div>
     <div class="right-block">
       <h2>RESUMEN</h2>
       <p>Verifica que la información es correcta</p>
+      <ul>
+        <li>Nombre del Curso: {{ courseDetails.courseName }}</li>
+        <li>Precio base: {{ courseDetails.basePrice }}</li>
+        <li>Idioma: {{ courseDetails.courseLanguage }}</li>
+        <li>Categoría: {{ courseDetails.courseCategory }}</li>
+        <li>Descripción: {{ courseDetails.detailedDescription }}</li>
+        <li>Requerimientos: {{ courseDetails.courseRequirements }}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -81,10 +95,14 @@ export default {
   },
   data() {
     return {
-      // Proporciona un valor inicial para courseDescription
-      courseDescription:
-        "# Bienvenido al Curso\nEste es un ejemplo de **Markdown**.",
-      courseRequirements: "",
+      courseDetails: {
+        courseName: "",
+        basePrice: "",
+        courseLanguage: "",
+        courseCategory: "",
+        detailedDescription: "",
+        courseRequirements: "",
+      },
     };
   },
 
