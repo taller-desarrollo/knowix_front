@@ -1,22 +1,24 @@
 <template>
   <div class="input-container">
     <label v-if="label" :for="id">{{ label }}</label>
-    <input
+    <textarea
       :id="id"
-      :type="type === 'number' ? 'text' : type"
       :placeholder="placeholder"
-      v-model="internalValue"
-      @blur="formatValue"
-      @input="updateValue"
+      :maxlength="maxlength"
+      :value="value"
+      @input="handleInput"
       :class="{ 'has-error': error }"
-    />
+    ></textarea>
+    <div class="character-count">
+      Cantidad de caracteres máximo: {{ maxlength }}
+    </div>
     <span v-if="error" class="error-message">{{ error }}</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: "InputVue",
+  name: "LargeTextInput",
   props: {
     id: {
       type: String,
@@ -31,50 +33,29 @@ export default {
       default: "",
     },
     value: {
-      type: [String, Number],
+      type: String,
       default: "",
     },
-    type: {
-      type: String,
-      default: "text",
+    maxlength: {
+      type: Number,
+      required: true,
     },
     error: {
       type: String,
       default: "",
     },
   },
-
-  data() {
-    return {
-      internalValue: this.value,
-    };
+  computed: {
+    characterCount() {
+      return this.value.length;
+    },
   },
   methods: {
-  updateValue(event) {
-    // Emite el valor actual al componente padre.
-    this.$emit('input', event.target.value);
-  },
-  formatValue() {
-    if (this.type === 'number') {
-      this.internalValue = parseFloat(this.internalValue).toFixed(2);
-      this.$emit('input', this.internalValue);
-    }
-  },
-},
-  watch: {
-    value(val) {
-      this.internalValue = val;
+    handleInput(event) {
+      // Emitir el valor del texto actualizado al componente padre
+      this.$emit("input", event.target.value);
     },
-    internalValue(newVal) {
-      if (this.type === 'number') {
-        // Redondea a dos decimales si el tipo es número
-        const match = newVal.match(/^-?\d*(\.\d{0,2})?/);
-        this.internalValue = match ? match[0] : '';
-      }
-      this.$emit('input', this.internalValue);
-    }
   },
-
 };
 </script>
 
@@ -85,7 +66,7 @@ export default {
   margin: 1em;
 }
 
-input {
+textarea {
   padding: 10px;
   margin: 0.5em 0;
   color: black;
@@ -95,13 +76,14 @@ input {
   font-size: 1.1em;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  resize: vertical; /* Permite que el usuario ajuste la altura del textarea */
 }
 
-input::placeholder {
+textarea::placeholder {
   color: gray;
 }
 
-input:focus {
+textarea:focus {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   border-color: #303030;
 }
@@ -117,6 +99,13 @@ input:focus {
   margin-bottom: 1em;
 }
 
+.character-count {
+  font-size: 0.85em;
+  align-self: flex-end;
+  margin-top: -1em;
+  color: gray;
+}
+
 /* Estilos adicionales para los labels, si es necesario */
 label {
   color: black;
@@ -124,3 +113,4 @@ label {
   margin-bottom: 0.25em;
 }
 </style>
+./LargeTextInput.vue

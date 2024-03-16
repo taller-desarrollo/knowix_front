@@ -1,13 +1,57 @@
+<!-- Ejemplo de como reutilicar el card:
+<CardComponent
+title="NOMBRE DEL CURSO"
+description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
+width="45%"
+inputPlaceholder="Nombre del curso"
+cardBackgroundColor="#f0f0f0"
+headerBackgroundColor="#292f56"
+headerTextColor="#fff" 
+bodyTextColor="#333" 
+inputBorderColor="#81A4CD" 
+inputTextColor="#000" 
+/> -->
+
 <template>
-  <div class="card" :style="{ width: width }">
-    <div class="card-header">{{ title }}</div>
-    <div class="card-body">
+  <div
+    class="card"
+    :style="{ width: width, backgroundColor: cardBackgroundColor }"
+  >
+    <div
+      class="card-header"
+      :style="{
+        backgroundColor: headerBackgroundColor,
+        color: headerTextColor,
+      }"
+    >
+      {{ title }}
+    </div>
+    <div class="card-body" :style="{ color: bodyTextColor }">
       <p>{{ description }}</p>
       <InputVue
-        id="card-input"
-        placeholder="Ingresa el texto"
+  v-if="inputType === 'text' || inputType === 'number'"
+  :id="inputId"
+  :placeholder="inputPlaceholder"
+  :type="inputType"
+  v-model.number="inputValue" 
+  :style="{ borderColor: inputBorderColor, color: inputTextColor }"
+/>
+
+      <DropdownVue
+        v-else-if="inputType === 'dropdown'"
+        :id="inputId"
+        :options="dropdownOptions"
         v-model="inputValue"
-        @input="updateValue"
+        :style="{ borderColor: inputBorderColor, color: inputTextColor }"
+      />
+      <LargeTextInput
+        v-else-if="inputType === 'largeText'"
+        :id="inputId"
+        :placeholder="inputPlaceholder"
+        :value="inputValue"
+        @input="updateInputValue"
+        :maxlength="maxlength"
+        :style="{ borderColor: inputBorderColor, color: inputTextColor }"
       />
     </div>
   </div>
@@ -15,36 +59,42 @@
 
 <script>
 import InputVue from "./input.vue"; // Asegúrate de que la ruta es correcta
+import DropdownVue from "./dropdown.vue"; // Importa el componente DropdownVue
+import LargeTextInput from "./LargeTextInput.vue"; // Importa el nuevo componente LargeTextInput
 
 export default {
   name: "CardComponent",
   components: {
     InputVue,
+    DropdownVue,
+    LargeTextInput, // Registra el componente aquí
   },
   props: {
-    title: {
+    title: String,
+    description: String,
+    width: String,
+    inputId: {
       type: String,
-      default: "Título",
+      default: "card-input",
     },
-    description: {
+    inputType: {
       type: String,
-      default: "Descripción",
+      default: "text", // 'text' para input normal, 'dropdown' para listas desplegables, 'largeText' para el área de texto grande
     },
-    width: {
-      type: String,
-      default: "300px",
-    },
+    inputPlaceholder: String,
+    dropdownOptions: Array, // Prop adicional para las opciones del dropdown
+    maxlength: Number, // Nuevo prop para el límite de caracteres en LargeTextInput
+    cardBackgroundColor: String,
+    headerBackgroundColor: String,
+    headerTextColor: String,
+    bodyTextColor: String,
+    inputBorderColor: String,
+    inputTextColor: String,
   },
   data() {
     return {
       inputValue: "",
     };
-  },
-  methods: {
-    updateValue(value) {
-      this.inputValue = value;
-      // Aquí puedes emitir el valor hacia el componente padre o realizar otras acciones
-    },
   },
 };
 </script>
