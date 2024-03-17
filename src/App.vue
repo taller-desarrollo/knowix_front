@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
+    <Navbar :username="username"></Navbar>
     <router-view></router-view>
   </div>
 </template>
@@ -11,6 +11,16 @@ export default {
   name: 'App',
   components: {
     Navbar
+  },
+  data(){
+    return {
+      username: ''
+    }
+  },
+  async created(){
+    if(this.$keycloak.authenticated){
+      this.username = this.$keycloak.tokenParsed.preferred_username;
+    }
   }
 };
 </script>
@@ -27,6 +37,6 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+    margin-top: 150px;
   }
 </style>

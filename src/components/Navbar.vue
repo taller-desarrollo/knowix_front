@@ -9,8 +9,31 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+              <li class = "nav-item">
+                <span class="navbar-text">Usuario: {{ username }}</span>
+              </li>
               <li class="nav-item">
                 <button class="btn btn-outline-danger" @click="logout">Cerrar sesión</button>
+              </li>
+              <li>
+                <button>
+                  <router-link to="/home">Home</router-link>
+                </button>
+              </li>
+              <li>
+                <button>
+                  <router-link to="/">Login</router-link>
+                </button>
+              </li>
+              <li>
+                <button>
+                  <router-link to="/educator">Educator</router-link>
+                </button>
+              </li>
+              <li>
+                <button>
+                  <router-link to="/student">Student</router-link>
+                </button>
               </li>
             </ul>
           </div>
@@ -21,6 +44,9 @@
   
   <script>
   export default {
+    props: {
+      username: String
+    },
     methods: {
       async logout() {
         try {
