@@ -21,7 +21,7 @@ export default {
   },
   async created() {
     if (this.$keycloak.authenticated) {
-      this.username = this.$keycloak.tokenParsed.preferred_username;
+      this.username = this.$keycloak.tokenParsed.name;
     }
   }
 };
