@@ -1,5 +1,4 @@
 <template>
-    <NavBarComponent />
     <div class="container-perfil">
         <div class="profile1">
             <div class="edit">
@@ -44,7 +43,6 @@
 </template>
 
 <script>
-import NavBarComponent from './NavBarComponent.vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -54,7 +52,6 @@ library.add(faUser);
 
 export default {
     components: {
-        NavBarComponent,
         FontAwesomeIcon
     },
     data() {
