@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div>
-      <NavBarComponent :username="username"></NavBarComponent>
+      <NavBarComponent :name="name"></NavBarComponent>
     </div>
     <router-view></router-view>
   </div>

@@ -49,12 +49,17 @@ const router = (keycloak) => {
 
   vueRouter.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth) {
-      const hasRole = keycloak.hasResourceRole(to.meta.role);
-      if (hasRole) {
-        next();
+      if (keycloak.authenticated) { 
+        console.log(keycloak.tokenParsed.sub)
+        const hasRole = keycloak.hasResourceRole(to.meta.role);
+        if (hasRole) {
+          next();
+        } else {
+          alert('No tiene permisos para acceder a esta página.');
+          next('/');
+        }
       } else {
-        alert('No tiene permisos para acceder a esta página.');
-        next('/');
+        keycloak.login();
       }
     } else {
       next();

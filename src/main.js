@@ -12,7 +12,7 @@ const keycloak = new Keycloak({
   clientId: 'knowix_frontend'
 });
 
-keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
+keycloak.init({ onLoad: 'check-sso' }).then(authenticated => {
   console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
   app.use(router(keycloak));
   app.config.globalProperties.$keycloak = keycloak;

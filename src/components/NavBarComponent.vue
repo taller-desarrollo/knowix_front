@@ -1,7 +1,7 @@
 <template>
     <div class="navbar">
         <div class="welcome">
-            <strong>Bienvenido a Knowix {{ username }}!</strong>
+            <strong>Bienvenido a Knowix {{ name }}!</strong>
         </div>
         <button class="menu-toggle" @click="toggleMenu">≡</button>
         <div class="optionsNavBar" :class="{ visible: menuOpen }">
@@ -24,7 +24,7 @@ export default {
         };
     },
     props: {
-        username: String
+        name: String
     },
     methods: {
         toggleMenu() {
