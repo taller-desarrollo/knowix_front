@@ -2,21 +2,19 @@
     <div class="container-perfil">
         <div class="profile1">
             <div class="edit">
-                <h1>Mis Datos</h1>
+                <h1>{{ username }}</h1>
             </div>
             <div class="up-profile">
                 <div class="img-auth">
                     <font-awesome-icon icon="user" class="photouser" />
                 </div>
                 <div class="nameemail">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" readonly />
-
-                    <label for="correo">Correo:</label>
-                    <input type="email" id="correo" readonly />
-
-                    <label for="ocupacion">Ocupación:</label>
-                    <input type="text" id="ocupacion" readonly />
+                    <label for="nombre">Nombre: </label>
+                    <input type="text" id="nombre" :value="name" readonly />
+                    <label for="correo">Correo: </label>
+                    <input type="email" id="correo" :value="email" readonly />
+                    <label for="ocupacion">Rol dentro de Knowix: </label>
+                    <input type="text" id="ocupacion" :value="role" readonly />
                 </div>
             </div>
         </div>
@@ -43,36 +41,8 @@
 </template>
 
 <script>
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { makeFieldsEditable } from '../scripts/editProfile.js';
-
-library.add(faUser);
-
-export default {
-    components: {
-        FontAwesomeIcon
-    },
-    data() {
-        return {
-            socialLinks: JSON.parse(localStorage.getItem('socialLinks')) || {
-                facebook: '#',
-                twitter: '#',
-                instagram: '#',
-            },
-        };
-    },
-    methods: {
-        updateLinks(newLinks) {
-            this.socialLinks = { ...this.socialLinks, ...newLinks };
-            this.$forceUpdate();
-        },
-    },
-    mounted() {
-        makeFieldsEditable(this.updateLinks, this.socialLinks);
-    }
-};
+import profile from '@/scripts/profile';
+export default profile;
 </script>
 
 <style>

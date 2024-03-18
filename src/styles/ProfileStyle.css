@@ -13,7 +13,7 @@
     margin-bottom: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    padding: 20px;
+    padding: 5px 20px;
     width: 100%;
     transition: box-shadow 0.3s ease-in-out;
 }
@@ -26,17 +26,27 @@
     margin-bottom: 0.5rem;
 }
 
+.profile1 h1 {
+    font-size: 45px;
+    font-weight: bold;
+    color: black;
+}
+
 .formulario-perfil {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.formulario-perfil label {
+.nameemail label {
     font-size: 16px;
     font-weight: bold;
-    color: #555;
-    margin-bottom: 8px;
+    color: #414141;
+    margin-bottom: 15px;
+}
+
+.nameemail input {
+    font-size: 15px;
 }
 
 .formulario-perfil input, .up-profile input {
@@ -45,6 +55,7 @@
     box-sizing: border-box;
     border-radius: 20px;
     border: 1px solid #ccc;
+    margin: 10px 0;
 }
 
 .formulario-perfil input[readonly] {
