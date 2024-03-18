@@ -27,11 +27,12 @@
           inputType="dropdown"
           inputPlaceholder="Selecciona un idioma"
           width="45%"
-          :dropdownOptions="[
-            { id: 1, text: 'Español' },
-            { id: 2, text: 'Inglés' },
-            { id: 3, text: 'Italiano' },
-          ]"
+          :dropdownOptions="
+            languageStore.languages.map((language) => ({
+              id: language.languageId,
+              text: language.languageName,
+            }))
+          "
           v-model="courseDetails.courseLanguage"
         />
 
@@ -41,11 +42,12 @@
           inputType="dropdown"
           inputPlaceholder="Selecciona una categoría"
           width="45%"
-          :dropdownOptions="[
-            { id: 1, text: 'Desarrollo' },
-            { id: 2, text: 'Diseño' },
-            { id: 3, text: 'Marketing' },
-          ]"
+          :dropdownOptions="
+            categoryStore.categories.map((category) => ({
+              id: category.categoryId,
+              text: category.categoryName,
+            }))
+          "
           v-model="courseDetails.courseCategory"
         />
 
@@ -86,11 +88,29 @@
         </div>
         <div class="info-block">
           <span>Idioma:</span>
-          <p>{{ courseDetails.courseLanguage }}</p>
+
+          <p>
+            {{
+              languageStore.languages.find(
+                (language) =>
+                  language.languageId ===
+                  parseInt(courseDetails.courseLanguage, 10)
+              )?.languageName || "Idioma no seleccionado"
+            }}
+          </p>
         </div>
         <div class="info-block">
           <span>Categoría:</span>
-          <p>{{ courseDetails.courseCategory }}</p>
+
+          <p>
+            {{
+              categoryStore.categories.find(
+                (category) =>
+                  category.categoryId ===
+                  parseInt(courseDetails.courseCategory, 10)
+              )?.categoryName || "Categoría no seleccionada"
+            }}
+          </p>
         </div>
         <div class="info-block description">
           <span>Descripción:</span>
@@ -108,39 +128,47 @@
 </template>
 
 <script>
+import { onMounted } from "vue";
+import { useLanguageStore } from "@/stores/languageStore";
+import { useCategoryStore } from "@/stores/categoryStore";
 import NavBarComponent from "./NavBarComponent.vue";
-
 import CardComponent from "./widgets/card.vue";
-import VueMarkdown from "vue-markdown";
 
 export default {
   name: "AppView",
   components: {
     CardComponent,
-    VueMarkdown,
     NavBarComponent,
   },
+
   data() {
     return {
       courseDetails: {
         courseName: "",
         basePrice: "",
         courseLanguage: "",
+        courseLanguageText: "",
         courseCategory: "",
         detailedDescription: "",
         courseRequirements: "",
       },
     };
   },
+  setup() {
+    const languageStore = useLanguageStore();
+    const categoryStore = useCategoryStore();
 
-  mounted() {
-    console.log(this.courseDescription);
+    onMounted(async () => {
+      await languageStore.fetchLanguages();
+      await categoryStore.fetchCategories();
+    });
+
+    return { languageStore, categoryStore };
   },
 };
 </script>
 
 <style>
-
 .container {
   display: flex;
   justify-content: space-between;
@@ -152,7 +180,7 @@ export default {
 .left-block {
   display: flex;
   justify-content: center;
-  flex-direction: column; /* Cambio para alinear verticalmente */
+  flex-direction: column;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -179,16 +207,13 @@ export default {
 
 .cards-container {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
-  justify-content: space-around; /* Espaciado uniforme */
-  gap: 15px; /* Espacio entre cards */
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
 }
 
 CardComponent {
-  flex-basis: calc(
-    50% - 20px
-  ); /* Ancho de cada card, ajustando el espacio entre ellos */
-  /* No más width en los componentes individuales */
+  flex-basis: calc(50% - 20px);
 }
 
 .markdown-container {
@@ -197,28 +222,28 @@ CardComponent {
 
 .course-price-highlight {
   width: 100%;
-  background-color: #91e1a6; /* Color más llamativo para el precio */
+  background-color: #91e1a6; 
   color: #000000;
   padding: 15px;
   border-radius: 5px;
-  font-size: 1.4em; /* Texto más grande para el precio */
-  text-align: center; /* Centrar el texto dentro del bloque de precio */
-  margin-bottom: 20px; /* Espacio antes del resumen de información */
+  font-size: 1.4em; 
+  text-align: center; 
+  margin-bottom: 20px; 
 }
 
 .summary-header h2 {
   width: 100%;
-  text-align: center; /* Centrar título y verificación */
-  color: #323333; /* Color uniforme para el encabezado */
-  font-size: 1.5em; /* Tamaño más grande para el título */
+  text-align: center;
+  color: #323333; 
+  font-size: 1.5em;
   font-weight: bold;
 }
 
 .summary-header p {
   width: 100%;
-  text-align: center; /* Centrar título y verificación */
-  color: #d94343; /* Color uniforme para el encabezado */
-  font-size: 1.2em; /* Tamaño más grande para el título */
+  text-align: center; 
+  color: #d94343; 
+  font-size: 1.2em; 
 }
 
 .info-block span,
@@ -227,24 +252,23 @@ CardComponent {
 }
 
 .info-block span {
-  font-size: 1.2em; /* Texto más grande para los títulos */
-  color: #333; /* Color oscuro para destacar títulos */
-  margin-bottom: 5px; /* Espacio entre título y contenido */
+  font-size: 1.2em; 
+  color: #333;
+  margin-bottom: 5px; 
   font-weight: bold;
 }
 
 .info-block p {
-  font-size: 1.3em; /* Ajuste de tamaño para contenido */
-  margin: 0 0 15px 0; /* Espacio después de cada bloque de información */
+  font-size: 1.3em; 
+  margin: 0 0 15px 0; 
   font-weight: 100;
 }
 
 .description,
 .requirements {
-  max-width: 100%; /* Aprovechar el ancho disponible */
+  max-width: 100%; 
 }
 
-/* Mejoras visuales adicionales */
 .summary-content {
   display: flex;
   flex-direction: column;
@@ -261,8 +285,8 @@ h1 {
   text-shadow: 2px 2px 4px #000000;
 }
 
-.accept_button{
-  background-color: #4CAF50; /* Green */
+.accept_button {
+  background-color: #4caf50; 
   border: none;
   color: white;
   padding: 15px 32px;

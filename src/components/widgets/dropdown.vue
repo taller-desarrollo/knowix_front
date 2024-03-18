@@ -33,7 +33,6 @@ export default {
       required: true,
     },
     modelValue: {
-      // Cambiado de `value` a `modelValue`
       type: [String, Number],
       default: "",
     },
@@ -48,7 +47,6 @@ export default {
   },
   methods: {
     onChange(event) {
-      // Cambiar 'input' por 'update:modelValue' para mantener la convención de Vue 3
       this.$emit("update:modelValue", event.target.value);
     },
   },
@@ -72,9 +70,9 @@ select {
   font-size: 1.1em;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
-  appearance: none; /* Remove style in WebKit browsers */
-  -moz-appearance: none; /* Remove style in Firefox */
-  -webkit-appearance: none; /* Remove default arrow in safari iOS */
+  appearance: none; 
+  -moz-appearance: none;
+  -webkit-appearance: none; 
 }
 
 select:focus {

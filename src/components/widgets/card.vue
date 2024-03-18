@@ -60,16 +60,16 @@ inputTextColor="#000"
 </template>
 
 <script>
-import InputVue from "./input.vue"; // Asegúrate de que la ruta es correcta
-import DropdownVue from "./dropdown.vue"; // Importa el componente DropdownVue
-import LargeTextInput from "./LargeTextInput.vue"; // Importa el nuevo componente LargeTextInput
+import InputVue from "./input.vue"; 
+import DropdownVue from "./dropdown.vue";
+import LargeTextInput from "./LargeTextInput.vue";
 
 export default {
   name: "CardComponent",
   components: {
     InputVue,
     DropdownVue,
-    LargeTextInput, // Registra el componente aquí
+    LargeTextInput, 
   },
   props: {
     title: String,
@@ -81,11 +81,11 @@ export default {
     },
     inputType: {
       type: String,
-      default: "text", // 'text' para input normal, 'dropdown' para listas desplegables, 'largeText' para el área de texto grande
+      default: "text", 
     },
     inputPlaceholder: String,
-    dropdownOptions: Array, // Prop adicional para las opciones del dropdown
-    maxlength: Number, // Nuevo prop para el límite de caracteres en LargeTextInput
+    dropdownOptions: Array, 
+    maxlength: Number, 
     cardBackgroundColor: String,
     headerBackgroundColor: String,
     headerTextColor: String,

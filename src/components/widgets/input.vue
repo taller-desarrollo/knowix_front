@@ -46,18 +46,31 @@ export default {
 
   data() {
     return {
-      internalValue: this.modelValue, // Cambia de this.value a this.modelValue
+      internalValue: this.modelValue, 
     };
   },
   methods: {
     updateValue(event) {
-      this.$emit("update:modelValue", event.target.value); // Cambia 'input' por 'update:modelValue'
+      this.$emit("update:modelValue", event.target.value); 
     },
 
     formatValue() {
+      this.internalValue = this.internalValue.replace(/,/g, ".");
+      this.$emit("update:modelValue", this.internalValue);
+      
+
       if (this.type === "number") {
         this.internalValue = parseFloat(this.internalValue).toFixed(2);
         this.$emit("update:modelValue", this.internalValue);
+        if (this.internalValue < 0) {
+          this.internalValue = 0;
+          this.$emit("update:modelValue", this.internalValue);
+        }
+        //si es NaN devuelve 0:
+        if (isNaN(this.internalValue)) {
+          this.internalValue = 0;
+          this.$emit("update:modelValue", this.internalValue);
+        }
       }
     },
   },
@@ -66,7 +79,7 @@ export default {
       this.internalValue = val;
     },
     internalValue(newVal) {
-      this.$emit("update:modelValue", newVal); // Asegúrate de emitir 'update:modelValue'
+      this.$emit("update:modelValue", newVal); 
     },
   },
 };
@@ -111,7 +124,6 @@ input:focus {
   margin-bottom: 1em;
 }
 
-/* Estilos adicionales para los labels, si es necesario */
 label {
   color: black;
   font-size: 1.2em;
