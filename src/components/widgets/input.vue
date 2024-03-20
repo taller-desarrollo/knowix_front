@@ -46,18 +46,17 @@ export default {
 
   data() {
     return {
-      internalValue: this.modelValue, 
+      internalValue: this.modelValue,
     };
   },
   methods: {
     updateValue(event) {
-      this.$emit("update:modelValue", event.target.value); 
+      this.$emit("update:modelValue", event.target.value);
     },
 
     formatValue() {
       this.internalValue = this.internalValue.replace(/,/g, ".");
       this.$emit("update:modelValue", this.internalValue);
-      
 
       if (this.type === "number") {
         this.internalValue = parseFloat(this.internalValue).toFixed(2);
@@ -79,7 +78,7 @@ export default {
       this.internalValue = val;
     },
     internalValue(newVal) {
-      this.$emit("update:modelValue", newVal); 
+      this.$emit("update:modelValue", newVal);
     },
   },
 };

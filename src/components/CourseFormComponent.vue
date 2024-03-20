@@ -127,6 +127,119 @@
   </div>
 </template>
 
+<style>
+/* Reset básico y estilos generales para garantizar consistencia */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+p {
+  margin-bottom: 0.75em;
+  color: #fff;
+}
+
+/* Estilos del contenedor principal */
+.container {
+  display: flex;
+  flex-wrap: wrap; /* Ajuste automático para dispositivos móviles */
+  gap: 20px; /* Espaciado entre los bloques */
+  margin: 20px auto;
+  max-width: 1200px; /* Máximo ancho del contenedor */
+  /* padding: 0 20px; */
+}
+
+/* Estilos para los bloques izquierdo y derecho */
+.left-block,
+.right-block {
+  /* padding: 20px; */
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff76;
+}
+
+.left-block {
+  width: 70%; /* Ancho ajustado para ser más ancho */
+}
+
+.right-block {
+  width: 28%; /* Ancho ajustado para ser más ancho y compensar el espacio */
+  background-color: #f5f5dc; /* Manteniendo el color de fondo original para este bloque */
+}
+
+/* Mejoras para el contenedor de tarjetas */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start; /* Alinea elementos al inicio para un mejor control */
+  padding-left: 20px; /* Asegura que el padding izquierdo sea igual al derecho del bloque */
+  margin: 20px 0 0 0;
+}
+
+CardComponent {
+  flex: 1;
+  min-width: calc(
+    50% - 10px
+  ); /* Ajuste para que dos tarjetas llenen el espacio correctamente */
+  margin-bottom: 20px; /* Espaciado uniforme debajo de cada tarjeta */
+}
+
+/* Botón de aceptar con mejoras visuales */
+.accept_button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  font-size: 1em;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.accept_button:hover {
+  background-color: #45a049;
+}
+
+/* Media query para ajustar el layout en pantallas pequeñas */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left-block,
+  .right-block {
+    width: 100%; /* Ajuste para que cada bloque tome el ancho completo de la pantalla */
+  }
+
+  .cards-container {
+    padding-left: 0; /* Elimina el padding para dispositivos móviles si es necesario */
+    padding-right: 0;
+  }
+}
+
+/* Estilos adicionales para elementos como encabezados y párrafos dentro de los bloques */
+.summary-header h2,
+.info-block span {
+  color: #4caf50; /* Color temático para títulos y etiquetas importantes */
+  font-weight: bold;
+}
+
+.info-block p,
+.summary-header p {
+  color: #666; /* Color suave para el texto, mejora la legibilidad */
+}
+</style>
+
 <script>
 import { onMounted } from "vue";
 import { useLanguageStore } from "@/stores/languageStore";
@@ -167,137 +280,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.container {
-  display: flex;
-  justify-content: space-between;
-  height: 80vh;
-  margin: 2vh 10%;
-  gap: 2%;
-}
-
-.left-block {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  color: #000000;
-}
-
-.right-block {
-  flex-direction: column;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  color: #000000;
-}
-
-.left-block {
-  width: 75%;
-  background-color: #ffffff;
-}
-
-.right-block {
-  width: 25%;
-  background-color: #f5f5dc;
-}
-
-.cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 15px;
-}
-
-CardComponent {
-  flex-basis: calc(50% - 20px);
-}
-
-.markdown-container {
-  margin-top: 20px;
-}
-
-.course-price-highlight {
-  width: 100%;
-  background-color: #91e1a6; 
-  color: #000000;
-  padding: 15px;
-  border-radius: 5px;
-  font-size: 1.4em; 
-  text-align: center; 
-  margin-bottom: 20px; 
-}
-
-.summary-header h2 {
-  width: 100%;
-  text-align: center;
-  color: #323333; 
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.summary-header p {
-  width: 100%;
-  text-align: center; 
-  color: #d94343; 
-  font-size: 1.2em; 
-}
-
-.info-block span,
-.info-block p {
-  display: block;
-}
-
-.info-block span {
-  font-size: 1.2em; 
-  color: #333;
-  margin-bottom: 5px; 
-  font-weight: bold;
-}
-
-.info-block p {
-  font-size: 1.3em; 
-  margin: 0 0 15px 0; 
-  font-weight: 100;
-}
-
-.description,
-.requirements {
-  max-width: 100%; 
-}
-
-.summary-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-h1 {
-  text-align: center;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  color: #ffffff;
-  font-size: 2.5em;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px #000000;
-}
-
-.accept_button {
-  background-color: #4caf50; 
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-</style>
