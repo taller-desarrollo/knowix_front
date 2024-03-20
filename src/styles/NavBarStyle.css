@@ -69,7 +69,7 @@
 
 .submenu {
     background-color: steelblue;
-    position: absolute;
+    position: relative;
 }
 
 .submenu:hover {

@@ -7,13 +7,12 @@
         <div class="optionsNavBar" :class="{ visible: menuOpen }">
             <a href="/" @click="toggleMenu">Inicio</a>
             <a href="/student" @click="toggleMenu">Estudiante</a>
-            <a href="/educator" @click="toggleMenu">Educador</a>
-            <a href="/profile" @click="toggleMenu">Perfil</a>
-            <a href="#" @click.prevent="toggleSubMenu">Cursos</a>
+            <a href="#" @click.prevent="toggleSubMenu">Educador</a>
             <div class="submenu" v-if="submenuOpen">
                 <a href="/new-course" @click="toggleMenu">Crear Curso</a>
-                <a href="/edit-course" @click="toggleMenu">Editar Curso</a>
+                <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
             </div>
+            <a href="/profile" @click="toggleMenu">Perfil</a>
             <a class="cancel" @click="confirmLogout">Cerrar sesión</a>
         </div>
     </div>

@@ -3,26 +3,15 @@ import HomeComponent from '../components/HomeComponent.vue';
 import Error404Component from '@/components/Error404Component.vue';
 import ProfileComponent from '@/components/ProfileComponent.vue';
 import CourseFormComponent from '@/components/CourseFormComponent.vue';
-import EducatorComponentExample from '@/components/EducatorComponentExample.vue';
 import StudentComponentExample from '@/components/StudentComponentExample.vue';
 import EditCourseComponent from '@/components/EditCourseComponent.vue';
+import CoursesEducatorComponent from '@/components/CoursesEducatorComponent.vue';
 
 const routes = [
     {
         path: '/',
         component: HomeComponent,
         name: 'home',
-    },
-    {
-        path: '/new-course',
-        component: CourseFormComponent,
-        name: 'new-course',
-    },
-    {
-        path: '/educator',
-        component: EducatorComponentExample,
-        name: 'educator',
-        meta: { requiresAuth: true, role: 'educator' } 
     },
     {
         path: '/student',
@@ -41,10 +30,23 @@ const routes = [
         name: 'profile',
     },
     {
+        path: '/new-course',
+        component: CourseFormComponent,
+        name: 'new-course',
+        meta: { requiresAuth: true, role: 'educator' } 
+    },
+    {
         path: '/edit-course',
         component: EditCourseComponent,
         name: 'edit-course',
+        meta: { requiresAuth: true, role: 'educator' }
     },
+    {
+        path: '/courses-educator',
+        component: CoursesEducatorComponent,
+        name: 'courses-educator',
+        meta: { requiresAuth: true, role: 'educator' } 
+    }
 ];
 
 const router = (keycloak) => {
