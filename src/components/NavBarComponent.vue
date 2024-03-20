@@ -9,6 +9,11 @@
             <a href="/student" @click="toggleMenu">Estudiante</a>
             <a href="/educator" @click="toggleMenu">Educador</a>
             <a href="/profile" @click="toggleMenu">Perfil</a>
+            <a href="#" @click.prevent="toggleSubMenu">Cursos</a>
+            <div class="submenu" v-if="submenuOpen">
+                <a href="/new-course" @click="toggleMenu">Crear Curso</a>
+                <a href="/edit-course" @click="toggleMenu">Editar Curso</a>
+            </div>
             <a class="cancel" @click="confirmLogout">Cerrar sesión</a>
         </div>
     </div>
@@ -21,6 +26,7 @@ export default {
     data() {
         return {
             menuOpen: false,
+            submenuOpen: false
         };
     },
     props: {
@@ -29,6 +35,9 @@ export default {
     methods: {
         toggleMenu() {
             this.menuOpen = !this.menuOpen;
+        },
+        toggleSubMenu() {
+            this.submenuOpen = !this.submenuOpen;
         },
         async confirmLogout() {
             const result = await Swal.fire({

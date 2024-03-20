@@ -5,6 +5,7 @@ import ProfileComponent from '@/components/ProfileComponent.vue';
 import CourseFormComponent from '@/components/CourseFormComponent.vue';
 import EducatorComponentExample from '@/components/EducatorComponentExample.vue';
 import StudentComponentExample from '@/components/StudentComponentExample.vue';
+import EditCourseComponent from '@/components/EditCourseComponent.vue';
 
 const routes = [
     {
@@ -38,6 +39,11 @@ const routes = [
         path: '/profile',
         component: ProfileComponent,
         name: 'profile',
+    },
+    {
+        path: '/edit-course',
+        component: EditCourseComponent,
+        name: 'edit-course',
     },
 ];
 

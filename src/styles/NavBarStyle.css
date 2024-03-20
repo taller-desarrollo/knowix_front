@@ -59,16 +59,20 @@
     scale: 1.1;
 }
 
-.optionsNavBar a:last-child {
-    background-color: #a81106;
-}
-
-.optionsNavBar a:last-child:hover {
-    background-color: #f44336;
-    scale: 1.05;
-    text-decoration: none;
-}
-
 .optionsNavBar.visible {
     display: block;
+}
+
+.optionsNavBar .cancel:hover {
+    background-color: #f44336;  
+}
+
+.submenu {
+    background-color: steelblue;
+    position: absolute;
+}
+
+.submenu:hover {
+    background-color: slategray;
+    transition: 0.3s;
 }
