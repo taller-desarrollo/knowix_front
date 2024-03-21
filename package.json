@@ -13,11 +13,19 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@heroicons/vue": "^2.1.1",
+    "@kangc/v-md-editor": "^1.7.12",
+    "axios": "^1.6.8",
+    "babel-runtime": "^6.26.0",
+    "codemirror": "^6.0.1",
     "core-js": "^3.8.3",
+    "pinia": "^2.1.7",
     "sweetalert2": "^11.10.6",
     "keycloak-js": "^24.0.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.3.0"
+    "vue-codemirror-lite": "^1.0.4",
+    "vue-markdown": "^2.2.4",
+    "vue-router": "^4.3.0",
+    "vuetify": "^3.5.9"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
