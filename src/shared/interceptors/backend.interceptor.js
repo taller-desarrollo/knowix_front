@@ -13,6 +13,9 @@ backendInterceptor.interceptors.request.use((config) => {
 
 backendInterceptor.interceptors.response.use(
     (response) => {
+        return response;
+    },
+    (response) => {
         console.log("response: ", response);    
     },
     (error) => {

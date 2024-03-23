@@ -4,36 +4,72 @@
     <div class="container">
       <div class="left-block">
         <div class="cards-container">
-          <CardComponent title="NOMBRE DEL CURSO"
+          <CardComponent
+            title="NOMBRE DEL CURSO"
             description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
-            inputPlaceholder="Nombre del curso" width="45%" v-model="courseDetails.courseName" />
+            inputPlaceholder="Nombre del curso"
+            width="45%"
+            v-model="courseDetails.courseName"
+          />
 
-          <CardComponent title="PRECIO BASE (En Bs.)"
+          <CardComponent
+            title="PRECIO BASE (En Bs.)"
             description="Es el precio inicial del curso, el cual se puede modificar en cualquier momento."
-            inputPlaceholder="Bs. 0.00" inputType="number" width="45%" v-model="courseDetails.basePrice" />
+            inputPlaceholder="Bs. 0.00"
+            inputType="number"
+            width="45%"
+            v-model="courseDetails.basePrice"
+          />
 
-          <CardComponent title="IDIOMA DEL CURSO" description="Selecciona el idioma en el que se impartirá el curso."
-            inputType="dropdown" inputPlaceholder="Selecciona un idioma" width="45%" :dropdownOptions="languageStore.languages.map((language) => ({
-              id: language.languageId,
-              text: language.languageName,
-            }))
-              " v-model="courseDetails.courseLanguage" />
+          <CardComponent
+            title="IDIOMA DEL CURSO"
+            description="Selecciona el idioma en el que se impartirá el curso."
+            inputType="dropdown"
+            inputPlaceholder="Selecciona un idioma"
+            width="45%"
+            :dropdownOptions="
+              languageStore.languages.map((language) => ({
+                id: language.languageId,
+                text: language.languageName,
+              }))
+            "
+            v-model="courseDetails.courseLanguage"
+          />
 
-          <CardComponent title="CATEGORÍA DEL CURSO" description="Selecciona la categoría a la que pertenece el curso."
-            inputType="dropdown" inputPlaceholder="Selecciona una categoría" width="45%" :dropdownOptions="categoryStore.categories.map((category) => ({
-              id: category.categoryId,
-              text: category.categoryName,
-            }))
-              " v-model="courseDetails.courseCategory" />
+          <CardComponent
+            title="CATEGORÍA DEL CURSO"
+            description="Selecciona la categoría a la que pertenece el curso."
+            inputType="dropdown"
+            inputPlaceholder="Selecciona una categoría"
+            width="45%"
+            :dropdownOptions="
+              categoryStore.categories.map((category) => ({
+                id: category.categoryId,
+                text: category.categoryName,
+              }))
+            "
+            v-model="courseDetails.courseCategory"
+          />
 
-          <CardComponent title="Descripción del Curso" description="Agrega una descripción detallada para el curso."
-            inputType="largeText" inputPlaceholder="Escribe la descripción aquí..." maxlength="300" width="45%"
-            v-model="courseDetails.detailedDescription" />
+          <CardComponent
+            title="Descripción del Curso"
+            description="Agrega una descripción detallada para el curso."
+            inputType="largeText"
+            inputPlaceholder="Escribe la descripción aquí..."
+            maxlength="300"
+            width="45%"
+            v-model="courseDetails.detailedDescription"
+          />
 
-          <CardComponent title="Requerimientos del Curso"
-            description="Agrega los requerimientos necesarios para el curso." inputType="largeText"
-            inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
-            v-model="courseDetails.courseRequirements" />
+          <CardComponent
+            title="Requerimientos del Curso"
+            description="Agrega los requerimientos necesarios para el curso."
+            inputType="largeText"
+            inputPlaceholder="Escribe los requerimientos aquí..."
+            maxlength="500"
+            width="45%"
+            v-model="courseDetails.courseRequirements"
+          />
         </div>
       </div>
       <div class="right-block">
@@ -55,12 +91,12 @@
 
             <p>
               {{
-              languageStore.languages.find(
-                (language) =>
-                  language.languageId ===
-                  parseInt(courseDetails.courseLanguage, 10)
-              )?.languageName || "Idioma no seleccionado"
-            }}
+                languageStore.languages.find(
+                  (language) =>
+                    language.languageId ===
+                    parseInt(courseDetails.courseLanguage, 10)
+                )?.languageName || "Idioma no seleccionado"
+              }}
             </p>
           </div>
           <div class="info-block">
@@ -75,6 +111,7 @@
                 )?.categoryName || "Categoría no seleccionada"
               }}
             </p>
+
           </div>
           <div class="info-block description">
             <span>Descripción:</span>
@@ -85,12 +122,102 @@
             <p>{{ courseDetails.courseRequirements }}</p>
           </div>
 
-          <button class="accept_button">Registrar Curso</button>
+          <button class="accept_button" @click="registerCourse">
+            Registrar Curso
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+import { onMounted, getCurrentInstance, ref } from "vue";
+import { useLanguageStore } from "@/stores/languageStore";
+import { useCategoryStore } from "@/stores/categoryStore";
+import { useCourseStore } from "@/stores/courseStore";
+import CardComponent from "./widgets/card.vue";
+import Swal from "sweetalert2"; // Importar SweetAlert2
+import { useRouter } from 'vue-router'; // Importar useRouter para la redirección
+
+export default {
+  name: "AppView",
+  components: {
+    CardComponent,
+  },
+
+  data() {
+    return {
+      courseDetails: {
+        courseName: "",
+        basePrice: "",
+        courseLanguage: "",
+        courseLanguageText: "",
+        courseCategory: "",
+        detailedDescription: "",
+        courseRequirements: "",
+      },
+    };
+  },
+  setup() {
+    const { proxy } = getCurrentInstance();
+    const languageStore = useLanguageStore();
+    const categoryStore = useCategoryStore();
+    const courseStore = useCourseStore();
+    const router = useRouter(); // Utilizar useRouter para la redirección
+    const isLoading = ref(false); // Estado para controlar la carga
+
+    onMounted(async () => {
+      await languageStore.fetchLanguages();
+      await categoryStore.fetchCategories();
+    });
+
+    const registerCourse = async () => {
+      isLoading.value = true; // Indicar que la carga ha comenzado
+      const courseData = {
+        courseName: proxy.courseDetails.courseName,
+        courseStandardPrice: parseFloat(proxy.courseDetails.basePrice),
+        courseDescription: proxy.courseDetails.detailedDescription,
+        courseRequirements: proxy.courseDetails.courseRequirements,
+        status: "true",
+        categoryCategoryId: parseInt(proxy.courseDetails.courseCategory, 10),
+        languageLanguageId: parseInt(proxy.courseDetails.courseLanguage, 10),
+        kcUserKcUuid: proxy.$keycloak.tokenParsed.sub,
+      };
+
+      try {
+        await courseStore.registerCourse(courseData);
+        Swal.fire({
+          icon: 'success',
+          title: '¡Curso registrado!',
+          text: 'El curso ha sido registrado con éxito.',
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push('/ruta-anterior'); // Asegúrate de reemplazar '/ruta-anterior' con la ruta real
+          }
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Algo salió mal al intentar registrar el curso. Por favor, inténtalo de nuevo.',
+          confirmButtonText: 'Aceptar'
+        });
+      } finally {
+        isLoading.value = false; // La carga ha finalizado
+      }
+    };
+
+    return {
+      languageStore,
+      categoryStore,
+      registerCourse,
+      isLoading, // Exponer el estado de carga
+    };
+  },
+};
+</script>
 
 <style>
 /* Reset básico y estilos generales para garantizar consistencia */
@@ -216,42 +343,3 @@ CardComponent {
   /* Color suave para el texto, mejora la legibilidad */
 }
 </style>
-
-<script>
-import { onMounted } from "vue";
-import { useLanguageStore } from "@/stores/languageStore";
-import { useCategoryStore } from "@/stores/categoryStore";
-import CardComponent from "./widgets/card.vue";
-
-export default {
-  name: "AppView",
-  components: {
-    CardComponent,
-  },
-
-  data() {
-    return {
-      courseDetails: {
-        courseName: "",
-        basePrice: "",
-        courseLanguage: "",
-        courseLanguageText: "",
-        courseCategory: "",
-        detailedDescription: "",
-        courseRequirements: "",
-      },
-    };
-  },
-  setup() {
-    const languageStore = useLanguageStore();
-    const categoryStore = useCategoryStore();
-
-    onMounted(async () => {
-      await languageStore.fetchLanguages();
-      await categoryStore.fetchCategories();
-    });
-
-    return { languageStore, categoryStore };
-  },
-};
-</script>
