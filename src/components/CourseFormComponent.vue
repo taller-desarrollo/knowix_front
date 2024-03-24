@@ -101,8 +101,8 @@ import { useLanguageStore } from "@/stores/languageStore";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useCourseStore } from "@/stores/courseStore";
 import CardComponent from "./widgets/card.vue";
-import Swal from "sweetalert2"; // Importar SweetAlert2
-import { useRouter } from 'vue-router'; // Importar useRouter para la redirección
+import Swal from "sweetalert2";
+import { useRouter } from 'vue-router';
 
 export default {
   name: "AppView",
@@ -128,8 +128,8 @@ export default {
     const languageStore = useLanguageStore();
     const categoryStore = useCategoryStore();
     const courseStore = useCourseStore();
-    const router = useRouter(); // Utilizar useRouter para la redirección
-    const isLoading = ref(false); // Estado para controlar la carga
+    const router = useRouter();
+    const isLoading = ref(false);
 
     onMounted(async () => {
       await languageStore.fetchLanguages();
@@ -137,7 +137,18 @@ export default {
     });
 
     const registerCourse = async () => {
-      isLoading.value = true; // Indicar que la carga ha comenzado
+      isLoading.value = true;
+      Swal.fire({
+        title: 'Registrando el curso...',
+        html: 'Por favor, espera.',
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false
+      });
+
       const courseData = {
         courseName: proxy.courseDetails.courseName,
         courseStandardPrice: parseFloat(proxy.courseDetails.basePrice),

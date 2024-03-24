@@ -5,14 +5,12 @@
         <div class="container">
             <div class="left-block">
                 <div class="cards-container">
-                    <CardComponent title="NOMBRE DEL CURSO"
-                        inputPlaceholder="Nombre del curso" width="45%" v-model="courseDetails.courseName" />
-
-                    <CardComponent title="PRECIO BASE (En Bs.)"
-                        inputPlaceholder="Bs. 0.00" inputType="number" width="45%" v-model="courseDetails.basePrice" />
-
+                    <CardComponent title="NOMBRE DEL CURSO" inputPlaceholder="Nombre del curso" width="45%"
+                        v-model="courseDetails.courseName" />
+                    <CardComponent title="PRECIO BASE (En Bs.)" inputPlaceholder="Bs. 0.00" inputType="number"
+                        width="45%" v-model="courseDetails.basePrice" />
                     <CardComponent title="IDIOMA DEL CURSO"
-                        inputType="dropdown"
+                        description="Selecciona el idioma en el que se impartirá el curso." inputType="dropdown"
                         inputPlaceholder="Selecciona un idioma" width="45%" :dropdownOptions="languageStore.languages.map((language) => ({
                             id: language.languageId,
                             text: language.languageName,
@@ -20,20 +18,17 @@
                             " v-model="courseDetails.courseLanguage" />
 
                     <CardComponent title="CATEGORÍA DEL CURSO"
-                        inputType="dropdown"
+                        description="Selecciona la categoría a la que pertenece el curso." inputType="dropdown"
                         inputPlaceholder="Selecciona una categoría" width="45%" :dropdownOptions="categoryStore.categories.map((category) => ({
                             id: category.categoryId,
                             text: category.categoryName,
                         }))
                             " v-model="courseDetails.courseCategory" />
 
-                    <CardComponent title="Descripción del Curso"
-                        inputType="largeText"
+                    <CardComponent title="Descripción del Curso" inputType="largeText"
                         inputPlaceholder="Escribe la descripción aquí..." maxlength="300" width="45%"
                         v-model="courseDetails.detailedDescription" />
-
-                    <CardComponent title="Requerimientos del Curso"
-                        inputType="largeText"
+                    <CardComponent title="Requerimientos del Curso" inputType="largeText"
                         inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
                         v-model="courseDetails.courseRequirements" />
                 </div>
@@ -54,7 +49,6 @@
                     </div>
                     <div class="info-block">
                         <span>Idioma:</span>
-
                         <p>
                             {{
                             languageStore.languages.find(
@@ -67,7 +61,6 @@
                     </div>
                     <div class="info-block">
                         <span>Categoría:</span>
-
                         <p>
                             {{
                                 categoryStore.categories.find(
@@ -86,53 +79,18 @@
                         <span>Requerimientos:</span>
                         <p>{{ courseDetails.courseRequirements }}</p>
                     </div>
-
-                    <button class="accept_button">Editar Curso</button>
+                    <button class="accept_button" @click="updateCourse">Editar Curso</button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
+<script>
+import editcourse from "@/scripts/editCourse";
+export default editcourse;
+</script>
+
 <style>
 @import "../styles/EditCourseStyle.css"
 </style>
-
-<script>
-import { onMounted } from "vue";
-import { useLanguageStore } from "@/stores/languageStore";
-import { useCategoryStore } from "@/stores/categoryStore";
-import CardComponent from "./widgets/card.vue";
-
-export default {
-    name: "AppView",
-    components: {
-        CardComponent,
-    },
-
-    data() {
-        return {
-            courseDetails: {
-                courseName: "",
-                basePrice: "",
-                courseLanguage: "",
-                courseLanguageText: "",
-                courseCategory: "",
-                detailedDescription: "",
-                courseRequirements: "",
-            },
-        };
-    },
-    setup() {
-        const languageStore = useLanguageStore();
-        const categoryStore = useCategoryStore();
-
-        onMounted(async () => {
-            await languageStore.fetchLanguages();
-            await categoryStore.fetchCategories();
-        });
-
-        return { languageStore, categoryStore };
-    },
-};
-</script>

@@ -1,6 +1,9 @@
 <template>
   <div class="content">
-    <h1 class="display-1 mb-5">Cursos Publicados</h1>
+    <div class="head-courses">
+      <h1 class="display-1 mb-5">Cursos Publicados</h1>
+      <button class="general" @click="createCourse()">Crear Curso</button>
+    </div>
     <div v-if="isLoading">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
@@ -11,7 +14,7 @@
         <div class="header-item">Categoría</div>
         <div class="header-item">Idioma</div>
         <div class="header-item">Precio</div>
-        <div class="header-item">Acciones</div>
+        <div class="header-item">Editar</div>
       </div>
       <div class="courses-container">
         <div v-for="course in courses" :key="course.courseId" class="course-card">
@@ -61,6 +64,12 @@ export default {
       courses,
       navigateToEditCourse,
     };
+  },
+
+  methods: {
+    createCourse() {
+      this.$router.push({ name: 'new-course' });
+    },
   },
 };
 </script>
