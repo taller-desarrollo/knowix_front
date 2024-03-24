@@ -1,27 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeComponent from '../components/HomeComponent.vue';
-import LoginComponent from '@/components/LoginComponent.vue';
 import Error404Component from '@/components/Error404Component.vue';
-import EducatorComponentExample from '@/components/EducatorComponentExample.vue';
+import ProfileComponent from '@/components/ProfileComponent.vue';
+import CourseFormComponent from '@/components/CourseFormComponent.vue';
 import StudentComponentExample from '@/components/StudentComponentExample.vue';
-import { keycloak } from '../main'; 
+import EditCourseComponent from '@/components/EditCourseComponent.vue';
+import CoursesEducatorComponent from '@/components/CoursesEducatorComponent.vue';
 
 const routes = [
     {
-        path: '/home',
+        path: '/',
         component: HomeComponent,
         name: 'home',
-    },
-    {
-        path: '/',
-        component: LoginComponent,
-        name: 'login',
-    },
-    {
-        path: '/educator',
-        component: EducatorComponentExample,
-        name: 'educator',
-        meta: { requiresAuth: true, role: 'educator' } 
     },
     {
         path: '/student',
@@ -34,26 +24,57 @@ const routes = [
         component: Error404Component,
         name: 'error404',
     },
+    {
+        path: '/profile',
+        component: ProfileComponent,
+        name: 'profile',
+    },
+    {
+        path: '/new-course',
+        component: CourseFormComponent,
+        name: 'new-course',
+        meta: { requiresAuth: true, role: 'educator' } 
+    },
+    {
+        path: '/edit-course/:id',
+        component: EditCourseComponent,
+        name: 'edit-course',
+        meta: { requiresAuth: true, role: 'educator' }
+    },
+    {
+        path: '/courses-educator',
+        component: CoursesEducatorComponent,
+        name: 'courses-educator',
+        meta: { requiresAuth: true, role: 'educator' } 
+    }
 ];
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+const router = (keycloak) => {
+  const vueRouter = createRouter({
+    history: createWebHistory(),
+    routes,
+  });
 
-router.beforeEach(async (to, from, next) => {
-  if (to.meta.requiresAuth) {
-   const hasRole = keycloak.hasResourceRole(to.meta.role);
-   console.log(hasRole);
-   if (hasRole){
-    next();
-   }else{
-    alert('No tiene permisos para acceder a esta página.')
-    next('/');
-   }
-  } else {
-    next();
-  }
-});
+  vueRouter.beforeEach(async (to, from, next) => {
+    if (to.meta.requiresAuth) {
+      if (keycloak.authenticated) { 
+        console.log(keycloak.tokenParsed.sub)
+        const hasRole = keycloak.hasResourceRole(to.meta.role);
+        if (hasRole) {
+          next();
+        } else {
+          alert('No tiene permisos para acceder a esta página.');
+          next('/');
+        }
+      } else {
+        keycloak.login();
+      }
+    } else {
+      next();
+    }
+  });
+
+  return vueRouter;
+};
 
 export default router;
