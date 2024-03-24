@@ -4,72 +4,36 @@
     <div class="container">
       <div class="left-block">
         <div class="cards-container">
-          <CardComponent
-            title="NOMBRE DEL CURSO"
+          <CardComponent title="NOMBRE DEL CURSO"
             description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
-            inputPlaceholder="Nombre del curso"
-            width="45%"
-            v-model="courseDetails.courseName"
-          />
+            inputPlaceholder="Nombre del curso" width="45%" v-model="courseDetails.courseName" />
 
-          <CardComponent
-            title="PRECIO BASE (En Bs.)"
+          <CardComponent title="PRECIO BASE (En Bs.)"
             description="Es el precio inicial del curso, el cual se puede modificar en cualquier momento."
-            inputPlaceholder="Bs. 0.00"
-            inputType="number"
-            width="45%"
-            v-model="courseDetails.basePrice"
-          />
+            inputPlaceholder="Bs. 0.00" inputType="number" width="45%" v-model="courseDetails.basePrice" />
 
-          <CardComponent
-            title="IDIOMA DEL CURSO"
-            description="Selecciona el idioma en el que se impartirá el curso."
-            inputType="dropdown"
-            inputPlaceholder="Selecciona un idioma"
-            width="45%"
-            :dropdownOptions="
-              languageStore.languages.map((language) => ({
-                id: language.languageId,
-                text: language.languageName,
-              }))
-            "
-            v-model="courseDetails.courseLanguage"
-          />
+          <CardComponent title="IDIOMA DEL CURSO" description="Selecciona el idioma en el que se impartirá el curso."
+            inputType="dropdown" inputPlaceholder="Selecciona un idioma" width="45%" :dropdownOptions="languageStore.languages.map((language) => ({
+              id: language.languageId,
+              text: language.languageName,
+            }))
+              " v-model="courseDetails.courseLanguage" />
 
-          <CardComponent
-            title="CATEGORÍA DEL CURSO"
-            description="Selecciona la categoría a la que pertenece el curso."
-            inputType="dropdown"
-            inputPlaceholder="Selecciona una categoría"
-            width="45%"
-            :dropdownOptions="
-              categoryStore.categories.map((category) => ({
-                id: category.categoryId,
-                text: category.categoryName,
-              }))
-            "
-            v-model="courseDetails.courseCategory"
-          />
+          <CardComponent title="CATEGORÍA DEL CURSO" description="Selecciona la categoría a la que pertenece el curso."
+            inputType="dropdown" inputPlaceholder="Selecciona una categoría" width="45%" :dropdownOptions="categoryStore.categories.map((category) => ({
+              id: category.categoryId,
+              text: category.categoryName,
+            }))
+              " v-model="courseDetails.courseCategory" />
 
-          <CardComponent
-            title="Descripción del Curso"
-            description="Agrega una descripción detallada para el curso."
-            inputType="largeText"
-            inputPlaceholder="Escribe la descripción aquí..."
-            maxlength="300"
-            width="45%"
-            v-model="courseDetails.detailedDescription"
-          />
+          <CardComponent title="Descripción del Curso" description="Agrega una descripción detallada para el curso."
+            inputType="largeText" inputPlaceholder="Escribe la descripción aquí..." maxlength="300" width="45%"
+            v-model="courseDetails.detailedDescription" />
 
-          <CardComponent
-            title="Requerimientos del Curso"
-            description="Agrega los requerimientos necesarios para el curso."
-            inputType="largeText"
-            inputPlaceholder="Escribe los requerimientos aquí..."
-            maxlength="500"
-            width="45%"
-            v-model="courseDetails.courseRequirements"
-          />
+          <CardComponent title="Requerimientos del Curso"
+            description="Agrega los requerimientos necesarios para el curso." inputType="largeText"
+            inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
+            v-model="courseDetails.courseRequirements" />
         </div>
       </div>
       <div class="right-block">
@@ -91,12 +55,12 @@
 
             <p>
               {{
-                languageStore.languages.find(
-                  (language) =>
-                    language.languageId ===
-                    parseInt(courseDetails.courseLanguage, 10)
-                )?.languageName || "Idioma no seleccionado"
-              }}
+              languageStore.languages.find(
+                (language) =>
+                  language.languageId ===
+                  parseInt(courseDetails.courseLanguage, 10)
+              )?.languageName || "Idioma no seleccionado"
+            }}
             </p>
           </div>
           <div class="info-block">
@@ -194,7 +158,7 @@ export default {
           confirmButtonText: 'Aceptar'
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push('/ruta-anterior'); // Asegúrate de reemplazar '/ruta-anterior' con la ruta real
+            router.push('/');
           }
         });
       } catch (error) {
@@ -205,7 +169,7 @@ export default {
           confirmButtonText: 'Aceptar'
         });
       } finally {
-        isLoading.value = false; // La carga ha finalizado
+        isLoading.value = false;
       }
     };
 
@@ -213,14 +177,13 @@ export default {
       languageStore,
       categoryStore,
       registerCourse,
-      isLoading, // Exponer el estado de carga
+      isLoading,
     };
   },
 };
 </script>
 
 <style>
-/* Reset básico y estilos generales para garantizar consistencia */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -240,23 +203,16 @@ p {
   color: #fff;
 }
 
-/* Estilos del contenedor principal */
 .container {
   display: flex;
   flex-wrap: wrap;
-  /* Ajuste automático para dispositivos móviles */
   gap: 20px;
-  /* Espaciado entre los bloques */
   margin: 20px auto;
   max-width: 1200px;
-  /* Máximo ancho del contenedor */
-  /* padding: 0 20px; */
 }
 
-/* Estilos para los bloques izquierdo y derecho */
 .left-block,
 .right-block {
-  /* padding: 20px; */
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #ffffff76;
@@ -264,37 +220,28 @@ p {
 
 .left-block {
   width: 70%;
-  /* Ancho ajustado para ser más ancho */
 }
 
 .right-block {
   width: 28%;
-  /* Ancho ajustado para ser más ancho y compensar el espacio */
   background-color: #f5f5dc;
-  /* Manteniendo el color de fondo original para este bloque */
 }
 
-/* Mejoras para el contenedor de tarjetas */
 .cards-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: flex-start;
-  /* Alinea elementos al inicio para un mejor control */
   padding-left: 20px;
-  /* Asegura que el padding izquierdo sea igual al derecho del bloque */
   margin: 20px 0 0 0;
 }
 
 CardComponent {
   flex: 1;
   min-width: calc(50% - 10px);
-  /* Ajuste para que dos tarjetas llenen el espacio correctamente */
   margin-bottom: 20px;
-  /* Espaciado uniforme debajo de cada tarjeta */
 }
 
-/* Botón de aceptar con mejoras visuales */
 .accept_button {
   background-color: #4caf50;
   color: white;
@@ -310,7 +257,6 @@ CardComponent {
   background-color: #45a049;
 }
 
-/* Media query para ajustar el layout en pantallas pequeñas */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -319,27 +265,22 @@ CardComponent {
   .left-block,
   .right-block {
     width: 100%;
-    /* Ajuste para que cada bloque tome el ancho completo de la pantalla */
   }
 
   .cards-container {
     padding-left: 0;
-    /* Elimina el padding para dispositivos móviles si es necesario */
     padding-right: 0;
   }
 }
 
-/* Estilos adicionales para elementos como encabezados y párrafos dentro de los bloques */
 .summary-header h2,
 .info-block span {
   color: #4caf50;
-  /* Color temático para títulos y etiquetas importantes */
   font-weight: bold;
 }
 
 .info-block p,
 .summary-header p {
   color: #666;
-  /* Color suave para el texto, mejora la legibilidad */
 }
 </style>

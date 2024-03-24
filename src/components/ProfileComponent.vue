@@ -22,7 +22,9 @@
             <div class="formulario-perfil">
                 <div class="networks">
                     <h2>Redes Sociales</h2>
-                    <button class="editbutton" id="editar">Editar</button>
+                    <button class="editbutton" id="editar">
+                        <font-awesome-icon icon="pencil-alt" />
+                    </button>
                 </div>
                 <div class="social-links">
                     <div class="social-link" id="facebook">

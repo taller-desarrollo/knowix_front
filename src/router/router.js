@@ -36,7 +36,7 @@ const routes = [
         meta: { requiresAuth: true, role: 'educator' } 
     },
     {
-        path: '/edit-course',
+        path: '/edit-course/:id',
         component: EditCourseComponent,
         name: 'edit-course',
         meta: { requiresAuth: true, role: 'educator' }
