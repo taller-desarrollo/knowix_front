@@ -62,7 +62,6 @@ export default {
         },
         goToRegister(){
             this.$router.push('/register');
-        
         }
     },
 };
