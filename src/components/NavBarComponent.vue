@@ -13,7 +13,8 @@
                 <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
             </div>
             <a href="/profile" @click="toggleMenu">Perfil</a>
-            <a class="cancel" @click="confirmLogout">Cerrar sesión</a>
+            <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
+            <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>
         </div>
     </div>
 </template>
@@ -25,11 +26,15 @@ export default {
     data() {
         return {
             menuOpen: false,
-            submenuOpen: false
+            submenuOpen: false,
+            authenticated: false
         };
     },
     props: {
         name: String
+    },
+    created() {
+        this.authenticated = this.$keycloak.authenticated;
     },
     methods: {
         toggleMenu() {
@@ -55,6 +60,10 @@ export default {
                 this.$router.push('/');
             }
         },
+        goToRegister(){
+            this.$router.push('/register');
+        
+        }
     },
 };
 </script>

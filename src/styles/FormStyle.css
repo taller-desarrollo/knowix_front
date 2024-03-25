@@ -1,0 +1,50 @@
+.register-form {
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .register-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .register-form input[type="text"],
+  .register-form input[type="email"],
+  .register-form input[type="password"],
+  .register-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .register-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #292f56;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .register-form button[type="submit"]:hover {
+    background-color: #1e2250;
+  }
+
+.selected-roles {
+    margin-top: 20px;
+  }
+  
+  .selected-roles ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .selected-roles ul li {
+    margin-bottom: 5px;
+    color: #333;
+  }

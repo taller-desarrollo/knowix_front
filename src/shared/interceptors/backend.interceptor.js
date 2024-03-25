@@ -13,10 +13,8 @@ backendInterceptor.interceptors.request.use((config) => {
 
 backendInterceptor.interceptors.response.use(
     (response) => {
-        return response;
-    },
-    (response) => {
-        console.log("response: ", response);    
+        console.log("response: ", response);
+        return response;    
     },
     (error) => {
         //TODO: create notification service and show error if necessary
