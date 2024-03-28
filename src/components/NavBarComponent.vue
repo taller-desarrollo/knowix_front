@@ -6,20 +6,22 @@
         <button class="menu-toggle" @click="toggleMenu">≡</button>
         <div class="optionsNavBar" :class="{ visible: menuOpen }">
             <a href="/" @click="toggleMenu">Inicio</a>
-            <a href="/student" @click="toggleMenu">Estudiante</a>
-            <a href="#" @click.prevent="toggleSubMenu">Educador</a>
+            <a v-if="this.$keycloak.hasResourceRole('student')" href="/student" @click="toggleMenu">Estudiante</a>
+            <a v-if="this.$keycloak.hasResourceRole('educator')" href="#" @click.prevent="toggleSubMenu">Educador</a>
             <div class="submenu" v-if="submenuOpen">
                 <a href="/new-course" @click="toggleMenu">Crear Curso</a>
                 <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
             </div>
-            <a href="/profile" @click="toggleMenu">Perfil</a>
+            <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
             <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
             <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>
+            <a v-if="!authenticated" class="login" @click="logIn">Iniciar sesión</a>
         </div>
     </div>
 </template>
 
 <script>
+import { keycloak } from "@/main";
 import Swal from "sweetalert2";
 
 export default {
@@ -27,11 +29,12 @@ export default {
         return {
             menuOpen: false,
             submenuOpen: false,
-            authenticated: false
+            authenticated: false,
         };
     },
     props: {
         name: String
+
     },
     created() {
         this.authenticated = this.$keycloak.authenticated;
@@ -60,8 +63,11 @@ export default {
                 this.$router.push('/');
             }
         },
-        goToRegister(){
+        goToRegister() {
             this.$router.push('/register');
+        },
+        logIn() {
+            keycloak.login();
         }
     },
 };

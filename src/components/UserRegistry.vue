@@ -87,7 +87,6 @@
           alert('Usuario registrado exitosamente!');
           this.$router.push('/');
         } catch (error) {
-          // Manejar errores, por ejemplo, mostrar un mensaje de error
           alert('Error al registrar usuario. Por favor, inténtalo de nuevo.');
           console.error(error);
         }
