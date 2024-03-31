@@ -27,7 +27,7 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 const keycloak = new Keycloak({
-  url: 'http://localhost:8080/',
+  url: 'http://161.35.142.129:8080/',
   realm: 'Knowix',
   clientId: 'knowix_frontend'
 });

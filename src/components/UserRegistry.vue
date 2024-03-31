@@ -62,11 +62,11 @@
             return;
           }
   
-          const tokenResponse = await this.$axios.post('http://localhost:8080/realms/Knowix/protocol/openid-connect/token', 
+          const tokenResponse = await this.$axios.post('http://161.35.142.129:8080/realms/Knowix/protocol/openid-connect/token', 
             new URLSearchParams({
               grant_type: 'client_credentials',
               client_id: 'knowix_applications',
-              client_secret: 'uUuA5N4SDK9KdaufADG44fIvCiNwIM5a'
+              client_secret: 'j15AGY5hEZMXZNvpLQAlZlwpLwZga0fL'
             }),
             {
               headers: {
