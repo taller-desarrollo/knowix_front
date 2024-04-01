@@ -5,17 +5,23 @@ export let backendInterceptor = axios;
 
 backendInterceptor.defaults.baseURL = environment.backendUrl;
 
+console.log
+
 backendInterceptor.interceptors.request.use((config) => {
     //TODO: configure token renewal if necessary, find way to store token
     //config.headers.Autorization = `Bearer ${token}`;
+    console.log("request: ", config.url);
+    if (config.data) console.log(config.data);
+    else console.log("request data is empty");
     return config;
 });
 
 backendInterceptor.interceptors.response.use(
     (response) => {
-        console.log("response: ", response);
+        console.log("response for ", response.config.url, ": ", response);
         return response;    
     },
     (error) => {
-        //TODO: create notification service and show error if necessary
+        console.log(error);
+        alert(error);
     });
