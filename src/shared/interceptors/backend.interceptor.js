@@ -5,8 +5,6 @@ export let backendInterceptor = axios;
 
 backendInterceptor.defaults.baseURL = environment.backendUrl;
 
-console.log
-
 backendInterceptor.interceptors.request.use((config) => {
     //TODO: configure token renewal if necessary, find way to store token
     //config.headers.Autorization = `Bearer ${token}`;

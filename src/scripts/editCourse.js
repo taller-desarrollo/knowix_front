@@ -12,6 +12,12 @@ export default {
     components: {
         CardComponent,
     },
+    data() {
+        return {
+            dialog: false,
+            model: {}
+        };
+    },
     setup() {
         const { proxy } = getCurrentInstance();
         const languageStore = useLanguageStore();
@@ -26,7 +32,20 @@ export default {
             courseCategory: "",
             detailedDescription: "",
             courseRequirements: "",
+            sections: [],
         });
+
+        async function addSection(courseId) {
+            console.log("hello from addSection ", courseId);
+        }
+
+        async function addContent(sectionId) {
+            console.log("hello from addContent ", sectionId);
+        }
+
+        async function addAttachment(contentId) {
+            console.log("hello from addAttachment ", contentId);
+        }
 
         async function fetchCourseDetails() {
             try {
@@ -38,6 +57,8 @@ export default {
                 proxy.courseDetails.courseCategory = response.data.categoryCategoryId;
                 proxy.courseDetails.detailedDescription = response.data.courseDescription.toString();
                 proxy.courseDetails.courseRequirements = response.data.courseRequirements.toString();
+                proxy.courseDetails.sections = response.data.sections;
+                console.log("dbg: ", proxy.courseDetails);
             } catch (error) {
                 console.error('Error fetching course details:', error);
             }
@@ -107,6 +128,9 @@ export default {
             languageStore,
             categoryStore,
             updateCourse,
+            addSection,
+            addContent,
+            addAttachment
         };
     },
 };

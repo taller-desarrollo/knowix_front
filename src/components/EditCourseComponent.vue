@@ -1,4 +1,5 @@
 <template>
+    <!-- TODO: refactor into one component with course form component -->
     <div class="content">
         <h1>EDITAR CURSO</h1>
         <h4>Actualice la información del curso</h4>
@@ -79,8 +80,31 @@
                         <span>Requerimientos:</span>
                         <p>{{ courseDetails.courseRequirements }}</p>
                     </div>
-                    <button class="accept_button" @click="updateCourse">Editar Curso</button>
+                    <button class="accept-button" @click="updateCourse">Editar Curso</button>
                 </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="sections-container">
+                <div class="section-header">
+                    <h2 style="margin-bottom: 0px!important">Secciones</h2>
+                    <button class="accept-button" @click="addSection()">Agregar sección +</button>
+                </div>
+                    <div v-for="section in courseDetails.sections" :key="section.sectionId" class="section">
+                        <h1>{{ section.sectionName }}</h1>
+                        <p>{{ section.sectionDescription }}</p>
+                        <v-divider></v-divider>
+                        <div style="padding-left: 30px;" v-for="content in section.contents" class="content">
+                            <p>{{ content.contentTitle }}</p>
+                            <div v-for="attachment in content.attachments" style="padding-left: 10px;">
+                                <p>{{ attachment.attachmentName }}</p>
+                                <img v-if="attachment.attachment" :src="`data:image/png;base64,${attachment.attachment}`" style="width: 90%;">
+                            </div>
+                            <button class="accept-button" @click="addAttachment()">Agregar adjunto +</button>
+                        </div>
+                        <button class="accept-button" style="margin: 10px;" @click="addContent()">Agregar contenido +</button>
+                    </div>
             </div>
         </div>
     </div>
@@ -92,5 +116,5 @@ export default editcourse;
 </script>
 
 <style>
-@import "../styles/EditCourseStyle.css"
+@import "../styles/EditCourseStyle.css";
 </style>
