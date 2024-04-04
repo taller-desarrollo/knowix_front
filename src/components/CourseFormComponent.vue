@@ -4,36 +4,73 @@
     <div class="container">
       <div class="left-block">
         <div class="cards-container">
-          <CardComponent title="NOMBRE DEL CURSO"
+          <CardComponent
+            title="NOMBRE DEL CURSO"
             description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
-            inputPlaceholder="Nombre del curso" width="45%" v-model="courseDetails.courseName" />
+            inputPlaceholder="Nombre del curso"
+            width="45%"
+            v-model="courseDetails.courseName"
+          />
 
-          <CardComponent title="PRECIO BASE (En Bs.)"
+          <CardComponent
+            title="PRECIO BASE (En Bs.)"
             description="Es el precio inicial del curso, el cual se puede modificar en cualquier momento."
-            inputPlaceholder="Bs. 0.00" inputType="number" width="45%" v-model="courseDetails.basePrice" />
+            inputPlaceholder="Bs. 0.00"
+            inputType="number"
+            mask="0000000"
+            width="45%"
+            v-model="courseDetails.basePrice"
+          />
 
-          <CardComponent title="IDIOMA DEL CURSO" description="Selecciona el idioma en el que se impartirá el curso."
-            inputType="dropdown" inputPlaceholder="Selecciona un idioma" width="45%" :dropdownOptions="languageStore.languages.map((language) => ({
-              id: language.languageId,
-              text: language.languageName,
-            }))
-              " v-model="courseDetails.courseLanguage" />
+          <CardComponent
+            title="IDIOMA DEL CURSO"
+            description="Selecciona el idioma en el que se impartirá el curso."
+            inputType="dropdown"
+            inputPlaceholder="Selecciona un idioma"
+            width="45%"
+            :dropdownOptions="
+              languageStore.languages.map((language) => ({
+                id: language.languageId,
+                text: language.languageName,
+              }))
+            "
+            v-model="courseDetails.courseLanguage"
+          />
 
-          <CardComponent title="CATEGORÍA DEL CURSO" description="Selecciona la categoría a la que pertenece el curso."
-            inputType="dropdown" inputPlaceholder="Selecciona una categoría" width="45%" :dropdownOptions="categoryStore.categories.map((category) => ({
-              id: category.categoryId,
-              text: category.categoryName,
-            }))
-              " v-model="courseDetails.courseCategory" />
+          <CardComponent
+            title="CATEGORÍA DEL CURSO"
+            description="Selecciona la categoría a la que pertenece el curso."
+            inputType="dropdown"
+            inputPlaceholder="Selecciona una categoría"
+            width="45%"
+            :dropdownOptions="
+              categoryStore.categories.map((category) => ({
+                id: category.categoryId,
+                text: category.categoryName,
+              }))
+            "
+            v-model="courseDetails.courseCategory"
+          />
 
-          <CardComponent title="Descripción del Curso" description="Agrega una descripción detallada para el curso."
-            inputType="largeText" inputPlaceholder="Escribe la descripción aquí..." maxlength="300" width="45%"
-            v-model="courseDetails.detailedDescription" />
+          <CardComponent
+            title="Descripción del Curso"
+            description="Agrega una descripción detallada para el curso."
+            inputType="largeText"
+            inputPlaceholder="Escribe la descripción aquí..."
+            maxlength="300"
+            width="45%"
+            v-model="courseDetails.detailedDescription"
+          />
 
-          <CardComponent title="Requerimientos del Curso"
-            description="Agrega los requerimientos necesarios para el curso." inputType="largeText"
-            inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
-            v-model="courseDetails.courseRequirements" />
+          <CardComponent
+            title="Requerimientos del Curso"
+            description="Agrega los requerimientos necesarios para el curso."
+            inputType="largeText"
+            inputPlaceholder="Escribe los requerimientos aquí..."
+            maxlength="500"
+            width="45%"
+            v-model="courseDetails.courseRequirements"
+          />
         </div>
       </div>
       <div class="right-block">
@@ -55,12 +92,12 @@
 
             <p>
               {{
-              languageStore.languages.find(
-                (language) =>
-                  language.languageId ===
-                  parseInt(courseDetails.courseLanguage, 10)
-              )?.languageName || "Idioma no seleccionado"
-            }}
+                languageStore.languages.find(
+                  (language) =>
+                    language.languageId ===
+                    parseInt(courseDetails.courseLanguage, 10)
+                )?.languageName || "Idioma no seleccionado"
+              }}
             </p>
           </div>
           <div class="info-block">
@@ -75,7 +112,6 @@
                 )?.categoryName || "Categoría no seleccionada"
               }}
             </p>
-
           </div>
           <div class="info-block description">
             <span>Descripción:</span>
@@ -102,7 +138,7 @@ import { useCategoryStore } from "@/stores/categoryStore";
 import { useCourseStore } from "@/stores/courseStore";
 import CardComponent from "./widgets/card.vue";
 import Swal from "sweetalert2";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 export default {
   name: "AppView",
@@ -139,14 +175,14 @@ export default {
     const registerCourse = async () => {
       isLoading.value = true;
       Swal.fire({
-        title: 'Registrando el curso...',
-        html: 'Por favor, espera.',
+        title: "Registrando el curso...",
+        html: "Por favor, espera.",
         didOpen: () => {
           Swal.showLoading();
         },
         allowOutsideClick: false,
         allowEscapeKey: false,
-        allowEnterKey: false
+        allowEnterKey: false,
       });
 
       const courseData = {
@@ -163,21 +199,21 @@ export default {
       try {
         await courseStore.registerCourse(courseData);
         Swal.fire({
-          icon: 'success',
-          title: '¡Curso registrado!',
-          text: 'El curso ha sido registrado con éxito.',
-          confirmButtonText: 'Aceptar'
+          icon: "success",
+          title: "¡Curso registrado!",
+          text: "El curso ha sido registrado con éxito.",
+          confirmButtonText: "Aceptar",
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push('/');
+            router.push("/");
           }
         });
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Algo salió mal al intentar registrar el curso. Por favor, inténtalo de nuevo.',
-          confirmButtonText: 'Aceptar'
+          icon: "error",
+          title: "Error",
+          text: "Algo salió mal al intentar registrar el curso. Por favor, inténtalo de nuevo.",
+          confirmButtonText: "Aceptar",
         });
       } finally {
         isLoading.value = false;
