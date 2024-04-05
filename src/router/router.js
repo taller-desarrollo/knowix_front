@@ -7,6 +7,7 @@ import StudentComponentExample from '@/components/StudentComponentExample.vue';
 import EditCourseComponent from '@/components/EditCourseComponent.vue';
 import CoursesEducatorComponent from '@/components/CoursesEducatorComponent.vue';
 import UserRegistry  from '@/components/UserRegistry.vue';
+import SearchComponent from '@/components/SearchComponent.vue'
 
 const routes = [
     {
@@ -52,6 +53,11 @@ const routes = [
         path: '/register',
         component: UserRegistry,
         name: 'user-registration',
+    },
+    {
+      path: '/search',
+      name: 'SearchComponent',
+      component: SearchComponent
     }
 ];
 
