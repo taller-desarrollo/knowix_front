@@ -1,7 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { makeFieldsEditable } from '../scripts/editProfile.js';
+import { makeFieldsEditable } from './editSocialMedia.js';
 
 library.add(faUser);
 
