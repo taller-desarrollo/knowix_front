@@ -18,7 +18,7 @@
 .header-item {
     font-weight: bold;
     color: #333;
-    background: #f2f2f2;
+    background: #f2f2f2; 
     padding: 10px;
     border-radius: 4px;
     text-align: center;
@@ -34,7 +34,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr) 100px;
     gap: 10px;
-    background-color: #ffffffc4;
+    background-color: #ffffff3e;
     transition: background-color 0.3s;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .course-item:nth-child(odd) {
-    background-color: #f9f9f9ba;
+    background-color: #f9f9f97c;
 }
 
 .course-item:nth-child(2) {

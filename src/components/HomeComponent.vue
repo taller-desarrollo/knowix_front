@@ -1,17 +1,26 @@
 <template>
   <div class="courses-container">
-    <div class="search-container">
-      <input
-        type="text"
-        v-model="searchTerm"
-        placeholder="Buscar cursos..."
-        class="search-input"
-      />
+    <div class="search-container" style="display: flex; justify-content: space-between; align-items: center;">
+      <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <button class="search-button" @click="search">BUSCAR</button>
+      <div class="dropdown">
+        <button class="dropbtn">Filtrar por categoría</button>
+        <div class="dropdown-content">
+          <div>
+            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories"
+              @change="toggleAllCategories">
+            <label for="all-categories">Todas las categorías</label>
+          </div>
+          <div v-for="category in categoryStore.categories" :key="category.categoryId">
+            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId"
+              v-model="selectedCategories" :disabled="isCategoryDisabled">
+            <label :for="'category-' + category.categoryId">{{ category.categoryName }}</label>
+          </div>
+        </div>
+      </div>
     </div>
-
     <div class="row" style="padding: 50px;">
-      <div class="col-md-4" v-for="course in courses" :key="course.courseId">
+      <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
         <div class="card mb-4 shadow">
           <div class="card-body">
             <div class="card-tags">
@@ -23,9 +32,7 @@
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span class="price">{{ course.courseStandardPrice }} bs.</span>
-            <button type="button" class="btn btn-outline-dark btn-sm">
-              Ver más
-            </button>
+            <button type="button" class="btn btn-outline-dark btn-sm">Ver más</button>
           </div>
         </div>
       </div>
@@ -36,30 +43,59 @@
 <script setup>
 import { onMounted, computed, ref } from "vue";
 import { useCoursesStore } from "../stores/course_list";
+import { useCategoryStore } from "@/stores/categoryStore";
 import { useRouter } from 'vue-router';
 
 const coursesStore = useCoursesStore();
-const loading = ref(true);
+const categoryStore = useCategoryStore();
 const searchTerm = ref("");
+const selectedCategories = ref([]);
 const router = useRouter();
-
 
 onMounted(async () => {
   await coursesStore.fetchCourses();
-  loading.value = false;
+  await categoryStore.fetchCategories();
 });
 
-const courses = computed(() => coursesStore.courses);
+const toggleAllCategories = (event) => {
+  if (event.target.checked) {
+    selectedCategories.value = [''];
+  } else {
+    selectedCategories.value = [];
+  }
+};
+
+const isCategoryDisabled = computed(() => {
+  return selectedCategories.value.includes('');
+});
+
+const filteredCourses = computed(() => {
+  let filtered = coursesStore.courses;
+
+  if (selectedCategories.value.length > 0 && !selectedCategories.value.includes("")) {
+    filtered = filtered.filter(course =>
+      selectedCategories.value.includes(course.category.categoryId)
+    );
+  }
+
+  if (searchTerm.value) {
+    filtered = filtered.filter(course =>
+      course.courseName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      course.courseDescription.toLowerCase().includes(searchTerm.value.toLowerCase())
+    );
+  }
+
+  return filtered;
+});
 
 const search = () => {
   router.push({ name: 'SearchComponent', query: { q: searchTerm.value } });
 };
-
 </script>
 
 <style scoped>
 @import "../styles/ButtonsStyle.css";
-@import "../styles/PageStyle.css";
 @import "../../public/bootstrap.min.css";
 @import "../styles/CourseList.css";
+@import "../styles/filterCategory.css";
 </style>

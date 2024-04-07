@@ -95,7 +95,6 @@ const courses = computed(() => store.searchResults.content);
 
 <style scoped>
 @import "../styles/ButtonsStyle.css";
-@import "../styles/PageStyle.css";
 @import "../../public/bootstrap.min.css";
 @import "../styles/CourseList.css";
 

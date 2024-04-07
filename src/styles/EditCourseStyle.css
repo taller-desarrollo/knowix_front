@@ -14,6 +14,10 @@ p {
     max-width: 1200px;
 }
 
+.content {
+    padding: 20px;
+}
+
 .left-block,
 .right-block, 
 .sections-container {
@@ -65,12 +69,6 @@ p {
     padding: 20px;
 }
 
-.content {
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff76;
-    margin-top: 20px;
-}
 
 .cards-container {
     display: flex;
