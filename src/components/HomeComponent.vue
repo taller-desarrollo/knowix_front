@@ -1,22 +1,24 @@
 <template>
   <div class="courses-container">
-    <div class="search-container">
+    <div class="search-container" style="display: flex; justify-content: space-between; align-items: center;">
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <button class="search-button" @click="search">BUSCAR</button>
-    </div>
-
-    <div class="category-filter">
-      <div>
-        <input type="checkbox" id="all-categories" value="" v-model="selectedCategories" @change="toggleAllCategories">
-        <label for="all-categories">Todas las categorías</label>
+      <div class="dropdown">
+        <button class="dropbtn">Filtrar por categoría</button>
+        <div class="dropdown-content">
+          <div>
+            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories"
+              @change="toggleAllCategories">
+            <label for="all-categories">Todas las categorías</label>
+          </div>
+          <div v-for="category in categoryStore.categories" :key="category.categoryId">
+            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId"
+              v-model="selectedCategories" :disabled="isCategoryDisabled">
+            <label :for="'category-' + category.categoryId">{{ category.categoryName }}</label>
+          </div>
+        </div>
       </div>
-      <div v-for="category in categoryStore.categories" :key="category.categoryId">
-        <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId"
-          v-model="selectedCategories" :disabled="isCategoryDisabled">
-        <label :for="'category-' + category.categoryId">{{ category.categoryName }}</label>
-      </div>
     </div>
-
     <div class="row" style="padding: 50px;">
       <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
         <div class="card mb-4 shadow">
@@ -95,4 +97,5 @@ const search = () => {
 @import "../styles/ButtonsStyle.css";
 @import "../../public/bootstrap.min.css";
 @import "../styles/CourseList.css";
+@import "../styles/filterCategory.css";
 </style>
