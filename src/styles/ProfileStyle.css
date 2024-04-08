@@ -7,6 +7,16 @@
     max-width: 900px;
 }
 
+.buttonsEditProfile {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonsGC{
+    display: flex;
+}
+
 .profile1 {
     background-color: #ffffff53;
     color: #333;
