@@ -30,6 +30,23 @@ export default {
         }
     },
     methods: {
+        
+        getSocialMediaIcon(url) {
+            if (url.includes("facebook")) return require("@/assets/Facebook.png");
+            if (url.includes("instagram")) return require("@/assets/Instagram.png");
+            if (url.includes("linkedin")) return require("@/assets/Linkedin.png");
+            if (url.includes("twitter")) return require("@/assets/Twitter.png");
+            if (url.includes("x")) return require("@/assets/Twitter.png");
+            if (url.includes("youtube")) return require("@/assets/Youtube.png");
+            if (url.includes("whatsapp")) return require("@/assets/Whatsapp.png");
+            if (url.includes("telegram")) return require("@/assets/Telegram.png");
+            if (url.includes("tiktok")) return require("@/assets/TikTok.png");
+            if (url.includes("snapchat")) return require("@/assets/Snapchat.png");
+            if (url.includes("github")) return require("@/assets/GitHub.png");
+            return require("@/assets/General.png");
+        },
+
+
         setupUserProfile() {
             this.username = this.$keycloak.tokenParsed.preferred_username;
             this.name = this.$keycloak.tokenParsed.name;
@@ -89,19 +106,39 @@ export default {
         },
 
         async saveProfile() {
+            for (const link of this.socialLinks) {
+                if (!link.socialMediaId) {
+                    console.warn('socialMediaId is undefined for a link, skipping PUT request', link);
+                    continue;
+                }
+
+                if (link.url.trim() === '') {
+                    await Swal.fire({
+                        icon: 'info',
+                        title: 'Campo de URL vacío',
+                        text: 'Si no tienes una red social, coloca "-" por favor.',
+                    });
+                    return;
+                }
+
+                const regex = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\.]*)*(\?\S*)?$/;
+                if (link.url !== '-' && !regex.test(link.url)) {
+                    await Swal.fire('Error', `La URL introducida no es válida: ${link.url}`, 'error');
+                    return;
+                }
+            }
             try {
-                Swal.showLoading();
+                Swal.fire({
+                    title: 'Guardando...',
+                    html: 'Por favor, espera mientras se guarda tu perfil.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+
                 for (const link of this.socialLinks) {
-                    if (!link.socialMediaId) {
-                        console.warn('socialMediaId is undefined for a link, skipping PUT request', link);
-                        continue;
-                    }
-                    const regex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-                    if (link.url !== '-' && !regex.test(link.url)) {
-                        throw new Error(`La URL introducida no es válida: ${link.url}`);
-                    }
                     const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
-                    console.log('Making PUT request to:', url);
                     const payload = {
                         kcUserUuid: this.$keycloak.tokenParsed.sub,
                         socialMediaUrl: link.url,
@@ -109,13 +146,17 @@ export default {
                     };
                     await axios.put(url, payload);
                 }
+
                 Swal.close();
+                await Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
                 this.editing = false;
             } catch (error) {
+                Swal.close();
                 console.error('Error during profile save:', error);
-                Swal.fire('Oops...', 'Algo salió mal al guardar el perfil. ' + error.message, 'error');
+                await Swal.fire('Error', 'Algo salió mal al guardar el perfil. ' + error.message, 'error');
             }
         },
+
         cancelEdit() {
             this.socialLinks = JSON.parse(JSON.stringify(this.originalSocialLinks));
             this.editing = false;
