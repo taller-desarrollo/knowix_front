@@ -8,6 +8,8 @@ import EditCourseComponent from '@/components/EditCourseComponent.vue';
 import CoursesEducatorComponent from '@/components/CoursesEducatorComponent.vue';
 import UserRegistry  from '@/components/UserRegistry.vue';
 import SearchComponent from '@/components/SearchComponent.vue'
+import PaymentAdministrator from '@/components/Payment/PaymentAdministrator.vue';
+
 
 const routes = [
     {
@@ -30,6 +32,7 @@ const routes = [
         path: '/profile',
         component: ProfileComponent,
         name: 'profile',
+        meta: { requiresAuth: true }
     },
     {
         path: '/new-course',
@@ -58,6 +61,12 @@ const routes = [
       path: '/search',
       name: 'SearchComponent',
       component: SearchComponent
+    },
+    {
+      path: '/payment-administrator',
+      name: 'PaymentAdministrator',
+      component: PaymentAdministrator,
+      meta: { requiresAuth: true, role: 'educator' } 
     }
 ];
 

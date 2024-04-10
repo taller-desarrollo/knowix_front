@@ -12,7 +12,7 @@ export const useCourseStore = defineStore('course', {
             const { proxy } = getCurrentInstance();
             const userUuid = proxy.$keycloak.tokenParsed.sub;
             console.log('userUuid:', userUuid);
-            this.isLoading = true; // Inicia la carga
+            this.isLoading = true; 
             try {
                 const response = await axios.get(`http://localhost:8081/api/v1/course/user/${userUuid}`);
                 this.courses = response.data;
