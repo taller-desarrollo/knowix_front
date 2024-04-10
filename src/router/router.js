@@ -9,6 +9,7 @@ import CoursesEducatorComponent from '@/components/CoursesEducatorComponent.vue'
 import UserRegistry  from '@/components/UserRegistry.vue';
 import SearchComponent from '@/components/SearchComponent.vue'
 import PaymentAdministrator from '@/components/Payment/PaymentAdministrator.vue';
+import PaymentForm from '@/components/Payment/PaymentForm.vue';
 
 
 const routes = [
@@ -66,6 +67,12 @@ const routes = [
       path: '/payment-administrator',
       name: 'PaymentAdministrator',
       component: PaymentAdministrator,
+      meta: { requiresAuth: true, role: 'educator' } 
+    },
+    {
+      path: '/payment-form',
+      name: 'PaymentForm',
+      component: PaymentForm,
       meta: { requiresAuth: true, role: 'educator' } 
     }
 ];
