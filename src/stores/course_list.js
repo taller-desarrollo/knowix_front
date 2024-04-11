@@ -8,14 +8,31 @@ export const useCoursesStore = defineStore('courses', {
       content: [],
       totalPages: 0,
       totalElements: 0,
-      currentPage: 1
+      currentPage: 0
     }
   }),
   actions: {
-    async fetchCourses() {
+    async fetchCourses(page = 0, size = 10, sort = "asc", minPrice = null, maxPrice = null, searchTerm = "", categoryIds = []) {
       try {
-        const response = await axios.get('http://localhost:8081/api/v1/course');
-        this.courses = response.data;
+        let url = 'http://localhost:8081/api/v1/course?page=' + page + '&size=' + size + '&sort=' + sort;
+        
+        if (minPrice !== null && maxPrice !== null && minPrice <= maxPrice && minPrice >= 0 && maxPrice >= 0) {
+          url += '&minPrice=' + minPrice;
+          url += '&maxPrice=' + maxPrice;
+        }
+        if(searchTerm !== null && searchTerm !== "") {
+          url += '&searchTerm=' + searchTerm;
+        }
+        if (categoryIds.length > 0) {
+          url += '&categoryIds=' + categoryIds.join(',');
+        }
+
+        const response = await axios.get(url);
+        this.courses = response.data.content;
+        this.searchResults.content = response.data.content;
+        this.searchResults.totalElements = response.data.totalElements;
+        this.searchResults.totalPages = response.data.totalPages - 1; // Ajuste aquí
+        this.searchResults.currentPage = page;
       } catch (error) {
         console.error('There was an error fetching the courses:', error);
       }

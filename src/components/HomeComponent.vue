@@ -2,6 +2,8 @@
   <div class="courses-container">
     <div class="search-container" style="display: flex; justify-content: space-between; align-items: center;">
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
+      <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
+      <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
       <button class="search-button" @click="search">BUSCAR</button>
       <div class="dropdown">
         <button class="dropbtn">Filtrar por categoría</button>
@@ -37,6 +39,11 @@
         </div>
       </div>
     </div>
+    <div class="pagination-container">
+      <button :disabled="coursesStore.searchResults.currentPage <= 0" @click="fetchPreviousPage">Anterior</button>
+      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages + 1}}</span>
+      <button :disabled="coursesStore.searchResults.currentPage >= coursesStore.searchResults.totalPages" @click="fetchNextPage">Siguiente</button>
+    </div>
   </div>
 </template>
 
@@ -49,8 +56,11 @@ import { useRouter } from 'vue-router';
 const coursesStore = useCoursesStore();
 const categoryStore = useCategoryStore();
 const searchTerm = ref("");
+const minPrice = ref(null);
+const maxPrice = ref(null);
 const selectedCategories = ref([]);
 const router = useRouter();
+const page = ref(0);
 
 onMounted(async () => {
   await coursesStore.fetchCourses();
@@ -70,26 +80,28 @@ const isCategoryDisabled = computed(() => {
 });
 
 const filteredCourses = computed(() => {
-  let filtered = coursesStore.courses;
-
-  if (selectedCategories.value.length > 0 && !selectedCategories.value.includes("")) {
-    filtered = filtered.filter(course =>
-      selectedCategories.value.includes(course.category.categoryId)
-    );
-  }
-
-  if (searchTerm.value) {
-    filtered = filtered.filter(course =>
-      course.courseName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      course.courseDescription.toLowerCase().includes(searchTerm.value.toLowerCase())
-    );
-  }
-
-  return filtered;
+  return coursesStore.courses;
 });
 
-const search = () => {
-  router.push({ name: 'SearchComponent', query: { q: searchTerm.value } });
+const search = async () => {
+  //router.push({ name: 'SearchComponent', query: { q: searchTerm.value } });
+  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+};
+
+const fetchPreviousPage = async () => {
+  page.value--;
+  if (page.value < 0) {
+    page.value = 0;
+  }
+  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+};
+
+const fetchNextPage = async () => {
+  page.value++;
+  if (page.value > coursesStore.searchResults.totalPages) {
+    page.value = coursesStore.searchResults.totalPages;
+  }
+  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 </script>
 
