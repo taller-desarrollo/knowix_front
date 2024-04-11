@@ -28,6 +28,9 @@
       </div>
     </div>
     <div class="row" style="padding: 50px;">
+      <div v-if="!filteredCourses.length">
+        <v-alert type="info" dismissible>No se encontraron cursos para mostrar.</v-alert>
+      </div>
       <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
         <div class="card mb-4 shadow">
           <div class="card-body">
