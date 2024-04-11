@@ -30,6 +30,7 @@ const routes = [
         path: '/profile',
         component: ProfileComponent,
         name: 'profile',
+        meta: { requiresAuth: true, role: 'student', role: 'educator' }
     },
     {
         path: '/new-course',
