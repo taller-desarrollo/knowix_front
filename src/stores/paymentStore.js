@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { getCurrentInstance } from "vue";
 import axios from 'axios';
 
 export const usePaymentStore = defineStore('payment', {
@@ -6,10 +7,17 @@ export const usePaymentStore = defineStore('payment', {
     paymentMethods: [],
     isLoading: false,
     accountTypes: [],
-    banks: []
+    banks: [],
+    userUuid: '',  
   }),
   actions: {
+    setUserUuid() {
+      const { proxy } = getCurrentInstance();
+      this.userUuid = proxy.$keycloak.tokenParsed.sub; 
+      console.log('userUuid:', this.userUuid);
+    },
     async initializeData() {
+      this.setUserUuid(); 
       await this.fetchStaticData();
       await this.fetchPaymentMethods();
     },
@@ -25,8 +33,8 @@ export const usePaymentStore = defineStore('payment', {
     },
     async fetchPaymentMethods() {
       try {
-        const userUuid = this.$state.userUuid; // Asegúrate de que userUuid se esté obteniendo correctamente
-        const response = await axios.get(`http://localhost:8081/api/v1/paymentmethod/user/05f0b4fa-e28b-409f-96ec-1f3d2f505554`);
+        this.isLoading = true;
+        const response = await axios.get(`http://localhost:8081/api/v1/paymentmethod/user/${this.userUuid}`);
         this.paymentMethods = response.data.map(method => {
           const accountType = this.accountTypes.find(type => type.accountTypeId === method.accountTypeAccountTypeId);
           const bank = this.banks.find(bank => bank.bankId === method.bankBankId);
