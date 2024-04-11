@@ -4,6 +4,12 @@
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
       <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
+      <button 
+        class="search-button" 
+        @click="minPrice = null; maxPrice = null;"
+      >
+        Limpiar Precios
+      </button>
       <button class="search-button" @click="search">BUSCAR</button>
       <div class="dropdown">
         <button class="dropbtn">Filtrar por categoría</button>
