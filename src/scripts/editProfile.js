@@ -10,9 +10,13 @@ export default {
     data() {
         return {
             username: '',
+            firstName: '',
+            secondName: '',
             name: '',
             email: '',
-            role: '',
+            password: '',
+            confirmPassword: '',
+            roles: [],
             editing: false,
             originalSocialLinks: [],
             socialLinks: [],
@@ -51,13 +55,20 @@ export default {
             this.username = this.$keycloak.tokenParsed.preferred_username;
             this.name = this.$keycloak.tokenParsed.name;
             this.email = this.$keycloak.tokenParsed.email;
-            this.role = this.determineUserRole(this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles);
+            this.password = '';
+            this.roles = this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles;
         },
 
         determineUserRole(roles) {
-            if (roles?.includes('educator')) return 'Educador';
-            if (roles?.includes('student')) return 'Estudiante';
-            return 'Rol no encontrado';
+            let role = '';
+            if (roles?.includes('educator')) role += 'Educador';
+            if (roles?.includes('student')) {
+                if(role.length != 0) role += ' | ';
+                role += 'Estudiante';
+            }
+            if(role.length === 0) 'Rol no encontrado';
+
+            return role;
         },
 
         async initializeSocialLinks() {
@@ -106,6 +117,15 @@ export default {
         },
 
         async saveProfile() {
+            if(this.password !== this.confirmPassword) {
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Las contraseñas no coinciden.',
+                    text: '',
+                });
+                return;
+            }
+
             for (const link of this.socialLinks) {
                 if (!link.socialMediaId) {
                     console.warn('socialMediaId is undefined for a link, skipping PUT request', link);
@@ -136,6 +156,22 @@ export default {
                         Swal.showLoading();
                     },
                 });
+                const profileUpdatePayload = {
+                    username: this.username,
+                    firstName: this.firstName,
+                    lastName: this.secondName,
+                    email: this.email,
+                    password: this.password,
+                    roles: this.roles
+                };            
+                await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
+                headers: {
+                    'X-UUID': this.$keycloak.tokenParsed.sub,
+                }}).then(() => {
+                    this.name = this.firstName + this.secondName;
+                }).catch(() => {
+                    throw 'Error al actualizar los datos';
+                });
 
                 for (const link of this.socialLinks) {
                     const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
@@ -151,13 +187,18 @@ export default {
                 await Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
                 this.editing = false;
             } catch (error) {
+                //TODO: refactor process error on interceptor
+                this.setupUserProfile();
+
                 Swal.close();
                 console.error('Error during profile save:', error);
                 await Swal.fire('Error', 'Algo salió mal al guardar el perfil. ' + error.message, 'error');
+                this.editing = false;
             }
         },
 
         cancelEdit() {
+            this.setupUserProfile();
             this.socialLinks = JSON.parse(JSON.stringify(this.originalSocialLinks));
             this.editing = false;
         }

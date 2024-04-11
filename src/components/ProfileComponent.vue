@@ -5,7 +5,7 @@
         <div class="buttonsEditProfile">
           <h1>{{ username }}</h1>
           <button class="general" v-if="!editing" @click="toggleEdit">Editar perfil</button>
-          <div class="buttonsGC" v-if="editing">
+          <div class="buttonsGC" v-else="editing">
             <button class="general" @click="saveProfile">Guardar</button>
             <button class="cancel" @click="cancelEdit">Cancelar</button>
           </div>
@@ -22,13 +22,38 @@
             </div>
           </div>
         </div>
-        <div class="nameemail">
-          <label for="nombre">Nombre: </label>
-          <input type="text" id="nombre" :value="name" readonly />
-          <label for="correo">Correo: </label>
-          <input type="email" id="correo" :value="email" readonly />
-          <label for="ocupacion">Rol dentro de Knowix: </label>
-          <input type="text" id="ocupacion" :value="role" readonly />
+        <form class="nameemail">
+          <div v-if="!editing">
+            <label for="nombre">Nombre: </label>
+            <input type="text" id="nombre" :value="name" readonly/>
+            <label for="correo">Correo: </label>
+            <input type="email" id="correo" :value="email" readonly/>
+            <label for="ocupacion">Rol dentro de Knowix: </label>
+            <input type="text" id="ocupacion" :value="determineUserRole(roles)" readonly />
+          </div>
+          <div v-else>
+            <label for="firstName">Primer Nombre: </label>
+            <input type="text" id="firstName" v-model="firstName"/>
+            <label for="secondName">Apellido: </label>
+            <input type="text" id="secondName" v-model="secondName"/>
+            <label for="correo">Correo: </label>
+            <input type="email" id="email" v-model="email"/>
+            <label for="ocupacion">Rol dentro de Knowix: </label>
+            <div>
+              <input type="checkbox" id="student" v-model="roles" value="student">
+              <label for="student">Soy un estudiante</label>
+            </div>
+            <div>
+              <input type="checkbox" id="educator" v-model="roles" value="educator">
+              <label for="educator">Soy un educador</label>
+            </div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" v-model="password" required>
+        
+            <label for="confirmPassword">Confirmar contraseña:</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" required>
+          </div>
+
           <div v-if="editing">
             <p>Si no tienes una red social, coloca - por favor.</p>
             <div v-for="(link, index) in socialLinks" :key="link.socialMediaId">
@@ -36,7 +61,7 @@
               <input :id="'social' + index" type="text" v-model="link.url" placeholder="Ingrese el URL">
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
