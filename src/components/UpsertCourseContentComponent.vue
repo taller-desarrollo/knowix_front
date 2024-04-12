@@ -27,7 +27,7 @@
                 <label :for="'attachment' + index" class="form-label">Archivo: </label>
                 <v-file-input v-model="attachment.attachment" @change="getByteArray(attachment.attachment, index)" label="Archivo" class="form-field"></v-file-input>
             </div>
-            <button class="accept-button" @click="createContent">Agregar contenido</button>
+            <button class="accept-button" show-size @click="createContent">Agregar contenido</button>
         </div>
     </div>
 </template>
@@ -93,7 +93,32 @@ export default {
             }
         };
         async function createContent() {
-            axios.post(`http://localhost:8081/api/v1/course/section/${id}/content`, this.formDetails.content)
+            try {
+                axios.post(`http://localhost:8081/api/v1/course/section/${id}/content`, this.formDetails.content).
+                then((response) => {
+                    if(response.status === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Contenido agregado!',
+                            text: 'El curso ha sido actualizado con éxito.',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                router.go(-1);
+                            }
+                        });
+                    }
+                })
+            } catch(error) {
+                console.error('Error updating course:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Algo salió mal al intentar crear el contenido. Por favor, inténtalo de nuevo.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+            
         };
         function addAttachment() {
             this.formDetails.content.attachments.push({
@@ -108,7 +133,8 @@ export default {
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     let utf8Encode = new TextEncoder();
-                    this.formDetails.content.attachments[index].attachment = utf8Encode.encode(reader.result);
+                    // utf8Encode.encode(reader.result)
+                    this.formDetails.content.attachments[index].attachment = stringToBytes(reader.result);
                     
                     console.log("dbg: ", this.formDetails.content);
                     resolve(reader.result);
@@ -116,6 +142,13 @@ export default {
                 reader.onerror = (error) => reject(error);
             });
         };
+        function stringToBytes(val) { 
+            const result = []; 
+            for (let i = 0; i < val.length; i++) { 
+                result.push(val.charCodeAt(i)); 
+            } 
+            return result; 
+        } 
         
         return {
             courseId,
@@ -126,12 +159,13 @@ export default {
             createSection,
             createContent,
             addAttachment,
-            getByteArray
+            getByteArray,
+            stringToBytes
         }
     },
 }
 </script>
-<style>
+<style scoped>
 @import "../styles/AddContent.css";
 
 h2 {

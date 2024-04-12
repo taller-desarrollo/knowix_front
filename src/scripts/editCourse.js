@@ -113,6 +113,10 @@ export default {
             }
         }
 
+        function getBase64String(array) {
+            return atob(array);
+        }
+
         onMounted(async () => {
             await Promise.all([
                 languageStore.fetchLanguages(),
@@ -127,7 +131,8 @@ export default {
             categoryStore,
             updateCourse,
             addSection,
-            addContent
+            addContent,
+            getBase64String
         };
     },
 };
