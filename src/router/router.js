@@ -10,6 +10,7 @@ import UserRegistry  from '@/components/UserRegistry.vue';
 import SearchComponent from '@/components/SearchComponent.vue'
 import PaymentAdministrator from '@/components/Payment/PaymentAdministrator.vue';
 import PaymentForm from '@/components/Payment/PaymentForm.vue';
+import UpsertCourseContentComponent from '@/components/UpsertCourseContentComponent.vue';
 
 
 const routes = [
@@ -46,6 +47,12 @@ const routes = [
         component: EditCourseComponent,
         name: 'edit-course',
         meta: { requiresAuth: true, role: 'educator' }
+    },
+    {
+        path: '/add-content/:courseId/:operation/:id',
+        component: UpsertCourseContentComponent,
+        name: 'add-content',
+        meta: { requiresAuth: true, role: 'educator'}
     },
     {
         path: '/courses-educator',
