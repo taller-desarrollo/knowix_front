@@ -35,17 +35,15 @@ export default {
             sections: [],
         });
 
-        async function addSection(courseId) {
-            console.log("hello from addSection ", courseId);
+        function addSection() {
+            router.push({ name: 'add-content', 
+                          params: { courseId: courseId, operation: 'section',  id: null} });
         }
 
-        async function addContent(sectionId) {
-            console.log("hello from addContent ", sectionId);
-        }
-
-        async function addAttachment(contentId) {
-            console.log("hello from addAttachment ", contentId);
-        }
+        function addContent(sectionId) {
+            router.push({ name: 'add-content', 
+                          params: { courseId: courseId, operation: 'content',  id: sectionId} });
+        }        
 
         async function fetchCourseDetails() {
             try {
@@ -115,6 +113,10 @@ export default {
             }
         }
 
+        function getBase64String(array) {
+            return atob(array);
+        }
+
         onMounted(async () => {
             await Promise.all([
                 languageStore.fetchLanguages(),
@@ -130,7 +132,7 @@ export default {
             updateCourse,
             addSection,
             addContent,
-            addAttachment
+            getBase64String
         };
     },
 };

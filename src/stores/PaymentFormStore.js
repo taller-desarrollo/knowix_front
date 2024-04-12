@@ -64,7 +64,6 @@ export const usePaymentFormStore = defineStore('paymentForm', {
           },
         });
 
-        console.log('Payment method created successfully:', response.data);
         alert('Forma de pago creada con éxito');
       } catch (error) {
         console.error('Error creating payment method:', error);

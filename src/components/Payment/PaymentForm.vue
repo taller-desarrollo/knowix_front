@@ -11,7 +11,7 @@
             <div class="col-md-6">
               <div class="form-floating">
                 <input type="text" class="form-control" id="ciPerson" v-model="formData.ciPerson" placeholder="CI Person">
-                <label for="ciPerson"><i class="bi bi-person-fill"></i> CI Person</label>
+                <label for="ciPerson"><i class="bi bi-person-fill"></i> Carnet de Identidad</label>
               </div>
             </div>
             
@@ -131,8 +131,7 @@ export default {
         return;
       }
       this.store.submitPaymentMethod(this.formData, this.qrImage).then(() => {
-        alert("Forma de pago creada exitosamente.");
-        this.$router.go(-1); // Navegar de vuelta después de mostrar el mensaje
+        this.router.push({ path: '/payment-administrator' });
       }).catch((error) => {
         alert(`Error: ${error.message}`);
       });

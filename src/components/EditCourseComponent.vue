@@ -99,11 +99,10 @@
                             <p>{{ content.contentTitle }}</p>
                             <div v-for="attachment in content.attachments" style="padding-left: 10px;">
                                 <p>{{ attachment.attachmentName }}</p>
-                                <img v-if="attachment.attachment" :src="`data:image/png;base64,${attachment.attachment}`" style="width: 90%;">
+                                <img v-if="attachment.attachment" :src="`${getBase64String(attachment.attachment)}`" style="width: 90%;">
                             </div>
-                            <button class="accept-button" @click="addAttachment()">Agregar adjunto +</button>
                         </div>
-                        <button class="accept-button" style="margin: 10px;" @click="addContent()">Agregar contenido +</button>
+                        <button class="accept-button" style="margin: 10px;" @click="addContent(section.sectionId)">Agregar contenido +</button>
                     </div>
             </div>
         </div>
