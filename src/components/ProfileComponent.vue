@@ -50,12 +50,12 @@
           </div>
 
           <div v-if="editing">
-            <label for="password">Contraseña: </label>
+            <!-- <label for="password">Contraseña: </label>
             <input type="password" id="password" v-model="password" placeholder="Nueva contraseña" />
             <label for="confirmPassword">Confirmar Contraseña: </label>
             <input type="password" id="confirmPassword" v-model="confirmPassword"
               placeholder="Confirmar nueva contraseña" />
-            <p>Si no tienes una red social, coloca - por favor.</p>
+            <p>Si no tienes una red social, coloca - por favor.</p> -->
             <div v-for="(link, index) in socialLinks" :key="link.socialMediaId">
               <label :for="'social' + index">Red Social {{ index + 1 }}: </label>
               <input :id="'social' + index" type="text" v-model="link.url" placeholder="Ingrese el URL">

@@ -46,7 +46,6 @@ export default {
             if (url.includes("instagram")) return require("@/assets/Instagram.png");
             if (url.includes("linkedin")) return require("@/assets/Linkedin.png");
             if (url.includes("twitter")) return require("@/assets/Twitter.png");
-            if (url.includes("x")) return require("@/assets/Twitter.png");
             if (url.includes("youtube")) return require("@/assets/Youtube.png");
             if (url.includes("whatsapp")) return require("@/assets/Whatsapp.png");
             if (url.includes("telegram")) return require("@/assets/Telegram.png");
@@ -107,50 +106,77 @@ export default {
             this.editing = !this.editing;
         },
         async saveProfile() {
-            if (!this.firstName || !this.secondName || !this.email) {
+            if (!this.firstName || !this.secondName || !this.email || (this.password && this.password !== this.confirmPassword)) {
                 await Swal.fire({
-                    icon: 'warning',
-                    title: 'Campos obligatorios',
-                    text: 'Todos los campos principales deben ser llenados para continuar.',
+                    icon: 'info',
+                    title: 'Verifica los datos',
+                    text: 'Por favor, asegúrate de que todos los campos están correctamente llenados y que las contraseñas coinciden.',
                 });
                 return;
             }
 
-            const profileUpdatePayload = {
-                username: this.username,
-                firstName: this.firstName,
-                lastName: this.secondName,
-                email: this.email,
-                roles: this.roles
-            };
-
-            if (this.password && this.password === this.confirmPassword) {
-                profileUpdatePayload.password = this.password;
-            } else if (this.password !== this.confirmPassword) {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Error en la contraseña',
-                    text: 'Las contraseñas no coinciden.',
-                });
-                return;
+            for (const link of this.socialLinks) {
+                if (!link.socialMediaId) {
+                    console.warn('SocialMediaId is undefined for a link, skipping PUT request', link);
+                    continue;
+                }
+                if (link.url.trim() === '') {
+                    await Swal.fire({
+                        icon: 'info',
+                        title: 'Campo de URL vacío',
+                        text: 'Si no tienes una red social, coloca "-" por favor.',
+                    });
+                    return;
+                }
+                const regex = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\.]*)*(\?\S*)?$/;
+                if (link.url !== '-' && !regex.test(link.url)) {
+                    await Swal.fire('Error', `La URL introducida no es válida: ${link.url}`, 'error');
+                    return;
+                }
             }
+
+            Swal.fire({
+                title: 'Guardando...',
+                html: 'Por favor, espera mientras se guarda tu perfil y la configuración de redes sociales.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
 
             try {
-                const response = await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
+                const profileUpdatePayload = {
+                    username: this.username,
+                    firstName: this.firstName,
+                    lastName: this.secondName,
+                    email: this.email,
+                    password: this.password,
+                    roles: this.roles
+                };
+                await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
                     headers: {
                         'X-UUID': this.$keycloak.tokenParsed.sub,
                     }
                 });
 
-                if (response.status === 200) {
-                    this.name = `${this.firstName} ${this.secondName}`;
-                    window.location.reload();
+                for (const link of this.socialLinks) {
+                    const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
+                    const payload = {
+                        kcUserUuid: this.$keycloak.tokenParsed.sub,
+                        socialMediaUrl: link.url,
+                        status: link.url !== '-',
+                    };
+                    await axios.put(url, payload);
                 }
-                Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
+
+                Swal.close();
+                await Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
+                this.name = `${this.firstName} ${this.secondName}`;
+                window.location.reload();
                 this.editing = false;
             } catch (error) {
                 console.error('Error during profile save:', error);
-                await Swal.fire('Error', 'Algo salió mal al guardar el perfil.', 'error');
+                await Swal.fire('Error', 'Algo salió mal al guardar el perfil. ' + error.message, 'error');
                 this.editing = false;
             }
         },
