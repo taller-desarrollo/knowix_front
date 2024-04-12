@@ -3,6 +3,13 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
 
+axios.interceptors.response.use(response => {
+    return response;
+}, error => {
+    Swal.fire('Error', error.response?.data?.message || 'Un error ha ocurrido', 'error');
+    throw error;
+});
+
 export default {
     components: {
         FontAwesomeIcon,
@@ -34,13 +41,11 @@ export default {
         }
     },
     methods: {
-        
         getSocialMediaIcon(url) {
             if (url.includes("facebook")) return require("@/assets/Facebook.png");
             if (url.includes("instagram")) return require("@/assets/Instagram.png");
             if (url.includes("linkedin")) return require("@/assets/Linkedin.png");
             if (url.includes("twitter")) return require("@/assets/Twitter.png");
-            if (url.includes("x")) return require("@/assets/Twitter.png");
             if (url.includes("youtube")) return require("@/assets/Youtube.png");
             if (url.includes("whatsapp")) return require("@/assets/Whatsapp.png");
             if (url.includes("telegram")) return require("@/assets/Telegram.png");
@@ -49,28 +54,25 @@ export default {
             if (url.includes("github")) return require("@/assets/GitHub.png");
             return require("@/assets/General.png");
         },
-
-
         setupUserProfile() {
             this.username = this.$keycloak.tokenParsed.preferred_username;
+            this.firstName = this.$keycloak.tokenParsed.given_name;
+            this.secondName = this.$keycloak.tokenParsed.family_name;
             this.name = this.$keycloak.tokenParsed.name;
             this.email = this.$keycloak.tokenParsed.email;
             this.password = '';
             this.roles = this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles;
         },
-
         determineUserRole(roles) {
             let role = '';
             if (roles?.includes('educator')) role += 'Educador';
             if (roles?.includes('student')) {
-                if(role.length != 0) role += ' | ';
+                if (role.length != 0) role += ' | ';
                 role += 'Estudiante';
             }
-            if(role.length === 0) 'Rol no encontrado';
-
+            if (role.length === 0) return 'Rol no encontrado';
             return role;
         },
-
         async initializeSocialLinks() {
             const kcUserUuid = this.$keycloak.tokenParsed.sub;
             try {
@@ -86,52 +88,38 @@ export default {
                     await this.createDefaultSocialLinks(kcUserUuid);
                 }
             } catch (error) {
-                if (error.response && error.response.status === 204) {
-                    await this.createDefaultSocialLinks(kcUserUuid);
-                } else {
-                    console.error("Error initializing social media links:", error);
-                    Swal.fire('Error', 'No se pudieron inicializar los enlaces de redes sociales.', 'error');
-                }
+                console.error("Error initializing social media links:", error);
             }
         },
-
         async createDefaultSocialLinks(kcUserUuid) {
-            try {
-                for (let i = 0; i < 3; i++) {
-                    const postData = {
-                        kcUserUuid: kcUserUuid,
-                        socialMediaUrl: "-",
-                        status: true,
-                    };
-                    await axios.post('http://localhost:8081/api/v1/social-media', postData);
-                }
-                await this.initializeSocialLinks();
-            } catch (error) {
-                console.error('Error creating default social media links:', error);
-                Swal.fire('Error', 'No se pudieron crear los enlaces de redes sociales por defecto.', 'error');
+            for (let i = 0; i < 3; i++) {
+                const postData = {
+                    kcUserUuid: kcUserUuid,
+                    socialMediaUrl: "-",
+                    status: true,
+                };
+                await axios.post('http://localhost:8081/api/v1/social-media', postData);
             }
+            await this.initializeSocialLinks();
         },
-
         toggleEdit() {
             this.editing = !this.editing;
         },
-
         async saveProfile() {
-            if(this.password !== this.confirmPassword) {
+            if (!this.firstName || !this.secondName || !this.email || (this.password && this.password !== this.confirmPassword)) {
                 await Swal.fire({
                     icon: 'info',
-                    title: 'Las contraseñas no coinciden.',
-                    text: '',
+                    title: 'Verifica los datos',
+                    text: 'Por favor, asegúrate de que todos los campos están correctamente llenados y que las contraseñas coinciden.',
                 });
                 return;
             }
 
             for (const link of this.socialLinks) {
                 if (!link.socialMediaId) {
-                    console.warn('socialMediaId is undefined for a link, skipping PUT request', link);
+                    console.warn('SocialMediaId is undefined for a link, skipping PUT request', link);
                     continue;
                 }
-
                 if (link.url.trim() === '') {
                     await Swal.fire({
                         icon: 'info',
@@ -140,36 +128,37 @@ export default {
                     });
                     return;
                 }
-
                 const regex = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\.]*)*(\?\S*)?$/;
                 if (link.url !== '-' && !regex.test(link.url)) {
                     await Swal.fire('Error', `La URL introducida no es válida: ${link.url}`, 'error');
                     return;
                 }
             }
+
+            Swal.fire({
+                title: 'Guardando...',
+                html: 'Por favor, espera mientras se guarda tu perfil y la configuración de redes sociales.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+
             try {
-                Swal.fire({
-                    title: 'Guardando...',
-                    html: 'Por favor, espera mientras se guarda tu perfil.',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    },
-                });
                 const profileUpdatePayload = {
+                    username: this.username,
                     firstName: this.firstName,
                     lastName: this.secondName,
                     email: this.email,
+                    password: this.password,
                     roles: this.roles
-                };            
-                let profileUpdateResponse = await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
-                headers: {
-                    'X-UUID': this.$keycloak.tokenParsed.sub,
-                }}).then(() => {
-                    this.name = this.firstName + this.secondName;
+                };
+                await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
+                    headers: {
+                        'X-UUID': this.$keycloak.tokenParsed.sub,
+                    }
                 });
-                console.log(profileUpdateResponse);
-                // if(profileUpdateResponse)
+
                 for (const link of this.socialLinks) {
                     const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
                     const payload = {
@@ -182,19 +171,15 @@ export default {
 
                 Swal.close();
                 await Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
+                this.name = `${this.firstName} ${this.secondName}`;
+                window.location.reload();
                 this.editing = false;
-                // TODO: logout to refresh data on login
             } catch (error) {
-                //TODO: refactor process error on interceptor
-                this.setupUserProfile();
-
-                Swal.close();
                 console.error('Error during profile save:', error);
                 await Swal.fire('Error', 'Algo salió mal al guardar el perfil. ' + error.message, 'error');
                 this.editing = false;
             }
         },
-
         cancelEdit() {
             this.setupUserProfile();
             this.socialLinks = JSON.parse(JSON.stringify(this.originalSocialLinks));

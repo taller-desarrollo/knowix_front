@@ -61,8 +61,7 @@ export default {
             });
 
             if (result.isConfirmed) {
-                await this.$keycloak.logout();
-                this.$router.push('/');
+                await this.$keycloak.logout({ redirectUri: window.location.origin + '/' });
             }
         },
         goToRegister() {
