@@ -64,8 +64,9 @@
             <!-- Imagen QR -->
             <div class="col-md-12">
               <div class="form-floating">
-                <input type="file" class="form-control" id="qrImage" @change="handleFileUpload" placeholder="Imagen QR">
-                <label for="qrImage"><i class="bi bi-qr-code"></i> Imagen QR</label>
+                <input type="file" class="form-control" id="qrImage" @change="handleFileUpload" placeholder="Imagen QR" accept=".jpg, .jpeg, .png" :max="5242880">
+<label for="qrImage"><i class="bi bi-qr-code"></i> Imagen QR</label>
+
                 <div v-if="qrImage" class="mt-2">
                   <img :src="previewUrl" class="img-thumbnail" alt="QR Image Preview" style="max-width: 200px;">
                 </div>
