@@ -4,7 +4,7 @@
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
       <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
-      <button class="search-button" @click="search">BUSCAR</button>
+      <!--<button class="search-button" @click="search">BUSCAR</button>-->
       <button class="search-button" @click="clearPrices">Limpiar Precios</button>
       <div class="dropdown">
         <button class="dropbtn">Filtrar por categoría</button>
@@ -102,6 +102,22 @@ const filteredCourses = computed(() => {
 const clearPrices = async () => {
   minPrice.value = null;
   maxPrice.value = null;
+  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+};
+
+const fetchPreviousPage = async () => {
+  page.value -= 1;
+  if (page.value < 0) {
+    page.value = 0;
+  }
+  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+};
+
+const fetchNextPage = async () => {
+  page.value += 1;
+  if (page.value > coursesStore.searchResults.totalPages) {
+    page.value = coursesStore.searchResults.totalPages;
+  }
   await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 </script>
