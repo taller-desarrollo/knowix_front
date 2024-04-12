@@ -33,5 +33,19 @@ export const useCourseStore = defineStore('course', {
                 this.isLoading = false; 
             }
         },
+        async changeCourseIsPublic(courseId, sub, token){
+            try {
+                const url = `http://localhost:8081/api/v1/course/${courseId}/is-public`;
+                const response = await axios.put(url, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-UUID': sub
+                    }
+                });
+                console.log('Course is now public:', response.data);
+            } catch (error) {
+                console.error('Error updating course is public:', error);
+            }
+        }
     },
 });

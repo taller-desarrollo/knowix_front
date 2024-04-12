@@ -15,6 +15,7 @@
         <div class="header-item">Idioma</div>
         <div class="header-item">Precio</div>
         <div class="header-item">Editar</div>
+        <div class = "header-item">Estado</div>
       </div>
       <div class="courses-container">
         <div v-for="course in courses" :key="course.courseId" class="course-card">
@@ -28,6 +29,14 @@
               <font-awesome-icon icon="pencil-alt" />
             </button>
           </div>
+          <div class="course-item">
+            <button v-if="course.courseIsPublic" @click="changeCourseIsPublic(course.courseId)">
+              Publicado
+            </button>
+            <button v-else @click="changeCourseIsPublic(course.courseId)">
+              No Publicado
+            </button>
+          </div>  
         </div>
         <div class="pagination-container">
           <button :disabled="page <= 0" @click="fetchPreviousPage">Anterior</button>
@@ -64,6 +73,12 @@ const totalPages = computed(() => courseStore.searchResults.totalPages);
 function navigateToEditCourse(courseId) {
   router.push({ name: 'edit-course', params: { id: courseId } });
 }
+
+const changeCourseIsPublic = async (courseId) => {
+  let token = keycloak.token;
+  await courseStore.changeCourseIsPublic(courseId, keycloak.tokenParsed.sub, token);
+  await courseStore.fetchCourses(page.value, 10, "asc", keycloak.tokenParsed.sub);
+};
 
 const fetchPreviousPage = async () => {
   page.value -= 1;
