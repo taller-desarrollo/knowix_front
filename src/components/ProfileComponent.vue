@@ -47,11 +47,6 @@
               <input type="checkbox" id="educator" v-model="roles" value="educator">
               <label for="educator">Soy un educador</label>
             </div>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" required>
-        
-            <label for="confirmPassword">Confirmar contraseña:</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" required>
           </div>
 
           <div v-if="editing">

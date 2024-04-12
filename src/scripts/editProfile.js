@@ -157,22 +157,19 @@ export default {
                     },
                 });
                 const profileUpdatePayload = {
-                    username: this.username,
                     firstName: this.firstName,
                     lastName: this.secondName,
                     email: this.email,
-                    password: this.password,
                     roles: this.roles
                 };            
-                await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
+                let profileUpdateResponse = await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
                 headers: {
                     'X-UUID': this.$keycloak.tokenParsed.sub,
                 }}).then(() => {
                     this.name = this.firstName + this.secondName;
-                }).catch(() => {
-                    throw 'Error al actualizar los datos';
                 });
-
+                console.log(profileUpdateResponse);
+                // if(profileUpdateResponse)
                 for (const link of this.socialLinks) {
                     const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
                     const payload = {
@@ -186,6 +183,7 @@ export default {
                 Swal.close();
                 await Swal.fire('¡Éxito!', 'Tu perfil ha sido guardado correctamente.', 'success');
                 this.editing = false;
+                // TODO: logout to refresh data on login
             } catch (error) {
                 //TODO: refactor process error on interceptor
                 this.setupUserProfile();
