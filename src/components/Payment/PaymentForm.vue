@@ -131,7 +131,6 @@ export default {
         return;
       }
       this.store.submitPaymentMethod(this.formData, this.qrImage).then(() => {
-        /// enrutar a http://localhost:8082/payment-administrator:
         this.router.push({ path: '/payment-administrator' });
       }).catch((error) => {
         alert(`Error: ${error.message}`);
