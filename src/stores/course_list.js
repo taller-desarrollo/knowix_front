@@ -12,7 +12,7 @@ export const useCoursesStore = defineStore('courses', {
     }
   }),
   actions: {
-    async fetchCourses(page = 0, size = 10, sort = "asc", minPrice = null, maxPrice = null, searchTerm = "", categoryIds = []) {
+    async fetchCourses(page = 0, size = 12, sort = "asc", minPrice = null, maxPrice = null, searchTerm = "", categoryIds = []) {
       try {
         let url = 'http://localhost:8081/api/v1/course?page=' + page + '&size=' + size + '&sort=' + sort;
         

@@ -75,8 +75,11 @@ onMounted(async () => {
 });
 
 watchEffect(() => {
-  if (categoriesLoaded.value && page.value !== undefined) {
-    coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
+  if (categoriesLoaded.value) {
+    if(page.value > coursesStore.searchResults.totalPages){
+      page.value = coursesStore.searchResults.totalPages;
+    }
+    coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
       .catch(error => {
         console.error("Error fetching courses:", error);
       });
@@ -102,7 +105,7 @@ const filteredCourses = computed(() => {
 const clearPrices = async () => {
   minPrice.value = null;
   maxPrice.value = null;
-  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+  await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 
 const fetchPreviousPage = async () => {
@@ -110,7 +113,7 @@ const fetchPreviousPage = async () => {
   if (page.value < 0) {
     page.value = 0;
   }
-  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+  await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 
 const fetchNextPage = async () => {
@@ -118,7 +121,7 @@ const fetchNextPage = async () => {
   if (page.value > coursesStore.searchResults.totalPages) {
     page.value = coursesStore.searchResults.totalPages;
   }
-  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
+  await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 </script>
 
