@@ -25,7 +25,7 @@
                 <label :for="'attachmentName' + index" class="form-label">Nombre: </label>
                 <input :id="'attachmentName' + index" type="text" v-model="attachment.attachmentName" placeholder="Ingrese el nombre" class="form-field">
                 <label :for="'attachment' + index" class="form-label">Archivo: </label>
-                <v-file-input show-size v-model="attachment.attachment" @change="getBase64(attachment.attachment, index)" label="Archivo" class="form-field"></v-file-input>
+                <v-file-input v-model="attachment.attachment" @change="getByteArray(attachment.attachment, index)" label="Archivo" class="form-field"></v-file-input>
             </div>
             <button class="accept-button" @click="createContent">Agregar contenido</button>
         </div>
@@ -64,7 +64,6 @@ export default {
         };
 
         async function createSection() {
-            console.log("dbg: ", this.section);
             try {
                 await axios.post(`http://localhost:8081/api/v1/course/${courseId}/section`, this.formDetails.section).
                 then((response) => {
@@ -103,12 +102,14 @@ export default {
                 status: true,
             });
         };
-        function getBase64(file, index) {
+        function getByteArray(file, index) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    this.formDetails.content.attachments[index].attachment = reader.result;
+                    let utf8Encode = new TextEncoder();
+                    this.formDetails.content.attachments[index].attachment = utf8Encode.encode(reader.result);
+                    
                     console.log("dbg: ", this.formDetails.content);
                     resolve(reader.result);
                 }
@@ -125,11 +126,15 @@ export default {
             createSection,
             createContent,
             addAttachment,
-            getBase64
+            getByteArray
         }
     },
 }
 </script>
 <style>
 @import "../styles/AddContent.css";
+
+h2 {
+    color: #414141;
+}
 </style>
