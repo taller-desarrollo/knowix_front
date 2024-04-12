@@ -34,11 +34,11 @@ const keycloak = new Keycloak({
 
 keycloak.init({ onLoad: 'check-sso' }).then(authenticated => {
   console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
+  app.config.globalProperties.$keycloak = keycloak;
+  app.config.globalProperties.$axios = backendInterceptor;
   app.use(router(keycloak));
   app.use(pinia);
   app.use(vuetify);
-  app.config.globalProperties.$keycloak = keycloak;
-  app.config.globalProperties.$axios = backendInterceptor;
   app.mount('#app');
 }).catch(error => {
   console.error('Failed to initialize adapter:', error);

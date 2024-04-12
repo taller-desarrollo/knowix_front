@@ -11,6 +11,8 @@
             <div class="submenu" v-if="submenuOpen">
                 <a href="/new-course" @click="toggleMenu">Crear Curso</a>
                 <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
+                <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
+
             </div>
             <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
             <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>

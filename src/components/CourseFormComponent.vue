@@ -205,7 +205,7 @@ export default {
           confirmButtonText: "Aceptar",
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push("/");
+            window.location.href = 'http://localhost:8082/courses-educator';
           }
         });
       } catch (error) {
