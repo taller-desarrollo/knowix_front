@@ -4,13 +4,8 @@
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
       <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
-      <button 
-        class="search-button" 
-        @click="minPrice = null; maxPrice = null;"
-      >
-        Limpiar Precios
-      </button>
       <button class="search-button" @click="search">BUSCAR</button>
+      <button class="search-button" @click="clearPrices">Limpiar Precios</button>
       <div class="dropdown">
         <button class="dropbtn">Filtrar por categoría</button>
         <div class="dropdown-content">
@@ -50,14 +45,16 @@
     </div>
     <div class="pagination-container">
       <button :disabled="coursesStore.searchResults.currentPage <= 0" @click="fetchPreviousPage">Anterior</button>
-      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages + 1}}</span>
-      <button :disabled="coursesStore.searchResults.currentPage >= coursesStore.searchResults.totalPages" @click="fetchNextPage">Siguiente</button>
+      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages +
+        1 }}</span>
+      <button :disabled="coursesStore.searchResults.currentPage >= coursesStore.searchResults.totalPages"
+        @click="fetchNextPage">Siguiente</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from "vue";
+import { onMounted, computed, ref, watchEffect } from "vue";
 import { useCoursesStore } from "../stores/course_list";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useRouter } from 'vue-router';
@@ -70,14 +67,24 @@ const maxPrice = ref(null);
 const selectedCategories = ref([]);
 const router = useRouter();
 const page = ref(0);
-
+const categoriesLoaded = ref(false);
 onMounted(async () => {
-  await coursesStore.fetchCourses();
   await categoryStore.fetchCategories();
+  categoriesLoaded.value = true;
+  await coursesStore.fetchCourses();
 });
 
-const toggleAllCategories = (event) => {
-  if (event.target.checked) {
+watchEffect(() => {
+  if (categoriesLoaded.value && page.value !== undefined) {
+    coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
+      .catch(error => {
+        console.error("Error fetching courses:", error);
+      });
+  }
+});
+
+const toggleAllCategories = () => {
+  if (selectedCategories.value.includes('')) {
     selectedCategories.value = [''];
   } else {
     selectedCategories.value = [];
@@ -92,27 +99,13 @@ const filteredCourses = computed(() => {
   return coursesStore.courses;
 });
 
-const search = async () => {
-  //router.push({ name: 'SearchComponent', query: { q: searchTerm.value } });
-  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
-};
-
-const fetchPreviousPage = async () => {
-  page.value--;
-  if (page.value < 0) {
-    page.value = 0;
-  }
-  await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
-};
-
-const fetchNextPage = async () => {
-  page.value++;
-  if (page.value > coursesStore.searchResults.totalPages) {
-    page.value = coursesStore.searchResults.totalPages;
-  }
+const clearPrices = async () => {
+  minPrice.value = null;
+  maxPrice.value = null;
   await coursesStore.fetchCourses(page.value, 10, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
 </script>
+
 
 <style scoped>
 @import "../styles/ButtonsStyle.css";
