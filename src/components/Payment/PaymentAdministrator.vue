@@ -35,7 +35,6 @@
                   <strong>Teléfono: </strong> {{ method.phoneNumber }}
                 </div>
 
-                <button class="btn btn-primary mt-3">Editar</button>
               </div>
             </div>
           </div>
