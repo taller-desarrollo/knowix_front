@@ -1,7 +1,10 @@
 <template>
     <div class="navbar">
         <div class="welcome">
-            <strong>Bienvenido a Knowix {{ name }}!</strong>
+            <img src="../assets/icon/logo.png" alt="logo" height="50" style="margin-left: 10px;">
+
+<strong style="margin-left: 35px;">¡Bienvenido {{ name }}!</strong>
+
         </div>
         <button class="menu-toggle" @click="toggleMenu">≡</button>
         <div class="optionsNavBar" :class="{ visible: menuOpen }">
