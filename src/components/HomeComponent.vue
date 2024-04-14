@@ -33,7 +33,7 @@
               <span class="tag">{{ course.language.languageName }}</span>
             </div>
             <h5 class="card-title">{{ course.courseName }}</h5>
-            <p class="card-text">{{ course.courseDescription }}</p>
+
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span class="price">{{ course.courseStandardPrice }} bs.</span>
@@ -91,7 +91,7 @@ watchEffect(() => {
       page.value = coursesStore.searchResults.totalPages;
     }
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
-      .then(updateCourseImages) // Actualizar las imágenes después de cargar los cursos
+      .then(updateCourseImages)
       .catch(error => {
         console.error("Error fetching courses:", error);
       });

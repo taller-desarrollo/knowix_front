@@ -73,8 +73,9 @@
           />
 
           <div class="card-component" style="width: 45%;">
-            <label for="courseImage">Imagen del Curso</label>
+            <label for="courseImage">Imagen del Curso (máximo 1000x1000 px)</label>
             <input type="file" id="courseImage" @change="handleFileUpload" accept="image/*" />
+            <p style="font-size: 0.8rem; color: gray;">Tamaño máximo de imagen: 1000x1000 píxeles.</p>
           </div>
 
         </div>
@@ -85,7 +86,6 @@
           <p>Verifica que la información es correcta</p>
         </div>
 
-                <!-- Visualización de la imagen seleccionada -->
                 <div v-if="courseDetails.imagePreview">
           <h3>Vista previa de la Imagen:</h3>
           <img :src="courseDetails.imagePreview" alt="Image Preview" style="max-width: 100%; max-height: 200px;">
@@ -183,18 +183,36 @@ export default {
     });
 
     const handleFileUpload = (event) => {
-      const file = event.target.files[0];
-      courseDetails.value.courseImageFile = file;
-      if (file) {
+  const file = event.target.files[0];
+  courseDetails.value.courseImageFile = file;
+  if (file) {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      if (img.width > 1000 || img.height > 1000) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Imagen no válida',
+          html: `La imagen subida tiene dimensiones de ${img.width}px por ${img.height}px, lo cual supera el máximo permitido de 1000x1000 píxeles.`,
+        });
+        courseDetails.value.imagePreview = null;
+        event.target.value = null;
+      } else {
         const reader = new FileReader();
         reader.onload = (e) => {
           courseDetails.value.imagePreview = e.target.result;
         };
         reader.readAsDataURL(file);
-      } else {
-        courseDetails.value.imagePreview = null;
       }
+      URL.revokeObjectURL(url);
     };
+    img.src = url;
+  } else {
+    courseDetails.value.imagePreview = null;
+  }
+};
+
+
 
     const registerCourse = async () => {
       isLoading.value = true;
@@ -222,7 +240,7 @@ export default {
 
       try {
         const courseResponse = await courseStore.registerCourse(courseData);
-        await uploadCourseImage(courseResponse.courseId); // Sube la imagen después de registrar el curso
+        await uploadCourseImage(courseResponse.courseId);
         Swal.fire({
           icon: "success",
           title: "¡Curso registrado!",
@@ -268,6 +286,9 @@ export default {
         console.error('Failed to upload image:', error);
       }
     };
+
+
+
 
     return {
       languageStore,
