@@ -71,6 +71,12 @@
             width="45%"
             v-model="courseDetails.courseRequirements"
           />
+
+          <div class="card-component" style="width: 45%;">
+            <label for="courseImage">Imagen del Curso</label>
+            <input type="file" id="courseImage" @change="handleFileUpload" accept="image/*" />
+          </div>
+
         </div>
       </div>
       <div class="right-block">
@@ -78,6 +84,13 @@
           <h2>📝 RESUMEN DEL CURSO</h2>
           <p>Verifica que la información es correcta</p>
         </div>
+
+                <!-- Visualización de la imagen seleccionada -->
+                <div v-if="courseDetails.imagePreview">
+          <h3>Vista previa de la Imagen:</h3>
+          <img :src="courseDetails.imagePreview" alt="Image Preview" style="max-width: 100%; max-height: 200px;">
+        </div>
+        
         <div class="course-price-highlight">
           <span>Precio Base:</span>
           <strong> Bs. {{ courseDetails.basePrice }}</strong>
@@ -132,32 +145,19 @@
 </template>
 
 <script>
-import { onMounted, getCurrentInstance, ref } from "vue";
+import { ref, getCurrentInstance, onMounted } from 'vue';
 import { useLanguageStore } from "@/stores/languageStore";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useCourseStore } from "@/stores/courseStore";
 import CardComponent from "./widgets/card.vue";
 import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
+import axios from 'axios';
 
 export default {
   name: "AppView",
   components: {
     CardComponent,
-  },
-
-  data() {
-    return {
-      courseDetails: {
-        courseName: "",
-        basePrice: "",
-        courseLanguage: "",
-        courseLanguageText: "",
-        courseCategory: "",
-        detailedDescription: "",
-        courseRequirements: "",
-      },
-    };
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -166,11 +166,35 @@ export default {
     const courseStore = useCourseStore();
     const router = useRouter();
     const isLoading = ref(false);
+    const courseDetails = ref({
+      courseName: "",
+      basePrice: "",
+      courseLanguage: "",
+      courseCategory: "",
+      detailedDescription: "",
+      courseRequirements: "",
+      courseImageFile: null,
+      imagePreview: null,
+    });
 
     onMounted(async () => {
       await languageStore.fetchLanguages();
       await categoryStore.fetchCategories();
     });
+
+    const handleFileUpload = (event) => {
+      const file = event.target.files[0];
+      courseDetails.value.courseImageFile = file;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          courseDetails.value.imagePreview = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        courseDetails.value.imagePreview = null;
+      }
+    };
 
     const registerCourse = async () => {
       isLoading.value = true;
@@ -197,7 +221,8 @@ export default {
       };
 
       try {
-        await courseStore.registerCourse(courseData);
+        const courseResponse = await courseStore.registerCourse(courseData);
+        await uploadCourseImage(courseResponse.courseId); // Sube la imagen después de registrar el curso
         Swal.fire({
           icon: "success",
           title: "¡Curso registrado!",
@@ -205,7 +230,7 @@ export default {
           confirmButtonText: "Aceptar",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = 'http://localhost:8082/courses-educator';
+            router.push({ path: "/" }); 
           }
         });
       } catch (error) {
@@ -220,15 +245,42 @@ export default {
       }
     };
 
+    const uploadCourseImage = async (courseId) => {
+      if (!courseDetails.value.courseImageFile) {
+        return;
+      }
+      const formData = new FormData();
+      formData.append('image', courseDetails.value.courseImageFile);
+      formData.append('courseCourseId', courseId);
+
+      try {
+        const response = await axios.post(
+          'http://localhost:8081/api/v1/courseimage',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        console.log('Image uploaded:', response.data);
+      } catch (error) {
+        console.error('Failed to upload image:', error);
+      }
+    };
+
     return {
       languageStore,
       categoryStore,
       registerCourse,
       isLoading,
+      courseDetails,
+      handleFileUpload,
     };
   },
 };
 </script>
+
 
 <style>
 * {
