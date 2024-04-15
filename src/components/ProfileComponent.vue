@@ -39,14 +39,14 @@
             <label for="correo">Correo: </label>
             <input type="email" id="email" v-model="email" />
             <label for="ocupacion">Rol dentro de Knowix: </label>
-            <div>
+            <!--<div>
               <input type="checkbox" id="student" v-model="roles" value="student">
               <label for="student">Soy un estudiante</label>
             </div>
             <div>
               <input type="checkbox" id="educator" v-model="roles" value="educator">
               <label for="educator">Soy un educador</label>
-            </div>
+            </div>-->
           </div>
 
           <div v-if="editing">

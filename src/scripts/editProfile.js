@@ -6,8 +6,7 @@ import axios from 'axios';
 axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    Swal.fire('Error', error.response?.data?.message || 'Un error ha ocurrido', 'error');
-    throw error;
+    console.log('Error response:', error.response);
 });
 
 export default {
