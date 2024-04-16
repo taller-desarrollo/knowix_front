@@ -25,7 +25,7 @@
         <v-alert type="info" dismissible>No se encontraron cursos para mostrar.</v-alert>
       </div>
       <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
-        <div class="card mb-4 shadow">
+        <div class="cardcourse mb-4 shadow">
           <img :src="courseImages[course.courseId]" class="card-img-top" alt="Imagen del curso" height=300px>
           <div class="card-body">
             <div class="card-tags">
