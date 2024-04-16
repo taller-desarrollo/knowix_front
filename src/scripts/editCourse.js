@@ -1,7 +1,7 @@
-import { onMounted, ref, computed, getCurrentInstance } from 'vue';
-import { useCourseStore } from "@/stores/courseStore";
+import { ref, getCurrentInstance, onMounted } from 'vue';
 import { useLanguageStore } from "@/stores/languageStore";
 import { useCategoryStore } from "@/stores/categoryStore";
+import { useCourseStore } from "@/stores/courseStore";
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import CardComponent from "../components/widgets/card.vue";
@@ -11,12 +11,6 @@ export default {
     name: "EditCourseView",
     components: {
         CardComponent,
-    },
-    data() {
-        return {
-            dialog: false,
-            model: {}
-        };
     },
     setup() {
         const { proxy } = getCurrentInstance();
@@ -33,34 +27,32 @@ export default {
             detailedDescription: "",
             courseRequirements: "",
             sections: [],
+            courseImageFile: null,
+            imagePreview: null,
         });
 
         function addSection() {
-            router.push({ name: 'add-content', 
-                          params: { courseId: courseId, operation: 'section',  id: null} });
+            router.push({ name: 'add-content', params: { courseId: courseId, operation: 'section', id: null } });
         }
 
         function addContent(sectionId) {
-            router.push({ name: 'add-content', 
-                          params: { courseId: courseId, operation: 'content',  id: sectionId} });
-        }        
+            router.push({ name: 'add-content', params: { courseId: courseId, operation: 'content', id: sectionId } });
+        }
 
         async function fetchCourseDetails() {
             try {
                 const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
-                console.log(response);
                 proxy.courseDetails.courseName = response.data.courseName;
                 proxy.courseDetails.basePrice = response.data.courseStandardPrice.toString();
                 proxy.courseDetails.courseLanguage = response.data.languageLanguageId;
                 proxy.courseDetails.courseCategory = response.data.categoryCategoryId;
-                proxy.courseDetails.detailedDescription = response.data.courseDescription.toString();
-                proxy.courseDetails.courseRequirements = response.data.courseRequirements.toString();
+                proxy.courseDetails.detailedDescription = response.data.courseDescription;
+                proxy.courseDetails.courseRequirements = response.data.courseRequirements;
                 proxy.courseDetails.sections = response.data.sections;
-                console.log("dbg: ", proxy.courseDetails);
             } catch (error) {
                 console.error('Error fetching course details:', error);
             }
-        }        
+        }
 
         async function updateCourse() {
             Swal.fire({
@@ -88,20 +80,20 @@ export default {
             try {
                 const response = await axios.put(`http://localhost:8081/api/v1/course/${courseId}`, payload);
 
-                if (response.status === 200) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Curso actualizado!',
-                        text: 'El curso ha sido actualizado con éxito.',
-                        confirmButtonText: 'Aceptar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            router.go(-1);
-                        }
-                    });
-                } else {
-                    throw new Error('Failed to update course');
+                if (response.status === 200 && courseDetails.value.courseImageFile) {
+                    await uploadCourseImage(courseId);
                 }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Curso actualizado!',
+                    text: 'El curso ha sido actualizado con éxito.',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.go(-1);
+                    }
+                });
             } catch (error) {
                 console.error('Error updating course:', error);
                 Swal.fire({
@@ -113,9 +105,38 @@ export default {
             }
         }
 
-        function getBase64String(array) {
-            return atob(array);
-        }
+        const handleFileUpload = (event) => {
+            const file = event.target.files[0];
+            courseDetails.value.courseImageFile = file;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    courseDetails.value.imagePreview = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                courseDetails.value.imagePreview = null;
+            }
+        };
+
+        const uploadCourseImage = async (courseId) => {
+            const formData = new FormData();
+            formData.append('image', courseDetails.value.courseImageFile);
+
+            try {
+                await axios.put(
+                    `http://localhost:8081/api/v1/courseimage/course/${courseId}`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+            } catch (error) {
+                console.error('Failed to upload image:', error);
+            }
+        };
 
         onMounted(async () => {
             await Promise.all([
@@ -132,7 +153,7 @@ export default {
             updateCourse,
             addSection,
             addContent,
-            getBase64String
+            handleFileUpload
         };
     },
 };

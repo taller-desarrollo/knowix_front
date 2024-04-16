@@ -32,12 +32,25 @@
                     <CardComponent title="Requerimientos del Curso" inputType="largeText"
                         inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
                         v-model="courseDetails.courseRequirements" />
+
+                    <div class="card-component">
+                        <div class="label-container">
+                            <label for="courseImage">Actualizar Imagen del Curso (Miniatura)</label>
+                        </div>
+                        <input type="file" id="courseImage" @change="handleFileUpload" accept="image/*" />
+                        <p>Tamaño máximo de imagen: 1000x1000 píxeles.</p>
+                    </div>
                 </div>
             </div>
             <div class="right-block">
                 <div class="summary-header">
                     <h2>📝 RESUMEN DEL CURSO</h2>
                     <p>Verifica que la información es correcta</p>
+                </div>
+                <div class="imgpreview" v-if="courseDetails.imagePreview">
+                    <h5>Vista previa de la Imagen:</h5>
+                    <img :src="courseDetails.imagePreview" alt="Image Preview"
+                        style="max-width: 100%; max-height: 200px;">
                 </div>
                 <div class="course-price-highlight">
                     <span>Precio Base:</span>
@@ -52,12 +65,12 @@
                         <span>Idioma:</span>
                         <p>
                             {{
-                            languageStore.languages.find(
-                                (language) =>
-                                    language.languageId ===
-                                    parseInt(courseDetails.courseLanguage, 10)
-                            )?.languageName || "Idioma no seleccionado"
-                        }}
+                                languageStore.languages.find(
+                                    (language) =>
+                                        language.languageId ===
+                                        parseInt(courseDetails.courseLanguage, 10)
+                                )?.languageName || "Idioma no seleccionado"
+                            }}
                         </p>
                     </div>
                     <div class="info-block">
@@ -91,19 +104,21 @@
                     <h2 style="margin-bottom: 0px!important">Secciones</h2>
                     <button class="accept-button" @click="addSection()">Agregar sección +</button>
                 </div>
-                    <div v-for="section in courseDetails.sections" :key="section.sectionId" class="section">
-                        <h1>{{ section.sectionName }}</h1>
-                        <p>{{ section.sectionDescription }}</p>
-                        <v-divider></v-divider>
-                        <div style="padding-left: 30px;" v-for="content in section.contents" class="content">
-                            <p>{{ content.contentTitle }}</p>
-                            <div v-for="attachment in content.attachments" style="padding-left: 10px;">
-                                <p>{{ attachment.attachmentName }}</p>
-                                <img v-if="attachment.attachment" :src="`${getBase64String(attachment.attachment)}`" style="width: 90%;">
-                            </div>
+                <div v-for="section in courseDetails.sections" :key="section.sectionId" class="section">
+                    <h1>{{ section.sectionName }}</h1>
+                    <p>{{ section.sectionDescription }}</p>
+                    <v-divider></v-divider>
+                    <div style="padding-left: 30px;" v-for="content in section.contents" class="content">
+                        <p>{{ content.contentTitle }}</p>
+                        <div v-for="attachment in content.attachments" style="padding-left: 10px;">
+                            <p>{{ attachment.attachmentName }}</p>
+                            <img v-if="attachment.attachment" :src="`${getBase64String(attachment.attachment)}`"
+                                style="width: 90%;">
                         </div>
-                        <button class="accept-button" style="margin: 10px;" @click="addContent(section.sectionId)">Agregar contenido +</button>
                     </div>
+                    <button class="accept-button" style="margin: 10px;" @click="addContent(section.sectionId)">Agregar
+                        contenido +</button>
+                </div>
             </div>
         </div>
     </div>
