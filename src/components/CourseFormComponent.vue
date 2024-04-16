@@ -4,78 +4,44 @@
     <div class="container">
       <div class="left-block">
         <div class="cards-container">
-          <CardComponent
-            title="NOMBRE DEL CURSO"
+          <CardComponent title="NOMBRE DEL CURSO"
             description="El nombre del curso con el que se registrará en la plataforma y será visible para los estudiantes."
-            inputPlaceholder="Nombre del curso"
-            width="45%"
-            v-model="courseDetails.courseName"
-          />
+            inputPlaceholder="Nombre del curso" width="45%" v-model="courseDetails.courseName" />
 
-          <CardComponent
-            title="PRECIO BASE (En Bs.)"
+          <CardComponent title="PRECIO BASE (En Bs.)"
             description="Es el precio inicial del curso, el cual se puede modificar en cualquier momento."
-            inputPlaceholder="Bs. 0.00"
-            inputType="number"
-            mask="0000000"
-            width="45%"
-            v-model="courseDetails.basePrice"
-          />
+            inputPlaceholder="Bs. 0.00" inputType="number" mask="0000000" width="45%"
+            v-model="courseDetails.basePrice" />
 
-          <CardComponent
-            title="IDIOMA DEL CURSO"
-            description="Selecciona el idioma en el que se impartirá el curso."
-            inputType="dropdown"
-            inputPlaceholder="Selecciona un idioma"
-            width="45%"
-            :dropdownOptions="
-              languageStore.languages.map((language) => ({
-                id: language.languageId,
-                text: language.languageName,
-              }))
-            "
-            v-model="courseDetails.courseLanguage"
-          />
+          <CardComponent title="IDIOMA DEL CURSO" description="Selecciona el idioma en el que se impartirá el curso."
+            inputType="dropdown" inputPlaceholder="Selecciona un idioma" width="45%" :dropdownOptions="languageStore.languages.map((language) => ({
+              id: language.languageId,
+              text: language.languageName,
+            }))
+              " v-model="courseDetails.courseLanguage" />
 
-          <CardComponent
-            title="CATEGORÍA DEL CURSO"
-            description="Selecciona la categoría a la que pertenece el curso."
-            inputType="dropdown"
-            inputPlaceholder="Selecciona una categoría"
-            width="45%"
-            :dropdownOptions="
-              categoryStore.categories.map((category) => ({
-                id: category.categoryId,
-                text: category.categoryName,
-              }))
-            "
-            v-model="courseDetails.courseCategory"
-          />
+          <CardComponent title="CATEGORÍA DEL CURSO" description="Selecciona la categoría a la que pertenece el curso."
+            inputType="dropdown" inputPlaceholder="Selecciona una categoría" width="45%" :dropdownOptions="categoryStore.categories.map((category) => ({
+              id: category.categoryId,
+              text: category.categoryName,
+            }))
+              " v-model="courseDetails.courseCategory" />
 
-          <CardComponent
-            title="Descripción del Curso"
-            description="Agrega una descripción detallada para el curso."
-            inputType="largeText"
-            inputPlaceholder="Escribe la descripción aquí..."
-            maxlength="300"
-            width="45%"
-            v-model="courseDetails.detailedDescription"
-          />
+          <CardComponent title="Descripción del Curso" description="Agrega una descripción detallada para el curso."
+            inputType="largeText" inputPlaceholder="Escribe la descripción aquí..." maxlength="300" width="45%"
+            v-model="courseDetails.detailedDescription" />
 
-          <CardComponent
-            title="Requerimientos del Curso"
-            description="Agrega los requerimientos necesarios para el curso."
-            inputType="largeText"
-            inputPlaceholder="Escribe los requerimientos aquí..."
-            maxlength="500"
-            width="45%"
-            v-model="courseDetails.courseRequirements"
-          />
+          <CardComponent title="Requerimientos del Curso"
+            description="Agrega los requerimientos necesarios para el curso." inputType="largeText"
+            inputPlaceholder="Escribe los requerimientos aquí..." maxlength="500" width="45%"
+            v-model="courseDetails.courseRequirements" />
 
-          <div class="card-component" style="width: 45%;">
-            <label for="courseImage">Imagen del Curso (máximo 1000x1000 px)</label>
+          <div class="card-component">
+            <div class="label-container">
+              <label for="courseImage">Imagen del Curso (Miniatura)</label>
+            </div>
             <input type="file" id="courseImage" @change="handleFileUpload" accept="image/*" />
-            <p style="font-size: 0.8rem; color: gray;">Tamaño máximo de imagen: 1000x1000 píxeles.</p>
+            <p>Tamaño máximo de imagen: 1000x1000 píxeles.</p>
           </div>
 
         </div>
@@ -86,11 +52,11 @@
           <p>Verifica que la información es correcta</p>
         </div>
 
-                <div v-if="courseDetails.imagePreview">
-          <h3>Vista previa de la Imagen:</h3>
+        <div class="imgpreview" v-if="courseDetails.imagePreview">
+          <h5>Vista previa de la Imagen:</h5>
           <img :src="courseDetails.imagePreview" alt="Image Preview" style="max-width: 100%; max-height: 200px;">
         </div>
-        
+
         <div class="course-price-highlight">
           <span>Precio Base:</span>
           <strong> Bs. {{ courseDetails.basePrice }}</strong>
@@ -153,6 +119,9 @@ import CardComponent from "./widgets/card.vue";
 import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
 import axios from 'axios';
+// En la parte superior de tu script
+import defaultCourseImage from '@/assets/icon/logocourse.png';
+
 
 export default {
   name: "AppView",
@@ -183,38 +152,45 @@ export default {
     });
 
     const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  courseDetails.value.courseImageFile = file;
-  if (file) {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      if (img.width > 1000 || img.height > 1000) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Imagen no válida',
-          html: `La imagen subida tiene dimensiones de ${img.width}px por ${img.height}px, lo cual supera el máximo permitido de 1000x1000 píxeles.`,
-        });
-        courseDetails.value.imagePreview = null;
-        event.target.value = null;
-      } else {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          courseDetails.value.imagePreview = e.target.result;
+      const file = event.target.files[0];
+      courseDetails.value.courseImageFile = file;
+      if (file) {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          if (img.width > 1000 || img.height > 1000) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Imagen no válida',
+              html: `La imagen subida tiene dimensiones de ${img.width}px por ${img.height}px, lo cual supera el máximo permitido de 1000x1000 píxeles.`,
+            });
+            courseDetails.value.imagePreview = null;
+            event.target.value = null;
+          } else {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              courseDetails.value.imagePreview = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+          URL.revokeObjectURL(url);
         };
-        reader.readAsDataURL(file);
+        img.src = url;
+      } else {
+        courseDetails.value.imagePreview = null;
       }
-      URL.revokeObjectURL(url);
     };
-    img.src = url;
-  } else {
-    courseDetails.value.imagePreview = null;
-  }
-};
-
-
-
     const registerCourse = async () => {
+      if (!courseDetails.value.courseImageFile) {
+        Swal.fire({
+          icon: "error",
+          title: "Imagen del curso requerida",
+          text: "Por favor, carga una imagen para el curso antes de registrarlo.",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
+
       isLoading.value = true;
       Swal.fire({
         title: "Registrando el curso...",
@@ -248,7 +224,7 @@ export default {
           confirmButtonText: "Aceptar",
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push({ path: "/" }); 
+            router.push({ path: "/" });
           }
         });
       } catch (error) {
@@ -262,7 +238,6 @@ export default {
         isLoading.value = false;
       }
     };
-
     const uploadCourseImage = async (courseId) => {
       if (!courseDetails.value.courseImageFile) {
         return;
@@ -286,9 +261,6 @@ export default {
         console.error('Failed to upload image:', error);
       }
     };
-
-
-
 
     return {
       languageStore,
@@ -402,5 +374,70 @@ CardComponent {
 .info-block p,
 .summary-header p {
   color: #666;
+}
+
+.imgpreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.imgpreview img {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.card-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5dc;
+  margin-right: 60px;
+  margin-bottom: 30px;
+}
+
+.label-container {
+  background-color: #292f56;
+  color: #f5f5dc;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-component label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.card-component p {
+  display: block;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.card-component input[type="file"] {
+  border: 2px solid black;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 80%;
+  margin: 15px;
+}
+
+@media (max-width: 768px) {
+  .card-component {
+    min-width: 100%;
+  }
 }
 </style>
