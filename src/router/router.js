@@ -11,7 +11,7 @@ import SearchComponent from '@/components/SearchComponent.vue'
 import PaymentAdministrator from '@/components/Payment/PaymentAdministrator.vue';
 import PaymentForm from '@/components/Payment/PaymentForm.vue';
 import UpsertCourseContentComponent from '@/components/UpsertCourseContentComponent.vue';
-
+import CourseDetailsComponent from '@/components/CourseDetailsComponent.vue';
 
 const routes = [
     {
@@ -81,6 +81,11 @@ const routes = [
       name: 'PaymentForm',
       component: PaymentForm,
       meta: { requiresAuth: true, role: 'educator' } 
+    },
+    {
+      path: '/course-details/:id',
+      name: 'CourseDetailsComponent',
+      component: CourseDetailsComponent,
     }
 ];
 

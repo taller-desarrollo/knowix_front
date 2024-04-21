@@ -1,0 +1,44 @@
+<template>
+    <div class="course-details">
+        <div v-if="course" class="course-info">
+            <img v-if="courseImage" :src="courseImage" alt="Course image" class="course-image">
+            <div class="coursedetail">
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="general">Pagar curso</button>
+                    <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="back-button" @click="goBack" />
+                </div>
+                <h2>{{ course.courseName }}</h2>
+                <p>{{ course.courseDescription }}</p>
+                <p><strong>Requisitos:</strong> {{ course.courseRequirements }}</p>
+                <p><strong>Precio:</strong> {{ course.courseStandardPrice }} bs.</p>
+                <p><strong>Categoría:</strong> {{ course.category.categoryName }}</p>
+                <p><strong>Idioma:</strong> {{ course.language.languageName }}</p>
+            </div>
+        </div>
+        <div v-if="course" class="course-sections">
+            <h3>Secciones</h3>
+        </div>
+        <div v-if="course" class="course-comments">
+            <h3>Comentarios</h3>
+            <div class="comment-input">
+                <input type="text" placeholder="Escribe un comentario...">
+                <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" />
+            </div>
+        </div>
+        <div v-else class="loading">Cargando detalles del curso...</div>
+    </div>
+</template>
+
+<script setup>
+import useCourseDetails from '../scripts/courseDetails.js';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+library.add(faPaperPlane, faArrowLeft);
+
+const { course, courseImage, goBack } = useCourseDetails();
+</script>
+
+<style scoped>
+@import '@/styles/CourseDetailsStyle.css';
+</style>
