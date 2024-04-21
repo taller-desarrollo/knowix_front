@@ -9,7 +9,8 @@
         <button class="dropbtn">Filtrar por categoría</button>
         <div class="dropdown-content">
           <div>
-            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories" @change="toggleAllCategories">
+            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories"
+              @change="toggleAllCategories">
             <label for="all-categories">Todas las categorías</label>
           </div>
           <div v-for="category in categoryStore.categories" :key="category.categoryId">
@@ -37,14 +38,15 @@
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span class="price">{{ course.courseStandardPrice }} bs.</span>
-            <button type="button" class="btn btn-outline-dark btn-sm">Ver más</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" @click="goToCourseDetails(course.courseId)">Ver más</button>
           </div>
         </div>
       </div>
     </div>
     <div class="pagination-container">
       <button :disabled="coursesStore.searchResults.currentPage <= 0" @click="fetchPreviousPage">Anterior</button>
-      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages + 1 }}</span>
+      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages + 1
+        }}</span>
       <button :disabled="coursesStore.searchResults.currentPage >= coursesStore.searchResults.totalPages"
         @click="fetchNextPage">Siguiente</button>
     </div>
@@ -67,7 +69,7 @@ const selectedCategories = ref([]);
 const router = useRouter();
 const page = ref(0);
 const categoriesLoaded = ref(false);
-const courseImages = reactive({}); 
+const courseImages = reactive({});
 
 onMounted(async () => {
   await categoryStore.fetchCategories();
@@ -87,7 +89,7 @@ const updateCourseImages = async () => {
 
 watchEffect(() => {
   if (categoriesLoaded.value) {
-    if(page.value > coursesStore.searchResults.totalPages){
+    if (page.value > coursesStore.searchResults.totalPages) {
       page.value = coursesStore.searchResults.totalPages;
     }
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
@@ -135,6 +137,9 @@ const fetchNextPage = async () => {
   }
   await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
+function goToCourseDetails(courseId) {
+  router.push(`/course-details/${courseId}`);
+}
 </script>
 
 
