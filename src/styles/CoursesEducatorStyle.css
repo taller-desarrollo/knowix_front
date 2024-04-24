@@ -1,0 +1,120 @@
+.content {
+    padding: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.display-1 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) 100px;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.header-item {
+    font-weight: bold;
+    color: #333;
+    background: #f2f2f2; 
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.courses-container {
+    border-radius: 6px;
+    overflow-x: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-card {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) 100px;
+    gap: 10px;
+    background-color: #ffffff3e;
+    transition: background-color 0.3s;
+}
+
+.course-item {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #61616195;
+}
+
+.course-item:first-child {
+    font-weight: bold;
+}
+
+.course-item:nth-child(odd) {
+    background-color: #f9f9f97c;
+}
+
+.course-item:nth-child(2) {
+    font-style: italic;
+}
+
+.course-item:last-child {
+    border-bottom: none;
+}
+
+button {
+    margin-left: auto;
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #afb6ba;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+
+    .table-header,
+    .course-card {
+        display: block;
+    }
+
+    .header-item {
+        display: none;
+    }
+
+    .course-item {
+        padding: 0.5rem;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8rem;
+    }
+
+    .course-card {
+        padding: 0.5rem;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .course-item:before {
+        content: attr(data-label);
+        font-weight: bold;
+        width: 40%;
+        display: inline-block;
+    }
+
+    button {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+    }
+}
+
+.head-courses {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
