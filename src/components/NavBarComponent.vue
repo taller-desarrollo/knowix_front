@@ -1,45 +1,29 @@
 <template>
   <div class="navbar">
     <div class="welcome">
-      <img
-        src="../assets/icon/logo.png"
-        alt="logo"
-        height="50"
-        style="margin-left: 10px; cursor: pointer"
-        @click="redirectToHome"
-      />
+      <img src="../assets/icon/logo.png" alt="logo" height="50" style="margin-left: 10px; cursor: pointer"
+        @click="redirectToHome" />
 
       <strong style="margin-left: 35px">¡Bienvenido {{ name }}!</strong>
     </div>
     <button class="menu-toggle" @click="toggleMenu">≡</button>
     <div class="optionsNavBar" :class="{ visible: menuOpen }">
       <a href="/" @click="toggleMenu">Inicio</a>
-      <a
-        v-if="this.$keycloak.hasResourceRole('student')"
-        href="/student"
-        @click="toggleMenu"
-        >Estudiante</a
-      >
-      <a
-        v-if="this.$keycloak.hasResourceRole('educator')"
-        href="#"
-        @click.prevent="toggleSubMenu"
-        >Educador</a
-      >
+      <a v-if="this.$keycloak.hasResourceRole('student')" href="/student" @click="toggleMenu">Estudiante</a>
+      <div class="submenu" v-if="submenuOpen">
+        <a href="/course-student" @click="toggleMenu">Cursos Inscritos</a>
+        <a href="/payment-student" @click="toggleMenu">Mis Pagos</a>
+      </div>
+      <a v-if="this.$keycloak.hasResourceRole('educator')" href="#" @click.prevent="toggleSubMenu">Educador</a>
       <div class="submenu" v-if="submenuOpen">
         <a href="/new-course" @click="toggleMenu">Crear Curso</a>
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
-        <a href="/payment-administrator" @click="toggleMenu"
-          >Mis Formas de Pago</a
-        >
+        <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
+        <a href="/payment-check" @click="toggleMenu">Administrar Pagos</a>
       </div>
       <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
-      <a v-if="authenticated" class="cancel" @click="confirmLogout"
-        >Cerrar sesión</a
-      >
-      <a v-if="!authenticated" class="register" @click="goToRegister"
-        >Registrarse</a
-      >
+      <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
+      <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>
       <a v-if="!authenticated" class="login" @click="logIn">Iniciar sesión</a>
     </div>
   </div>

@@ -30,9 +30,14 @@ export default function useCourseDetails() {
         router.back();
     }
 
+    function paymentCourse() {
+        router.push(`/payment-list`);
+    }
+
     return {
         course,
         courseImage,
         goBack,
+        paymentCourse,
     };
 }

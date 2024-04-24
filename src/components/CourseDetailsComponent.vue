@@ -4,7 +4,7 @@
             <img v-if="courseImage" :src="courseImage" alt="Course image" class="course-image">
             <div class="coursedetail">
                 <div style="display: flex; justify-content: flex-end;">
-                    <button class="general">Pagar curso</button>
+                    <button class="general" @click="paymentCourse">Pagar curso</button>
                     <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="back-button" @click="goBack" />
                 </div>
                 <h2>{{ course.courseName }}</h2>
@@ -36,7 +36,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 library.add(faPaperPlane, faArrowLeft);
 
-const { course, courseImage, goBack } = useCourseDetails();
+const { course, courseImage, goBack, paymentCourse } = useCourseDetails();
 </script>
 
 <style scoped>
