@@ -1,7 +1,7 @@
 <template>
     <div class="course-details">
         <div v-if="course" class="course-info">
-            <img v-if="courseImage" :src="courseImage" alt="Course image" class="course-image">
+            <img :src="courseImage" alt="Course image" class="course-image">
             <div class="coursedetail">
                 <div style="display: flex; justify-content: flex-end;">
                     <button class="general" @click="paymentCourse">Pagar curso</button>
