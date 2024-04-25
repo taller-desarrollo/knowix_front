@@ -181,16 +181,15 @@ export default {
       }
     };
     const registerCourse = async () => {
-      if (!courseDetails.value.courseImageFile) {
+      if (!courseDetails.value.courseName || !courseDetails.value.basePrice || !courseDetails.value.courseLanguage || !courseDetails.value.courseCategory || !courseDetails.value.detailedDescription || !courseDetails.value.courseRequirements) {
         Swal.fire({
           icon: "error",
-          title: "Imagen del curso requerida",
-          text: "Por favor, carga una imagen para el curso antes de registrarlo.",
+          title: "Campos vacíos",
+          text: "Por favor, completa todos los campos antes de registrar el curso.",
           confirmButtonText: "Aceptar",
         });
         return;
       }
-
       isLoading.value = true;
       Swal.fire({
         title: "Registrando el curso...",
