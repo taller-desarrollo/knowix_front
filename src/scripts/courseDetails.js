@@ -16,7 +16,9 @@ export default function useCourseDetails() {
 
     async function fetchCourseDetails() {
         const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
-        course.value = response.data;
+        if (response && response.data) {
+            course.value = response.data;
+        }
     }
 
     async function fetchCourseImage() {
@@ -31,7 +33,12 @@ export default function useCourseDetails() {
     }
 
     function paymentCourse() {
-        router.push(`/payment-list`);
+        if (course.value && course.value.kcUserKcUuid) {
+            router.push({
+                name: 'PaymentList',
+                params: { kcUserKcUuid: course.value.kcUserKcUuid }
+            });
+        }
     }
 
     return {
