@@ -81,7 +81,7 @@ watchEffect(() => {
     }
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
       .catch(error => {
-        console.error("Error fetching courses:", error);
+        console.log(error)
       });
   }
 });
