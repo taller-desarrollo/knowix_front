@@ -16,6 +16,7 @@ import PaymentList from '@/components/Payment/PaymentList.vue';
 import PaymentCheck from '@/components/Payment/PaymentCheck.vue';
 import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
+import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 
 const routes = [
     {
@@ -113,6 +114,11 @@ const routes = [
       name: 'CourseStudentComponent',
       component: CourseStudentComponent,
       meta: { requiresAuth: true, role: 'student' }
+    },
+    {
+      path: '/buy-course',
+      name: 'BuyCourseComponent',
+      component: BuyCourseComponent,
     }
 ];
 
