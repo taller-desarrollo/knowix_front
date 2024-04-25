@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { getCurrentInstance } from "vue";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export const usePaymentFormStore = defineStore('paymentForm', {
   state: () => ({
@@ -64,10 +65,19 @@ export const usePaymentFormStore = defineStore('paymentForm', {
           },
         });
 
-        alert('Forma de pago creada con éxito');
+        Swal.fire({
+          icon: 'success',
+          title: 'Forma de pago creada',
+          text: 'La forma de pago se ha creado exitosamente.',
+        });
+        console.log('Payment method created:', response.data);
       } catch (error) {
         console.error('Error creating payment method:', error);
-        alert('Hubo un error al crear la forma de pago');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la forma de pago',
+          text: 'Ha ocurrido un error al intentar crear la forma de pago. Por favor, inténtalo de nuevo.',
+        });
       }
     }
   }

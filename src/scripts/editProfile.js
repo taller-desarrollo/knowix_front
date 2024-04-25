@@ -6,8 +6,7 @@ import axios from 'axios';
 axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    Swal.fire('Error', error.response?.data?.message || 'Un error ha ocurrido', 'error');
-    throw error;
+    console.log('Error response:', error.response);
 });
 
 export default {
@@ -42,17 +41,17 @@ export default {
     },
     methods: {
         getSocialMediaIcon(url) {
-            if (url.includes("facebook")) return require("@/assets/Facebook.png");
-            if (url.includes("instagram")) return require("@/assets/Instagram.png");
-            if (url.includes("linkedin")) return require("@/assets/Linkedin.png");
-            if (url.includes("twitter")) return require("@/assets/Twitter.png");
-            if (url.includes("youtube")) return require("@/assets/Youtube.png");
-            if (url.includes("whatsapp")) return require("@/assets/Whatsapp.png");
-            if (url.includes("telegram")) return require("@/assets/Telegram.png");
-            if (url.includes("tiktok")) return require("@/assets/TikTok.png");
-            if (url.includes("snapchat")) return require("@/assets/Snapchat.png");
-            if (url.includes("github")) return require("@/assets/GitHub.png");
-            return require("@/assets/General.png");
+            if (url.includes("facebook")) return require("@/assets/socialMedia/Facebook.png");
+            if (url.includes("instagram")) return require("@/assets/socialMedia/Instagram.png");
+            if (url.includes("linkedin")) return require("@/assets/socialMedia/Linkedin.png");
+            if (url.includes("twitter")) return require("@/assets/socialMedia/Twitter.png");
+            if (url.includes("youtube")) return require("@/assets/socialMedia/Youtube.png");
+            if (url.includes("whatsapp")) return require("@/assets/socialMedia/Whatsapp.png");
+            if (url.includes("telegram")) return require("@/assets/socialMedia/Telegram.png");
+            if (url.includes("tiktok")) return require("@/assets/socialMedia/TikTok.png");
+            if (url.includes("snapchat")) return require("@/assets/socialMedia/Snapchat.png");
+            if (url.includes("github")) return require("@/assets/socialMedia/GitHub.png");
+            return require("@/assets/socialMedia/General.png");
         },
         setupUserProfile() {
             this.username = this.$keycloak.tokenParsed.preferred_username;

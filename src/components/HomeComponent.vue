@@ -4,7 +4,6 @@
       <input type="text" v-model="searchTerm" placeholder="Buscar cursos..." class="search-input" />
       <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
       <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
-      <!--<button class="search-button" @click="search">BUSCAR</button>-->
       <button class="search-button" @click="clearPrices">Limpiar Precios</button>
       <div class="dropdown">
         <button class="dropbtn">Filtrar por categoría</button>
@@ -27,26 +26,27 @@
         <v-alert type="info" dismissible>No se encontraron cursos para mostrar.</v-alert>
       </div>
       <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
-        <div class="card mb-4 shadow">
+        <div class="cardcourse mb-4 shadow">
+          <img :src="courseImages[course.courseId]" class="card-img-top" alt="Imagen del curso" height=300px>
           <div class="card-body">
             <div class="card-tags">
               <span class="tag">{{ course.category.categoryName }}</span>
               <span class="tag">{{ course.language.languageName }}</span>
             </div>
             <h5 class="card-title">{{ course.courseName }}</h5>
-            <p class="card-text">{{ course.courseDescription }}</p>
+
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span class="price">{{ course.courseStandardPrice }} bs.</span>
-            <button type="button" class="btn btn-outline-dark btn-sm">Ver más</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" @click="goToCourseDetails(course.courseId)">Ver más</button>
           </div>
         </div>
       </div>
     </div>
     <div class="pagination-container">
       <button :disabled="coursesStore.searchResults.currentPage <= 0" @click="fetchPreviousPage">Anterior</button>
-      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages +
-        1 }}</span>
+      <span>Página {{ coursesStore.searchResults.currentPage + 1 }} de {{ coursesStore.searchResults.totalPages + 1
+        }}</span>
       <button :disabled="coursesStore.searchResults.currentPage >= coursesStore.searchResults.totalPages"
         @click="fetchNextPage">Siguiente</button>
     </div>
@@ -54,10 +54,11 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref, watchEffect } from "vue";
+import { onMounted, computed, ref, watchEffect, reactive } from "vue";
 import { useCoursesStore } from "../stores/course_list";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const coursesStore = useCoursesStore();
 const categoryStore = useCategoryStore();
@@ -68,18 +69,31 @@ const selectedCategories = ref([]);
 const router = useRouter();
 const page = ref(0);
 const categoriesLoaded = ref(false);
+const courseImages = reactive({});
+
 onMounted(async () => {
   await categoryStore.fetchCategories();
   categoriesLoaded.value = true;
   await coursesStore.fetchCourses();
+  updateCourseImages();
 });
+
+const updateCourseImages = async () => {
+  for (const course of coursesStore.courses) {
+    const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${course.courseId}`);
+    if (response.data.length > 0) {
+      courseImages[course.courseId] = `http://localhost:8081/${response.data[0].image}`;
+    }
+  }
+};
 
 watchEffect(() => {
   if (categoriesLoaded.value) {
-    if(page.value > coursesStore.searchResults.totalPages){
+    if (page.value > coursesStore.searchResults.totalPages) {
       page.value = coursesStore.searchResults.totalPages;
     }
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
+      .then(updateCourseImages)
       .catch(error => {
         console.log(error)
       });
@@ -123,7 +137,11 @@ const fetchNextPage = async () => {
   }
   await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
+function goToCourseDetails(courseId) {
+  router.push(`/course-details/${courseId}`);
+}
 </script>
+
 
 
 <style scoped>
