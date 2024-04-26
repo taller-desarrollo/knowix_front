@@ -34,6 +34,10 @@
                 <h3>{{ purchase.course.courseName }}</h3>
                 <p>{{ formatDate(purchase.datePurchase) }}</p>
                 <p>{{ purchase.amount }} USD</p>
+                <p>{{ purchase.imageComprobante }}</p>
+<a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank">Ver Comprobante Recibido</a>
+         
+
             </div>
             <div class="sale-actions">
                     <button @click="confirmPurchase(purchase.purchaseId)">Confirmar</button>
