@@ -124,7 +124,7 @@
 
       if (result.isConfirmed) {
         let token = keycloak.token; 
-        await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/approve`,{}, {
+        await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/reject`,{}, {
             headers: {
                         'Authorization': `Bearer ${token}`,
                         "X-UUID":  keycloak.tokenParsed.sub,
