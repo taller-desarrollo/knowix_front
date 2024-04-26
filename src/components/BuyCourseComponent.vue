@@ -12,14 +12,15 @@
         <label for="image">Comprobante:</label>
         <input type="file" class="form-control" id="image" @change="onFileChange" required>
       </div>
+      <input type="hidden" class="form-control" id="courseId" v-model="purchase.courseId" required readonly>
       <div class="form-group">
-        <label for="courseId">ID del curso:</label>
-        <input type="text" class="form-control" id="courseId" v-model="purchase.courseId" required readonly>
+        <label for="courseId">Nombre del curso:</label>
+        <input type="text" class="form-control" id="courseId" v-model="purchase.courseName" required readonly>
       </div>
+      <input type="hidden" class="form-control" id="paymentMethodId" v-model="purchase.paymentMethodId" required readonly>
       <div class="form-group">
-        <label for="paymentMethodId">ID del método de pago:</label>
-        <input type="text" class="form-control" id="paymentMethodId" v-model="purchase.paymentMethodId" required
-          readonly>
+        <label for="paymentMethodId">Número de cuenta del depositado:</label>
+        <input type="text" class="form-control" id="paymentMethodId" v-model="purchase.accountNumber" required readonly>
       </div>
       <input type="hidden" class="form-control" id="kcUserKcUuid" v-model="purchase.kcUserKcUuid" required readonly>
       <button type="submit">ENVIAR</button>
@@ -55,6 +56,7 @@ export default {
         this.course = response.data;
         this.purchase.amount = this.course.courseStandardPrice;
         this.purchase.courseId = this.course.courseId;
+        this.purchase.courseName = this.course.courseName;
       })
       .catch(error => {
         console.error(error);
@@ -65,6 +67,7 @@ export default {
         this.paymentMethod = response.data;
         this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
         this.purchase.kcUserKcUuid = this.paymentMethod.kcUserKcUuid;
+        this.purchase.accountNumber = this.paymentMethod.accountNumber;
       })
       .catch(error => {
         console.error(error);
@@ -94,6 +97,8 @@ export default {
             text: 'Su comprobante de compra ha sido enviado exitosamente.',
             icon: 'success',
             confirmButtonText: 'Aceptar'
+          }).then(() => {
+            this.$router.push({ path: '/' });
           });
           console.log(response.data);
         })
