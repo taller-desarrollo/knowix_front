@@ -20,7 +20,7 @@
         <a href="/new-course" @click="toggleMenu">Crear Curso</a>
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
-        <a href="/payment-check" @click="toggleMenu">Administrar Pagos</a>
+        <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
       </div>
       
       <a v-if="this.$keycloak.hasResourceRole('admin')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
