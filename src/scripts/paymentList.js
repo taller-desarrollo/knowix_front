@@ -16,13 +16,20 @@ export default {
                 .catch(error => {
                     console.error('Error fetching payment methods:', error);
                 });
+        },
+        getpaymentMethod(paymentMethodId) {
+            return this.paymentMethods.find(paymentMethod => paymentMethod.paymentMethodId === paymentMethodId);
         }
     },
     setup() {
         const route = useRoute();
         const kcUserKcUuid = route.params.kcUserKcUuid;
+        const courseId = route.params.courseId;
+        const paymentMethodId = route.params.paymentMethodId;
         return {
-            kcUserKcUuid
+            kcUserKcUuid,
+            courseId,
+            paymentMethodId
         };
     },
     mounted() {

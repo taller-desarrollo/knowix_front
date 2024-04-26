@@ -95,7 +95,7 @@ const routes = [
     component: CourseDetailsComponent,
   },
   {
-    path: '/payment-list/:kcUserKcUuid',
+    path: '/payment-list/:kcUserKcUuid/:courseId',
     name: 'PaymentList',
     component: PaymentList,
     meta: { requiresAuth: true, role: ['educator', 'student'] }
@@ -119,16 +119,16 @@ const routes = [
     meta: { requiresAuth: true, role: 'student' }
   },
   {
+    path: '/buy-course/:courseId/:paymentMethodId',
+    name: 'BuyCourseComponent',
+    component: BuyCourseComponent,
+    meta: { requiresAuth: true, role: ['educator', 'student'] }
+   }
     path: '/pending-verification',
     name: 'PendingVerificationList',
     component: PendingVerificationListComponent,
     meta: { requiresAuth: true, role: 'admin'}
   },
-  {
-    path: '/buy-course',
-    name: 'BuyCourseComponent',
-    component: BuyCourseComponent,
-  }
 ];
 
 const router = (keycloak) => {

@@ -40,10 +40,10 @@ export default function useCourseDetails() {
     }
 
     function paymentCourse() {
-        if (course.value && course.value.kcUserKcUuid) {
+        if (course.value && course.value.kcUserKcUuid && course.value.courseId) {
             router.push({
                 name: 'PaymentList',
-                params: { kcUserKcUuid: course.value.kcUserKcUuid }
+                params: { kcUserKcUuid: course.value.kcUserKcUuid, courseId: course.value.courseId}
             });
         }
     }

@@ -5,10 +5,14 @@
         <div v-if="paymentMethods.length > 0" class="payment-list">
             <ul>
                 <li v-for="method in paymentMethods" :key="method.paymentMethodId" class="payment-method">
-                    <h5>{{ method.nameOwner }}</h5>
-                    <p>Número de cuenta: {{ method.accountNumber }}</p>
-                    <p>Teléfono: {{ method.phoneNumber }}</p>
-                    <img :src="`http://localhost:8081/${method.qrImage}`" alt="QR Code" class="qr-image" />
+                    <router-link :to="{
+                        name: 'BuyCourseComponent',
+                        params: { courseId: courseId.value, paymentMethodId: method.paymentMethodId }
+                    }">
+                        <h5>{{ method.nameOwner }}</h5>
+                        <p>Número de cuenta: {{ method.accountNumber }}</p>
+                        <p>Teléfono: {{ method.phoneNumber }}</p>
+                    </router-link>
                 </li>
             </ul>
         </div>
