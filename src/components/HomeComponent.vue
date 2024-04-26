@@ -27,7 +27,8 @@
       </div>
       <div class="col-md-4" v-for="course in filteredCourses" :key="course.courseId">
         <div class="cardcourse mb-4 shadow">
-          <img :src="courseImages[course.courseId]" class="card-img-top" alt="Imagen del curso" height=300px>
+          <img :src="courseImages[course.courseId] || '@/src/assets/default.png'" class="card-img-top"
+            alt="Imagen del curso" height="300px">
           <div class="card-body">
             <div class="card-tags">
               <span class="tag">{{ course.category.categoryName }}</span>
@@ -38,7 +39,8 @@
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span class="price">{{ course.courseStandardPrice }} bs.</span>
-            <button type="button" class="btn btn-outline-dark btn-sm" @click="goToCourseDetails(course.courseId)">Ver más</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" @click="goToCourseDetails(course.courseId)">Ver
+              más</button>
           </div>
         </div>
       </div>
@@ -59,6 +61,7 @@ import { useCoursesStore } from "../stores/course_list";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import defaultImage from '@/assets/default.png';
 
 const coursesStore = useCoursesStore();
 const categoryStore = useCategoryStore();
@@ -80,9 +83,16 @@ onMounted(async () => {
 
 const updateCourseImages = async () => {
   for (const course of coursesStore.courses) {
-    const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${course.courseId}`);
-    if (response.data.length > 0) {
-      courseImages[course.courseId] = `http://localhost:8081/${response.data[0].image}`;
+    try {
+      const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${course.courseId}`);
+      if (response.data.length > 0 && response.data[0].image) {
+        courseImages[course.courseId] = `http://localhost:8081/${response.data[0].image}`;
+      } else {
+        courseImages[course.courseId] = defaultImage;
+      }
+    } catch (error) {
+      console.error("Error fetching course image:", error);
+      courseImages[course.courseId] = defaultImage;
     }
   }
 };
@@ -95,7 +105,7 @@ watchEffect(() => {
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
       .then(updateCourseImages)
       .catch(error => {
-        console.error("Error fetching courses:", error);
+        console.log(error)
       });
   }
 });

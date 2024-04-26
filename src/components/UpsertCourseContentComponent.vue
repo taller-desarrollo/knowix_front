@@ -25,7 +25,7 @@
                 <label :for="'attachmentName' + index" class="form-label">Nombre: </label>
                 <input :id="'attachmentName' + index" type="text" v-model="attachment.attachmentName" placeholder="Ingrese el nombre" class="form-field">
                 <label :for="'attachment' + index" class="form-label">Archivo: </label>
-                <v-file-input v-model="attachment.file" label="Archivo" @change="getByteArray(attachment.file, index)" class="form-field"></v-file-input>
+                <v-file-input v-model="attachment.attachment" @change="getByteArray(attachment.attachment, index)" label="Archivo" class="form-field"></v-file-input>
             </div>
             <button class="accept-button" show-size @click="createContent">Agregar contenido</button>
         </div>
@@ -124,7 +124,6 @@ export default {
             this.formDetails.content.attachments.push({
                 attachmentName: '',
                 attachment: '',
-                file: '',
                 status: true,
             });
         };
@@ -134,6 +133,7 @@ export default {
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     let utf8Encode = new TextEncoder();
+                    // utf8Encode.encode(reader.result)
                     this.formDetails.content.attachments[index].attachment = stringToBytes(reader.result);
                     
                     console.log("dbg: ", this.formDetails.content);

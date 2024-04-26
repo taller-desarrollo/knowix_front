@@ -9,13 +9,14 @@
     <button class="menu-toggle" @click="toggleMenu">≡</button>
     <div class="optionsNavBar" :class="{ visible: menuOpen }">
       <a href="/" @click="toggleMenu">Inicio</a>
-      <a v-if="this.$keycloak.hasResourceRole('student')" href="/student" @click="toggleMenu">Estudiante</a>
-      <div class="submenu" v-if="submenuOpen">
+      <a v-if="this.$keycloak.hasResourceRole('student')" href="#" @click.prevent="toggleSubMenu">Estudiante</a>
+      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('student')">
         <a href="/course-student" @click="toggleMenu">Cursos Inscritos</a>
         <a href="/payment-student" @click="toggleMenu">Mis Pagos</a>
       </div>
+
       <a v-if="this.$keycloak.hasResourceRole('educator')" href="#" @click.prevent="toggleSubMenu">Educador</a>
-      <div class="submenu" v-if="submenuOpen">
+      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('educator')">
         <a href="/new-course" @click="toggleMenu">Crear Curso</a>
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>

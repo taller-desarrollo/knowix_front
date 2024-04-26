@@ -1,13 +1,14 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
+import defaultImage from '@/assets/default.png';
 
 export default function useCourseDetails() {
     const router = useRouter();
     const route = useRoute();
     const courseId = route.params.id;
     const course = ref(null);
-    const courseImage = ref(null);
+    const courseImage = ref(defaultImage);
 
     onMounted(async () => {
         await fetchCourseDetails();
@@ -15,14 +16,22 @@ export default function useCourseDetails() {
     });
 
     async function fetchCourseDetails() {
-        const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
-        course.value = response.data;
+        try {
+            const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
+            course.value = response.data;
+        } catch (error) {
+            console.error("Error fetching course details:", error);
+        }
     }
 
     async function fetchCourseImage() {
-        const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${courseId}`);
-        if (response.data && response.data.length > 0) {
-            courseImage.value = `http://localhost:8081/${response.data[0].image}`;
+        try {
+            const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${courseId}`);
+            if (response.data && response.data.length > 0) {
+                courseImage.value = `http://localhost:8081/${response.data[0].image}`;
+            }
+        } catch (error) {
+            console.error("Error fetching course image:", error);
         }
     }
 
@@ -31,7 +40,12 @@ export default function useCourseDetails() {
     }
 
     function paymentCourse() {
-        router.push(`/payment-list`);
+        if (course.value && course.value.kcUserKcUuid) {
+            router.push({
+                name: 'PaymentList',
+                params: { kcUserKcUuid: course.value.kcUserKcUuid }
+            });
+        }
     }
 
     return {
