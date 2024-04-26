@@ -1,10 +1,10 @@
 <template>
-    <div class="container mt-4 ">
+    <div >
         <h1>Solicitar verificación</h1>
 
         <form @submit.prevent="submitVerification" enctype="multipart/form-data">
 
-            <div class="form-floating">
+            <div class="form-floating form-input">
                 <input
                   type="text"
                   class="form-control"
@@ -15,7 +15,7 @@
                 <label for="title"><i class="bi bi-person-fill"></i> Título </label>
             </div>
 
-            <div class="form-floating">
+            <div class="form-floating form-input">
                 <input
                   type="text"
                   class="form-control"
@@ -26,7 +26,7 @@
                 <label for="description"><i class="bi bi-person-fill"></i> Descripción </label>
             </div>
               
-            <div class="form-floating">
+            <div class="form-floating form-input">
                 <input
                   type="text"
                   class="form-control"
@@ -38,7 +38,7 @@
             </div>
 
             <div class="col-md-12">
-                <div class="form-floating">
+                <div class="form-floating form-input">
                     <input
                         type="file"
                         class="form-control"
@@ -132,3 +132,8 @@ export default {
     }
 }
 </script>
+<style>
+.form-input {
+    margin: 15px;
+}
+</style>
