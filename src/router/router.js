@@ -94,7 +94,7 @@ const routes = [
     component: CourseDetailsComponent,
   },
   {
-    path: '/payment-list/:kcUserKcUuid',
+    path: '/payment-list/:kcUserKcUuid/:courseId',
     name: 'PaymentList',
     component: PaymentList,
     meta: { requiresAuth: true, role: ['educator', 'student'] }
@@ -118,7 +118,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'student' }
   },
   {
-    path: '/buy-course',
+    path: '/buy-course/:courseId/:paymentMethodId',
     name: 'BuyCourseComponent',
     component: BuyCourseComponent,
    }
