@@ -10,7 +10,7 @@
                 <h2>{{ course.courseName }}</h2>
                 <p>{{ course.courseDescription }}</p>
                 <p><strong>Requisitos:</strong> {{ course.courseRequirements }}</p>
-                <p><strong>Precio:</strong> {{ course.courseStandardPrice }} bs.</p>
+                <p><strong>Precio:</strong>Bs. {{ course.courseStandardPrice }}</p>
                 <p><strong>Categoría:</strong> {{ course.category.categoryName }}</p>
                 <p><strong>Idioma:</strong> {{ course.language.languageName }}</p>
             </div>
