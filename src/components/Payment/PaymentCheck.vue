@@ -143,6 +143,9 @@ methods: {
     formatDate(date) {
     return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
+
+
+    
     async confirmPurchase(purchaseId) {
     this.isLoading = true;
     const reply = {
@@ -153,7 +156,6 @@ methods: {
     };
     const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
     purchase.reply = reply;
-    // send POST request to accept the purchase
     await axios.post('http://localhost:8081/api/v1/reply', reply);
     this.isLoading = false;
     Swal.fire({
@@ -162,6 +164,9 @@ methods: {
         text: 'La compra ha sido confirmada con éxito.',
     });
     },
+
+
+
     async rejectPurchase(purchaseId) {
     this.isLoading = true;
     const reply = {
