@@ -99,85 +99,6 @@
     </div>
   </div>
 </template>
-  
-  <style scoped>
-
-@import "@/styles/currentTabStyle.css";
-
-.tab-content {
-  display: flex;
-  justify-content: space-around;
-}
-
-.sales-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sale-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f7f7f7;
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-
-.sale-info,
-.sale-actions,
-.sale-comfirmation,
-.sale-rejection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.btn-secondary {
-  margin-left: 1rem;
-}
-
-.tabs {
-  display: flex;
-  flex-direction: column;
-}
-
-.tab {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.tab p {
-  margin: 0;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
-.active {
-  background-color: #3b9542;
-}
-
-.loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.sale-info h5 {
-  margin-top: 1rem;
-}
-
-  </style>
 
 <script>
 import axios from "axios";
@@ -217,6 +138,12 @@ async created() {
     const { proxy } = getCurrentInstance();
     this.userUuid = proxy.$keycloak.tokenParsed.sub;
     const response = await axios.get(`http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`);
+    const responseData = response.data;
+    if (typeof responseData === 'string' && (responseData === "" || responseData.trim() === "No hay registros para esta solicitud")) {
+      this.purchases = [];
+      this.isLoading = false;
+      return;
+    }
     this.purchases = response.data;
 
     // Initialize purchase.reply as null
@@ -233,10 +160,12 @@ async created() {
     }
   } catch (error) {
     console.error(error);
+    this.isLoading = false;
   } finally {
     this.isLoading = false;
   }
 },
+
 methods: {
     formatDate(date) {
     return moment(date).format("MMMM Do YYYY, h:mm:ss a");
@@ -388,4 +317,86 @@ methods: {
 
 };
 </script>
+
+
+  
+  <style scoped>
+
+@import "@/styles/currentTabStyle.css";
+
+.tab-content {
+  display: flex;
+  justify-content: space-around;
+}
+
+.sales-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sale-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.sale-info,
+.sale-actions,
+.sale-comfirmation,
+.sale-rejection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-secondary {
+  margin-left: 1rem;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tab p {
+  margin: 0;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #3b9542;
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sale-info h5 {
+  margin-top: 1rem;
+}
+
+  </style>
+
 
