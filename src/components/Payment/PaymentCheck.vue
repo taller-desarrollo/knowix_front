@@ -1,172 +1,198 @@
 <template>
-  <div class="content">
+<div class="content">
     <h1>Administrar ventas</h1>
     <h4>
-      Visualiza y administra los pagos recibidos por las ventas de tus cursos
+    Visualiza y administra los pagos recibidos por las ventas de tus cursos
     </h4>
     <div class="tabs">
-      <button
+    <button
         @click="currentTab = 'Pendientes'"
         :class="{ active: currentTab === 'Pendientes' }"
-      >
+    >
         Pendientes
-      </button>
-      <button
+    </button>
+    <button
         @click="currentTab = 'Aceptados'"
         :class="{ active: currentTab === 'Aceptados' }"
-      >
+    >
         Aceptados
-      </button>
-      <button
+    </button>
+    <button
         @click="currentTab = 'Rechazados'"
         :class="{ active: currentTab === 'Rechazados' }"
-      >
+    >
         Rechazados
-      </button>
+    </button>
     </div>
     <div class="tab-content">
-      <div v-if="currentTab === 'Pendientes'">
+    <div v-if="currentTab === 'Pendientes'">
         <h2>Pendientes de confirmación</h2>
         <ul class="sales-list">
-          <li v-for="purchase in pendings" :key="purchase.purchaseId">
+        <li v-for="purchase in pendings" :key="purchase.purchaseId">
             <div class="sale-item">
-              <div class="sale-info">
+            <div class="sale-info">
                 <h3>{{ purchase.course.courseName }}</h3>
                 <p>{{ formatDate(purchase.datePurchase) }}</p>
                 <p>{{ purchase.amount }} USD</p>
-              </div>
-              <div class="sale-actions">
+            </div>
+            <div class="sale-actions">
                     <button @click="confirmPurchase(purchase.purchaseId)">Confirmar</button>
                     <button @click="rejectPurchase(purchase.purchaseId)">Rechazar</button>
                 </div>
             </div>
-          </li>
+        </li>
         </ul>
-      </div>
-      <div v-if="currentTab === 'Aceptados'">
+    </div>
+    <div v-if="currentTab === 'Aceptados'">
         <h2>Ventas aceptadas</h2>
         <ul class="sales-list">
-          <li v-for="purchase in accepteds" :key="purchase.purchaseId">
+        <li v-for="purchase in accepteds" :key="purchase.purchaseId">
             <div class="sale-item">
-              <div class="sale-info">
+            <div class="sale-info">
                 <h3>{{ purchase.course.courseName }}</h3>
                 <p>{{ formatDate(purchase.datePurchase) }}</p>
                 <p>{{ purchase.amount }} USD</p>
-              </div>
-              <div class="sale-comfirmation">
+            </div>
+            <div class="sale-comfirmation">
                 <p>{{ purchase.reply.coment }}</p>
                 <p>{{ formatDate(purchase.reply.date) }}</p>
-              </div>
             </div>
-          </li>
+            </div>
+        </li>
         </ul>
-      </div>
-      <div v-if="currentTab === 'Rechazados'">
+    </div>
+    <div v-if="currentTab === 'Rechazados'">
         <h2>Ventas rechazadas</h2>
         <ul class="sales-list">
-          <li v-for="purchase in rechazeds" :key="purchase.purchaseId">
+        <li v-for="purchase in rechazeds" :key="purchase.purchaseId">
             <div class="sale-item">
-              <div class="sale-info">
+            <div class="sale-info">
                 <h3>{{ purchase.course.courseName }}</h3>
                 <p>{{ formatDate(purchase.datePurchase) }}</p>
                 <p>{{ purchase.amount }} USD</p>
-              </div>
-              <div class="sale-rejection">
+            </div>
+            <div class="sale-rejection">
                 <p>{{ purchase.reply.coment }}</p>
                 <p>{{ formatDate(purchase.reply.date) }}</p>
-              </div>
             </div>
-          </li>
+            </div>
+        </li>
         </ul>
-      </div>
+    </div>
     </div>
     <div class="loading" v-if="isLoading">
-      <p>Cargando...</p>
+        <p>Cargando...</p>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
 import axios from "axios";
 import moment from "moment";
+import Swal from 'sweetalert2'
 
 export default {
-  data() {
-    return {
-      currentTab: "Pendientes",
-      purchases: [],
-      isLoading: true,
-    };
-  },
-  computed: {
+data() {
+  return {
+    currentTab: "Pendientes",
+    purchases: [],
+    isLoading: false,
+  };
+},
+computed: {
     accepteds() {
-      return this.purchases.filter(
+    return this.purchases.filter(
         (purchase) => purchase.reply && purchase.reply.status
-      );
+    );
     },
     rechazeds() {
-      return this.purchases.filter(
+    return this.purchases.filter(
         (purchase) => purchase.reply && !purchase.reply.status
-      );
+    );
     },
     pendings() {
-      return this.purchases.filter((purchase) => !purchase.reply);
+    return this.purchases.filter((purchase) => !purchase.reply);
     },
-  },
-  async created() {
-    try {
-      const response = await axios.get(
-        "http://localhost:8081/api/v1/purchase/seller/05f0b4fa-e28b-409f-96ec-1f3d2f505554"
+},
+async created() {
+  this.isLoading = true;
+  try {
+    const response = await axios.get(
+      "http://localhost:8081/api/v1/purchase/seller/05f0b4fa-e28b-409f-96ec-1f3d2f505554"
+    );
+    this.purchases = response.data;
+    // Fetch replies
+    for (const purchase of this.purchases) {
+      if (purchase.reply) continue;
+      const replyResponse = await axios.get(
+        `http://localhost:8081/api/v1/reply/purchase/${purchase.purchaseId}`
       );
-      this.purchases = response.data;
-
-      // Fetch replies
-      for (const purchase of this.purchases) {
-        if (purchase.reply) continue;
-        const replyResponse = await axios.get(
-          `http://localhost:8081/api/v1/reply/purchase/${purchase.purchaseId}`
-        );
-        purchase.reply = replyResponse.data;
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isLoading = false;
+      purchase.reply = replyResponse.data;
     }
-  },
-  methods: {
+  } catch (error) {
+    console.error(error);
+  } finally {
+    this.isLoading = false;
+  }
+},
+methods: {
     formatDate(date) {
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
+    return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
     async confirmPurchase(purchaseId) {
-      const reply = {
+    this.isLoading = true;
+    const reply = {
         status: true,
         date: new Date(),
         coment: "Aprobado con Normalidad",
         purchaseId,
-      };
-
-      const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
-      purchase.reply = reply;
-
-      // send POST request to accept the purchase
-      await axios.post('http://localhost:8081/api/v1/reply', reply);
+    };
+    const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+    purchase.reply = reply;
+    // send POST request to accept the purchase
+    await axios.post('http://localhost:8081/api/v1/reply', reply);
+    this.isLoading = false;
+    Swal.fire({
+        icon: 'success',
+        title: 'Compra confirmada',
+        text: 'La compra ha sido confirmada con éxito.',
+    });
     },
     async rejectPurchase(purchaseId) {
-      const reply = {
+    this.isLoading = true;
+    const reply = {
         status: false,
         date: new Date(),
         coment: "Comprobante no valido",
         purchaseId,
-      };
-
-      const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
-      purchase.reply = reply;
-
-      // send POST request to reject the purchase
-      await axios.post('http://localhost:8081/api/v1/reply', reply);
+    };
+    const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+    purchase.reply = reply;
+    // send POST request to reject the purchase
+    await axios.post('http://localhost:8081/api/v1/reply', reply);
+    this.isLoading = false;
+    Swal.fire({
+        icon: 'error',
+        title: 'Compra rechazada',
+        text: 'La compra ha sido rechazada.',
+    });
     },
-  },
+
+    async rejectPurchase(purchaseId) {
+    const reply = {
+        status: false,
+        date: new Date(),
+        coment: "Comprobante no valido",
+        purchaseId,
+    };
+
+    const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+    purchase.reply = reply;
+
+    // send POST request to reject the purchase
+    await axios.post('http://localhost:8081/api/v1/reply', reply);
+    },
+},
 };
 </script>
 
@@ -175,26 +201,26 @@ export default {
 
 
 .tab-content {
-  display: flex;
-  justify-content: space-around;
+display: flex;
+justify-content: space-around;
 }
 
 .sales-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+list-style: none;
+padding: 0;
+display: flex;
+flex-direction: column;
+gap: 1rem;
 }
 
 .sale-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #474747;
-  padding: 1rem;
-  border-radius: 5px;
-  color: black;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #474747;
+padding: 1rem;
+border-radius: 5px;
+color: black;
 
 }
 
@@ -208,18 +234,18 @@ export default {
 }
 
 .sale-actions {
-  display: flex;
-  gap: 1rem;
+display: flex;
+gap: 1rem;
 }
 
 button:hover {
-  background-color: #45a049;
+background-color: #45a049;
 }
 
 .loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100px;
 }
 </style>
