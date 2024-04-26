@@ -36,10 +36,9 @@
                 <p>{{ purchase.amount }} USD</p>
               </div>
               <div class="sale-actions">
-                <button @click="confirmPurchase(purchase.purchaseId)">
-                  Confirmar
-                </button>
-              </div>
+                    <button @click="confirmPurchase(purchase.purchaseId)">Confirmar</button>
+                    <button @click="rejectPurchase(purchase.purchaseId)">Rechazar</button>
+                </div>
             </div>
           </li>
         </ul>
@@ -143,12 +142,29 @@ export default {
       const reply = {
         status: true,
         date: new Date(),
-        coment: "Aceptado con Normalidad",
+        coment: "Aprobado con Normalidad",
         purchaseId,
       };
 
       const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
       purchase.reply = reply;
+
+      // send POST request to accept the purchase
+      await axios.post('http://localhost:8081/api/v1/reply', reply);
+    },
+    async rejectPurchase(purchaseId) {
+      const reply = {
+        status: false,
+        date: new Date(),
+        coment: "Comprobante no valido",
+        purchaseId,
+      };
+
+      const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+      purchase.reply = reply;
+
+      // send POST request to reject the purchase
+      await axios.post('http://localhost:8081/api/v1/reply', reply);
     },
   },
 };
