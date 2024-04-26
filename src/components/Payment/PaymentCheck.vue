@@ -94,6 +94,10 @@
 import axios from "axios";
 import moment from "moment";
 import Swal from 'sweetalert2'
+import { useRoute } from 'vue-router';
+import { getCurrentInstance } from "vue";
+
+
 
 export default {
 data() {
@@ -121,8 +125,11 @@ computed: {
 async created() {
   this.isLoading = true;
   try {
+    const { proxy } = getCurrentInstance();
+    this.userUuid = proxy.$keycloak.tokenParsed.sub;
+
     const response = await axios.get(
-      "http://localhost:8081/api/v1/purchase/seller/05f0b4fa-e28b-409f-96ec-1f3d2f505554"
+        `http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`
     );
     this.purchases = response.data;
     // Fetch replies
@@ -201,7 +208,19 @@ methods: {
     // send POST request to reject the purchase
     await axios.post('http://localhost:8081/api/v1/reply', reply);
     },
+
+    setup() {
+        const route = useRoute();
+        const kcUserKcUuid = route.params.kcUserKcUuid;
+        return {
+            kcUserKcUuid
+        };
+    },
+
+
 },
+
+
 };
 </script>
 
