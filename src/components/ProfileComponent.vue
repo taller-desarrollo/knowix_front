@@ -37,8 +37,7 @@
             <label for="secondName">Apellido: </label>
             <input type="text" id="secondName" v-model="secondName" />
             <label for="correo">Correo: </label>
-            <input type="email" id="email" v-model="email" />
-            <!-- <label for="ocupacion">Rol dentro de Knowix: </label> -->
+            <input type="email" id="email" v-model="email"/>
           </div>
 
           <div v-if="editing">

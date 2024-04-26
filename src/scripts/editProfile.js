@@ -69,7 +69,7 @@ export default {
                 if (role.length != 0) role += ' | ';
                 role += 'Estudiante';
             }
-            if(roles?.includes('admin')) {
+            if(roles?.includes('administrator')) {
                 if (role.length !== 0) role += ' | ';
                 role += 'Administrador';
             }

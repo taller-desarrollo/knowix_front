@@ -21,10 +21,12 @@
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
         <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
+        <a href="/payment-check" @click="toggleMenu">Administrar Pagos</a>
+        <a href="/verification-list" @click="toggleMenu">Solicitar verificación</a>
       </div>
       
-      <a v-if="this.$keycloak.hasResourceRole('admin')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
-      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('admin')">
+      <a v-if="this.$keycloak.hasResourceRole('administrator')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
+      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('administrator')">
         <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
       </div>
 

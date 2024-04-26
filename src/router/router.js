@@ -19,6 +19,8 @@ import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
 import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 import Swal from 'sweetalert2';
 import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
+import EducatorVerificationRequestComponent from '@/components/EducatorVerificationRequestComponent.vue';
+import EducatorVerificationListComponent from '@/components/EducatorVerificationListComponent.vue';
 
 const routes = [
   {
@@ -120,9 +122,21 @@ const routes = [
   },
   {
     path: '/pending-verification',
-    name: 'PendingVerificationList',
+    name: 'pending-verification',
     component: PendingVerificationListComponent,
-    meta: { requiresAuth: true, role: 'admin'}
+    meta: { requiresAuth: true, role: 'administrator'}
+  },
+  {
+    path: '/verification-list',
+    name: 'verification-list',
+    component: EducatorVerificationListComponent,
+    meta: { requiresAuth: true, role: 'educator'}
+  },
+  {
+    path: '/verification-request',
+    name: 'verification-request',
+    component: EducatorVerificationRequestComponent,
+    meta: { requiresAuth: true, role: 'educator'}
   },
   {
     path: '/buy-course',
