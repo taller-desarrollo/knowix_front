@@ -1,95 +1,183 @@
 <template>
-<div class="content">
-    <h1>Administrar ventas</h1>
-    <h4>
-    Visualiza y administra los pagos recibidos por las ventas de tus cursos
-    </h4>
+  <div class="content">
+    <h1 class="mb-4">Administrar ventas</h1>
     <div class="tabs">
-    <button
-        @click="currentTab = 'Pendientes'"
-        :class="{ active: currentTab === 'Pendientes' }"
-    >
-        Pendientes
-    </button>
-    <button
-        @click="currentTab = 'Aceptados'"
-        :class="{ active: currentTab === 'Aceptados' }"
-    >
-        Aceptados
-    </button>
-    <button
-        @click="currentTab = 'Rechazados'"
-        :class="{ active: currentTab === 'Rechazados' }"
-    >
-        Rechazados
-    </button>
+      <div class="tab" @click="currentTab = 'Pendientes'">
+        <p :class="{ active: currentTab === 'Pendientes' }">Pendientes</p>
+      </div>
+      <div class="tab" @click="currentTab = 'Aceptados'">
+        <p :class="{ active: currentTab === 'Aceptados' }">Aceptados</p>
+      </div>
+      <div class="tab" @click="currentTab = 'Rechazados'">
+        <p :class="{ active: currentTab === 'Rechazados' }">Rechazados</p>
+      </div>
     </div>
     <div class="tab-content">
-    <div v-if="currentTab === 'Pendientes'">
-        <h2>Pendientes de confirmación</h2>
-        <ul class="sales-list">
-        <li v-for="purchase in pendings" :key="purchase.purchaseId">
-            <div class="sale-item">
+      <div v-if="currentTab === 'Pendientes'">
+        <h2 class="mb-4">Pendientes de confirmación</h2>
+        <ul class="list-group sales-list">
+        <li v-for="purchase in pendings" :key="purchase.purchaseId" class="list-group-item">
+          <div class="sale-item">
             <div class="sale-info">
-                <h3>{{ purchase.course.courseName }}</h3>
-                <p>{{ formatDate(purchase.datePurchase) }}</p>
-                <p>{{ purchase.amount }} USD</p>
-                <p>{{ purchase.imageComprobante }}</p>
-<a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank">Ver Comprobante Recibido</a>
-         
+              <h3 class="text-dark">Nombre del curso: {{ purchase.course.courseName }}</h3>
+              <p class="text-dark">Fecha de compra: {{ formatDate(purchase.datePurchase) }}</p>
+              <p class="text-dark">Monto: {{ purchase.amount }} Bs</p>
+              <hr> <!-- Divider line -->
+              <h5 class="text-dark">Detalles del método de pago</h5>
+              <p class="text-dark">Nombre del titular: {{ purchase.paymentMethod.nameOwner }}</p>
+              <p class="text-dark">CI: {{ purchase.paymentMethod.ciPerson }}</p>
+              <p class="text-dark">Teléfono: {{ purchase.paymentMethod.phoneNumber }}</p>
+              <p class="text-dark">Número de cuenta: {{ purchase.paymentMethod.accountNumber }}</p>
 
             </div>
             <div class="sale-actions">
-                    <button @click="confirmPurchaseWithCheckbox(purchase.purchaseId)">Confirmar</button>
-                    <button @click="rejectPurchaseWithComment(purchase.purchaseId)">Rechazar</button>
+              <button @click="confirmPurchaseWithCheckbox(purchase.purchaseId)" class="btn btn-sm btn-success text-dark">Confirmar</button>
+              <button @click="rejectPurchaseWithComment(purchase.purchaseId)" class="btn btn-sm btn-danger text-dark">Rechazar</button>
+              <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+      </div>
+      <div v-if="currentTab === 'Aceptados'">
+        <h2 class="mb-4">Ventas aceptadas</h2>
+        <ul class="list-group sales-list">
+  <li v-for="purchase in accepteds" :key="purchase.purchaseId" class="list-group-item">
+    <div class="sale-item">
+      <div class="sale-info">
+        <h3 class="text-dark">Nombre del curso: {{ purchase.course.courseName }}</h3>
+        <p class="text-dark">Fecha de compra: {{ formatDate(purchase.datePurchase) }}</p>
+        <p class="text-dark">Monto: {{ purchase.amount }} Bs</p>
+        <hr> <!-- Divider line -->
+        <h5 class="text-dark">Detalles del método de pago</h5>
+        <p class="text-dark">Nombre del titular: {{ purchase.paymentMethod.nameOwner }}</p>
+        <p class="text-dark">CI: {{ purchase.paymentMethod.ciPerson }}</p>
+        <p class="text-dark">Número de cuenta: {{ purchase.paymentMethod.accountNumber }}</p>
+        <hr> <!-- Divider line -->
+        <h5 class="text-dark">Detalles de la compra</h5>
+        <p class="text-dark">Aceptado el: {{ formatDate(purchase.reply.date) }}</p>
+        <p class="text-dark">{{ purchase.reply.coment }}</p>
 
-                </div>
-            </div>
-        </li>
-        </ul>
+        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+      </div>
     </div>
-    <div v-if="currentTab === 'Aceptados'">
-        <h2>Ventas aceptadas</h2>
-        <ul class="sales-list">
-        <li v-for="purchase in accepteds" :key="purchase.purchaseId">
-            <div class="sale-item">
-            <div class="sale-info">
-                <h3>{{ purchase.course.courseName }}</h3>
-                <p>{{ formatDate(purchase.datePurchase) }}</p>
-                <p>{{ purchase.amount }} USD</p>
-            </div>
-            <div class="sale-comfirmation">
-                <p>{{ purchase.reply.coment }}</p>
-                <p>{{ formatDate(purchase.reply.date) }}</p>
-            </div>
-            </div>
-        </li>
-        </ul>
+  </li>
+</ul>
+
+
+
+      </div>
+      <div v-if="currentTab === 'Rechazados'">
+        <h2 class="mb-4">Ventas rechazadas</h2>
+        <ul class="list-group sales-list">
+  <li v-for="purchase in rechazeds" :key="purchase.purchaseId" class="list-group-item">
+    <div class="sale-item">
+      <div class="sale-info">
+        <h3 class="text-dark">Nombre del curso: {{ purchase.course.courseName }}</h3>
+        <p class="text-dark">Fecha de compra: {{ formatDate(purchase.datePurchase) }}</p>
+        <p class="text-dark">Monto: {{ purchase.amount }} Bs</p>
+
+        <h5 class="text-dark">Método de pago:</h5>
+        <p class="text-dark">Nombre del titular: {{ purchase.paymentMethod.nameOwner }}</p>
+        <p class="text-dark">CI: {{ purchase.paymentMethod.ciPerson }}</p>
+        <p class="text-dark">Número de cuenta: {{ purchase.paymentMethod.accountNumber }}</p>
+
+
+        <h5 class="text-dark">Detalles del rechazo</h5>
+        <p class="text-dark">Rechazado el: {{ formatDate(purchase.reply.date) }}</p>
+        <p class="text-dark" style="color: red;">{{ purchase.reply.coment }}</p>
+        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+      </div>
     </div>
-    <div v-if="currentTab === 'Rechazados'">
-        <h2>Ventas rechazadas</h2>
-        <ul class="sales-list">
-        <li v-for="purchase in rechazeds" :key="purchase.purchaseId">
-            <div class="sale-item">
-            <div class="sale-info">
-                <h3>{{ purchase.course.courseName }}</h3>
-                <p>{{ formatDate(purchase.datePurchase) }}</p>
-                <p>{{ purchase.amount }} USD</p>
-            </div>
-            <div class="sale-rejection">
-                <p>{{ purchase.reply.coment }}</p>
-                <p>{{ formatDate(purchase.reply.date) }}</p>
-            </div>
-            </div>
-        </li>
-        </ul>
-    </div>
+  </li>
+</ul>
+
+      </div>
     </div>
     <div class="loading" v-if="isLoading">
-        <p>Cargando...</p>
+      <p class="text-center text-dark">Cargando...</p>
     </div>
-</div>
+  </div>
 </template>
+  
+  <style scoped>
+
+@import "@/styles/currentTabStyle.css";
+
+.tab-content {
+  display: flex;
+  justify-content: space-around;
+}
+
+.sales-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sale-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.sale-info,
+.sale-actions,
+.sale-comfirmation,
+.sale-rejection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-secondary {
+  margin-left: 1rem;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tab p {
+  margin: 0;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #3b9542;
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sale-info h5 {
+  margin-top: 1rem;
+}
+
+  </style>
 
 <script>
 import axios from "axios";
@@ -301,76 +389,3 @@ methods: {
 };
 </script>
 
-<style scoped>
-@import "@/styles/currentTabStyle.css";
-
-
-.tab-content {
-display: flex;
-justify-content: space-around;
-}
-
-.sales-list {
-list-style: none;
-padding: 0;
-display: flex;
-flex-direction: column;
-gap: 1rem;
-}
-
-.sale-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-background-color: #474747;
-padding: 1rem;
-border-radius: 5px;
-color: black;
-
-}
-
-.sale-info,
-.sale-comfirmation,
-.sale-rejection {
-    flex: 1;
-    margin-right: 1rem;
-    color: black;
-
-}
-
-.sale-actions {
-display: flex;
-gap: 1rem;
-}
-
-button:hover {
-background-color: #45a049;
-}
-
-.loading {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100px;
-}
-
-.confirm-button {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.cancel-button {
-  background-color: #FF5722;
-  color: white;
-}
-
-.reject-button {
-  background-color: #FF5722;
-  color: white;
-}
-
-.cancel-button {
-  background-color: #4CAF50;
-  color: white;
-}
-</style>
