@@ -40,8 +40,9 @@
 
             </div>
             <div class="sale-actions">
-                    <button @click="confirmPurchase(purchase.purchaseId)">Confirmar</button>
-                    <button @click="rejectPurchase(purchase.purchaseId)">Rechazar</button>
+                    <button @click="confirmPurchaseWithCheckbox(purchase.purchaseId)">Confirmar</button>
+                    <button @click="rejectPurchaseWithComment(purchase.purchaseId)">Rechazar</button>
+
                 </div>
             </div>
         </li>
@@ -127,17 +128,19 @@ async created() {
   try {
     const { proxy } = getCurrentInstance();
     this.userUuid = proxy.$keycloak.tokenParsed.sub;
-
-    const response = await axios.get(
-        `http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`
-    );
+    const response = await axios.get(`http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`);
     this.purchases = response.data;
-    // Fetch replies
+
+    // Initialize purchase.reply as null
+    this.purchases = this.purchases.map(purchase => ({
+      ...purchase,
+      reply: null
+    }));
+
+    // Fetch replies for each purchase
     for (const purchase of this.purchases) {
       if (purchase.reply) continue;
-      const replyResponse = await axios.get(
-        `http://localhost:8081/api/v1/reply/purchase/${purchase.purchaseId}`
-      );
+      const replyResponse = await axios.get(`http://localhost:8081/api/v1/reply/purchase/${purchase.purchaseId}`);
       purchase.reply = replyResponse.data;
     }
   } catch (error) {
@@ -151,48 +154,122 @@ methods: {
     return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
 
+    async confirmPurchaseWithCheckbox(purchaseId) {
+      this.isLoading = true;
 
-    
-    async confirmPurchase(purchaseId) {
-    this.isLoading = true;
+      const result = await Swal.fire({
+        title: 'Confirmar compra',
+        text: '¿Estás seguro de confirmar la compra y de haber recibido el monto solicitado en tu número de cuenta?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, confirmar',
+        cancelButtonText: 'No, cancelar',
+        reverseButtons: true,
+        customClass: {
+          confirmButton: 'confirm-button',
+          cancelButton: 'cancel-button'
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      });
+
+      if (result.isConfirmed) {
+        const reply = {
+          status: true,
+          date: new Date(),
+          coment: "Aprobado con Normalidad",
+          purchaseId,
+        };
+
+        const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+        purchase.reply = reply;
+
+        await axios.post('http://localhost:8081/api/v1/reply', reply);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Compra confirmada',
+          text: 'La compra ha sido confirmada con éxito.',
+        });
+      }
+
+      this.isLoading = false;
+    },
+
+
+    async rejectPurchaseWithComment(purchaseId) {
+  this.isLoading = true;
+
+  // Mostrar alerta con selección y un input condicional
+  const { value: formValues } = await Swal.fire({
+    title: 'Rechazar compra',
+    html: `
+      <select id="swal-input1" class="swal2-input">
+        <option value="">Seleccione una razón</option>
+        <option value="Pago incompleto">Pago incompleto</option>
+        <option value="Cuenta bancaria erronea">Cuenta bancaria erronea</option>
+        <option value="Imagen no correspondiente a un comprobante">Imagen no correspondiente a un comprobante</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <input id="swal-input2" class="swal2-input" style="display:none;" placeholder="Escribe aquí tu razón...">
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Rechazar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true,
+    preConfirm: () => {
+      const reason = document.getElementById('swal-input1').value;
+      const customReason = document.getElementById('swal-input2').value;
+      if (!reason) {
+        Swal.showValidationMessage("Por favor, seleccione una razón");
+      } else if (reason === "Otro" && !customReason) {
+        Swal.showValidationMessage("Por favor, escriba una razón");
+      }
+      return { reason, customReason };
+    },
+    willOpen: () => {
+      const select = document.getElementById('swal-input1');
+      const input = document.getElementById('swal-input2');
+      select.addEventListener('change', () => {
+        if (select.value === "Otro") {
+          input.style.display = 'block';
+        } else {
+          input.style.display = 'none';
+        }
+      });
+    }
+  });
+
+  if (formValues) {
+    const { reason, customReason } = formValues;
     const reply = {
-        status: true,
-        date: new Date(),
-        coment: "Aprobado con Normalidad",
-        purchaseId,
+      status: false,
+      date: new Date(),
+      coment: reason === "Otro" ? customReason : reason,
+      purchaseId,
     };
-    const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
+
+    const purchase = this.purchases.find(p => p.purchaseId === purchaseId);
     purchase.reply = reply;
-    await axios.post('http://localhost:8081/api/v1/reply', reply);
-    this.isLoading = false;
-    Swal.fire({
+
+    await axios.post('http://localhost:8081/api/v1/reply', reply).then(response => {
+      Swal.fire({
         icon: 'success',
-        title: 'Compra confirmada',
-        text: 'La compra ha sido confirmada con éxito.',
-    });
-    },
-
-
-
-    async rejectPurchase(purchaseId) {
-    this.isLoading = true;
-    const reply = {
-        status: false,
-        date: new Date(),
-        coment: "Comprobante no valido",
-        purchaseId,
-    };
-    const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
-    purchase.reply = reply;
-    // send POST request to reject the purchase
-    await axios.post('http://localhost:8081/api/v1/reply', reply);
-    this.isLoading = false;
-    Swal.fire({
+        title: 'Respuesta enviada',
+        text: 'La respuesta a la compra ha sido actualizada con éxito.',
+      });
+    }).catch(error => {
+      console.error('Error al enviar la respuesta: ', error);
+      Swal.fire({
         icon: 'error',
-        title: 'Compra rechazada',
-        text: 'La compra ha sido rechazada.',
+        title: 'Error al actualizar',
+        text: 'Ocurrió un error al actualizar la respuesta de la compra.',
+      });
     });
-    },
+  }
+  this.isLoading = false;
+},
+
 
     async rejectPurchase(purchaseId) {
     const reply = {
@@ -275,5 +352,25 @@ display: flex;
 justify-content: center;
 align-items: center;
 height: 100px;
+}
+
+.confirm-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #FF5722;
+  color: white;
+}
+
+.reject-button {
+  background-color: #FF5722;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #4CAF50;
+  color: white;
 }
 </style>
