@@ -17,6 +17,7 @@ import PaymentCheck from '@/components/Payment/PaymentCheck.vue';
 import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
 import Swal from 'sweetalert2';
+import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
 
 const routes = [
   {
@@ -115,6 +116,12 @@ const routes = [
     name: 'CourseStudentComponent',
     component: CourseStudentComponent,
     meta: { requiresAuth: true, role: 'student' }
+  },
+  {
+    path: '/pending-verification',
+    name: 'PendingVerificationList',
+    component: PendingVerificationListComponent,
+    meta: { requiresAuth: true, role: 'admin'}
   }
 ];
 

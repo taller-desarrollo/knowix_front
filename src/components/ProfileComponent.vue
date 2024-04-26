@@ -38,24 +38,10 @@
             <input type="text" id="secondName" v-model="secondName" />
             <label for="correo">Correo: </label>
             <input type="email" id="email" v-model="email" />
-            <label for="ocupacion">Rol dentro de Knowix: </label>
-            <!--<div>
-              <input type="checkbox" id="student" v-model="roles" value="student">
-              <label for="student">Soy un estudiante</label>
-            </div>
-            <div>
-              <input type="checkbox" id="educator" v-model="roles" value="educator">
-              <label for="educator">Soy un educador</label>
-            </div>-->
+            <!-- <label for="ocupacion">Rol dentro de Knowix: </label> -->
           </div>
 
           <div v-if="editing">
-            <!-- <label for="password">Contraseña: </label>
-            <input type="password" id="password" v-model="password" placeholder="Nueva contraseña" />
-            <label for="confirmPassword">Confirmar Contraseña: </label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword"
-              placeholder="Confirmar nueva contraseña" />
-            <p>Si no tienes una red social, coloca - por favor.</p> -->
             <div v-for="(link, index) in socialLinks" :key="link.socialMediaId">
               <label :for="'social' + index">Red Social {{ index + 1 }}: </label>
               <input :id="'social' + index" type="text" v-model="link.url" placeholder="Ingrese el URL">
