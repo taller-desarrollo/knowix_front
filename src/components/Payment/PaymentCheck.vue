@@ -139,7 +139,7 @@ async created() {
     this.userUuid = proxy.$keycloak.tokenParsed.sub;
     const response = await axios.get(`http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`);
     const responseData = response.data;
-    if (responseData === "" || responseData.trim() === "No hay registros para esta solicitud") {
+    if (typeof responseData === 'string' && (responseData === "" || responseData.trim() === "No hay registros para esta solicitud")) {
       this.purchases = [];
       this.isLoading = false;
       return;
