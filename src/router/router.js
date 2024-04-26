@@ -16,6 +16,7 @@ import PaymentList from '@/components/Payment/PaymentList.vue';
 import PaymentCheck from '@/components/Payment/PaymentCheck.vue';
 import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
+import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 import Swal from 'sweetalert2';
 import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
 
@@ -122,6 +123,11 @@ const routes = [
     name: 'PendingVerificationList',
     component: PendingVerificationListComponent,
     meta: { requiresAuth: true, role: 'admin'}
+  },
+  {
+    path: '/buy-course',
+    name: 'BuyCourseComponent',
+    component: BuyCourseComponent,
   }
 ];
 
