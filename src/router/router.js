@@ -121,6 +121,7 @@ const routes = [
     path: '/buy-course/:courseId/:paymentMethodId',
     name: 'BuyCourseComponent',
     component: BuyCourseComponent,
+    meta: { requiresAuth: true, role: ['educator', 'student'] }
    }
 ];
 

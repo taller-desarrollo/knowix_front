@@ -4,7 +4,7 @@
     <h4>Por favor, verifique que los datos sean correctos y envie el comprobante de compra.</h4>
     <form @submit.prevent="submitForm" class="buycourse">
       <div class="form-group">
-        <label for="amount">Costo del curso:</label>
+        <label for="amount">Costo del curso (Bs):</label>
         <input type="number" step="0.01" class="form-control" id="amount" v-model.number="purchase.amount" required
           readonly>
       </div>
@@ -21,7 +21,7 @@
         <input type="text" class="form-control" id="paymentMethodId" v-model="purchase.paymentMethodId" required
           readonly>
       </div>
-      <input type="hidden" id="kcUserKcUuid" v-model="purchase.kcUserKcUuid">
+      <input type="hidden" class="form-control" id="kcUserKcUuid" v-model="purchase.kcUserKcUuid" required readonly>
       <button type="submit">ENVIAR</button>
     </form>
   </div>
@@ -32,7 +32,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default {
-  props: ['courseId', 'paymentMethodId'],
   data() {
     return {
       purchase: {
@@ -40,25 +39,38 @@ export default {
         imageFile: null,
         courseId: null,
         paymentMethodId: null,
-        kcUserKcUuid: null
-      }
+        kcUserKcUuid: null,
+        datePurchase: null
+      },
+      course: null,
+      paymentMethod: null
     };
   },
   mounted() {
-    this.purchase.courseId = this.courseId;
-    this.purchase.paymentMethodId = this.paymentMethodId;
-    this.loadCourseDetails();
+    const courseId = this.$route.params.courseId;
+    const paymentMethodId = this.$route.params.paymentMethodId;
+
+    axios.get(`http://localhost:8081/api/v1/course/${courseId}`)
+      .then(response => {
+        this.course = response.data;
+        this.purchase.amount = this.course.courseStandardPrice;
+        this.purchase.courseId = this.course.courseId;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    axios.get(`http://localhost:8081/api/v1/paymentmethod/${paymentMethodId}`)
+      .then(response => {
+        this.paymentMethod = response.data;
+        this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
+        this.purchase.kcUserKcUuid = this.paymentMethod.kcUserKcUuid;
+      })
+      .catch(error => {
+        console.error(error);
+      });
   },
   methods: {
-    loadCourseDetails() {
-      axios.get(`http://localhost:8081/api/v1/course/${this.courseId}`)
-        .then(response => {
-          this.purchase.amount = response.data.courseStandardPrice;
-        })
-        .catch(error => {
-          console.error('Error fetching course details:', error);
-        });
-    },
     onFileChange(e) {
       this.purchase.imageFile = e.target.files[0];
     },
@@ -78,16 +90,18 @@ export default {
       })
         .then(response => {
           Swal.fire({
-            title: 'Se subió el comprobante de compra exitosamente!',
-            text: 'Gracias por su compra',
+            title: '¡Comprobante enviado!',
+            text: 'Su comprobante de compra ha sido enviado exitosamente.',
             icon: 'success',
             confirmButtonText: 'Aceptar'
           });
+          console.log(response.data);
         })
         .catch(error => {
+          console.error('Error during purchase:', error);
           Swal.fire({
-            title: 'Error al subir el comprobante de compra',
-            text: 'Por favor, intente de nuevo',
+            title: '¡Error!',
+            text: 'Ha ocurrido un error al enviar su comprobante de compra.',
             icon: 'error',
             confirmButtonText: 'Aceptar'
           });
