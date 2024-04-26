@@ -123,11 +123,12 @@ const routes = [
     name: 'BuyCourseComponent',
     component: BuyCourseComponent,
     meta: { requiresAuth: true, role: ['educator', 'student'] }
-   }
+  },
+  {
     path: '/pending-verification',
     name: 'PendingVerificationList',
     component: PendingVerificationListComponent,
-    meta: { requiresAuth: true, role: 'admin'}
+    meta: { requiresAuth: true, role: 'admin' }
   },
 ];
 
