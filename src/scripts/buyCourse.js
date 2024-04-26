@@ -13,7 +13,7 @@ export default {
                 datePurchase: null
             },
             course: null,
-            paymentMethod: null
+            paymentMethod: null,
         };
     },
     mounted() {
@@ -37,6 +37,7 @@ export default {
                 this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
                 this.purchase.kcUserKcUuid = this.paymentMethod.kcUserKcUuid;
                 this.purchase.accountNumber = this.paymentMethod.accountNumber;
+                this.paymentMethod.qrImage = response.data.qrImage;
             })
             .catch(error => {
                 console.error(error);
@@ -44,7 +45,19 @@ export default {
     },
     methods: {
         onFileChange(e) {
-            this.purchase.imageFile = e.target.files[0];
+            const file = e.target.files[0];
+            if (file && ['image/jpeg', 'image/png'].includes(file.type)) {
+                this.purchase.imageFile = e.target.files[0];
+            } else {
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Debe seleccionar un archivo de imagen en formato JPG o PNG.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    e.target.value = '';
+                });
+            }
         },
         submitForm() {
             const formData = new FormData();
@@ -63,7 +76,7 @@ export default {
                 .then(response => {
                     Swal.fire({
                         title: '¡Comprobante enviado!',
-                        text: 'Su comprobante de compra ha sido enviado exitosamente.',
+                        text: 'Su comprobante de compra ha sido enviado exitosamente. Debe esperar a que el educador valide su comprobante.',
                         icon: 'success',
                         confirmButtonText: 'Aceptar'
                     }).then(() => {

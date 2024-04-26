@@ -12,7 +12,6 @@
                         <h5>{{ method.nameOwner }}</h5>
                         <p>Número de cuenta: {{ method.accountNumber }}</p>
                         <p>Teléfono: {{ method.phoneNumber }}</p>
-                        <img :src="`http://localhost:8081/${method.qrImage}`" alt="QR Code" class="qr-image" />
                     </router-link>
                 </li>
             </ul>
