@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <div class="head-courses">
-            <h1>Solicitud de Verificación</h1>
+            <h1>Solicitudes de Verificación</h1>
             <button class="general" @click="requestVerification()">Solicitar Verificación</button>
         </div>
         <div v-if="isLoading">
@@ -28,7 +28,7 @@
 </template>
 <script setup>
     import { useRouter } from 'vue-router';
-    import { useVerificationStore } from "@/stores/educatorVerificationStore";
+    import { useVerificationStore } from "@/stores/verificationStore";
     import { onMounted, computed, ref } from "vue";
     import { keycloak } from "@/main";
     
@@ -47,4 +47,4 @@
     const requestVerification =  () => {
         router.push({ name: 'verification-request'});
     }
-</script>
+</script>@/stores/verificationStore

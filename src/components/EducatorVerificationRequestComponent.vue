@@ -110,6 +110,8 @@ export default {
                     .then(
                     async (response) => {
                         console.log(response);
+                        let token = keycloak.token;
+
                         await axios.post("http://localhost:8081/api/v1/verification-request/" + response.data.id + "/attachment", {
                             title: this.formData.title,
                             file: this.pdfFile,
@@ -118,8 +120,32 @@ export default {
                         },
                         {
                             headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'Authorization': `Bearer ${token}`,
                                 "X-UUID":  keycloak.tokenParsed.sub,
                             }
+                        })
+                        .then((response) => {
+                            if(response.status === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Contenido agregado!',
+                                    text: 'El curso ha sido actualizado con éxito.',
+                                    confirmButtonText: 'Aceptar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        router.go(-1);
+                                    }
+                                });
+                            }
+                        })
+                        .error(() => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Algo salió mal al intentar subir la verificación.',
+                                confirmButtonText: 'Aceptar'
+                            });
                         });
                     }
                 );
