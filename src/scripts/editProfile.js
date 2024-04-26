@@ -69,6 +69,10 @@ export default {
                 if (role.length != 0) role += ' | ';
                 role += 'Estudiante';
             }
+            if(roles?.includes('admin')) {
+                if (role.length !== 0) role += ' | ';
+                role += 'Administrador';
+            }
             if (role.length === 0) return 'Rol no encontrado';
             return role;
         },

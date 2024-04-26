@@ -18,6 +18,7 @@ import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
 import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 import Swal from 'sweetalert2';
+import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
 
 const routes = [
   {
@@ -123,6 +124,11 @@ const routes = [
     component: BuyCourseComponent,
     meta: { requiresAuth: true, role: ['educator', 'student'] }
    }
+    path: '/pending-verification',
+    name: 'PendingVerificationList',
+    component: PendingVerificationListComponent,
+    meta: { requiresAuth: true, role: 'admin'}
+  },
 ];
 
 const router = (keycloak) => {

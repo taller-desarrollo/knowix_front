@@ -20,8 +20,14 @@
         <a href="/new-course" @click="toggleMenu">Crear Curso</a>
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
-        <a href="/payment-check" @click="toggleMenu">Administrar Pagos</a>
+        <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
       </div>
+      
+      <a v-if="this.$keycloak.hasResourceRole('admin')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
+      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('admin')">
+        <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
+      </div>
+
       <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
       <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
       <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>

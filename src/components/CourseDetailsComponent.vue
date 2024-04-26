@@ -10,13 +10,23 @@
                 <h2>{{ course.courseName }}</h2>
                 <p>{{ course.courseDescription }}</p>
                 <p><strong>Requisitos:</strong> {{ course.courseRequirements }}</p>
-                <p><strong>Precio:</strong> {{ course.courseStandardPrice }} bs.</p>
+                <p><strong>Precio:</strong>Bs. {{ course.courseStandardPrice }}</p>
                 <p><strong>Categoría:</strong> {{ course.category.categoryName }}</p>
                 <p><strong>Idioma:</strong> {{ course.language.languageName }}</p>
             </div>
         </div>
         <div v-if="course" class="course-sections">
             <h3>Secciones</h3>
+            <div v-if="course.sections && course.sections.length !== 0">
+                <div v-for="section in course.sections" :key="section.sectionId" class="section">
+                    <h4>{{ section.sectionName }}</h4>
+                    <p>{{ section.sectionDescription }}</p>
+                    <v-divider></v-divider>
+                </div>
+            </div>
+            <div v-if="!course.sections || course.sections.length === 0">
+                No se encontraron secciones
+            </div>
         </div>
         <div v-if="course" class="course-comments">
             <h3>Comentarios</h3>
