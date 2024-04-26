@@ -22,6 +22,7 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
+            isVerified: false,
             roles: [],
             editing: false,
             originalSocialLinks: [],
@@ -38,6 +39,7 @@ export default {
             this.setupUserProfile();
             await this.initializeSocialLinks();
         }
+        this.getProfileData();
     },
     methods: {
         getSocialMediaIcon(url) {
@@ -187,6 +189,15 @@ export default {
             this.setupUserProfile();
             this.socialLinks = JSON.parse(JSON.stringify(this.originalSocialLinks));
             this.editing = false;
+        },
+        async getProfileData(){
+            var response = await axios.get('http://localhost:8081/api/v1/user', {
+                headers: {
+                    'X-UUID': this.$keycloak.tokenParsed.sub,
+                    Authorization: `Bearer ${this.$keycloak.token}`,
+                }
+            })
+            this.isVerified = response.data.verified;
         }
     },
 };

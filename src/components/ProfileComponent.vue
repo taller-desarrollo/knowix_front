@@ -4,6 +4,9 @@
       <div class="edit">
         <div class="buttonsEditProfile">
           <h1>{{ username }}</h1>
+          <div v-if="isVerified">
+            <img src="../assets/icon/verified.png" alt="" width="20">
+          </div>
           <button class="general" v-if="!editing" @click="toggleEdit">Editar perfil</button>
           <div class="buttonsGC" v-else="editing">
             <button class="general" @click="saveProfile">Guardar</button>
