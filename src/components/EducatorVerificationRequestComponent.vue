@@ -65,6 +65,7 @@
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { keycloak } from "@/main";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -77,6 +78,10 @@ export default {
             pdfFile: null,
             previewUrl: null,
         };
+    },
+    setup() {
+        const router = useRouter();
+        return { router };
     },
     methods: {
         handleFileUpload(event) {
@@ -91,73 +96,79 @@ export default {
         },
 
         async submitVerification() {
-            let token = keycloak.token;
-
             if (!this.formData.title || 
                 !this.formData.description ||
                 !this.formData.schoolOrInstitution ||
                 !this.pdfFile) {
-                    alert("Por favor, debe llenar los campos");
-                    return;
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Error',
+                    text: 'Por favor, complete todos los campos.',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
             }
 
+            Swal.fire({
+                title: 'Subiendo datos...',
+                text: 'Por favor, espere.',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let token = keycloak.token;
             try {
-                await axios.post("http://localhost:8081/api/v1/verification-request",{}, { 
+                const response = await axios.post("http://localhost:8081/api/v1/verification-request", {}, { 
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        "X-UUID":  keycloak.tokenParsed.sub,
-                    }, })
-                    .then(
-                    async (response) => {
-                        console.log(response);
-                        let token = keycloak.token;
-
-                        await axios.post("http://localhost:8081/api/v1/verification-request/" + response.data.id + "/attachment", {
-                            title: this.formData.title,
-                            file: this.pdfFile,
-                            description: this.formData.description,
-                            schoolOrInstitution: this.formData.schoolOrInstitution
-                        },
-                        {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                                'Authorization': `Bearer ${token}`,
-                                "X-UUID":  keycloak.tokenParsed.sub,
-                            }
-                        })
-                        .then((response) => {
-                            if(response.status === 200) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '¡Contenido agregado!',
-                                    text: 'El curso ha sido actualizado con éxito.',
-                                    confirmButtonText: 'Aceptar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        router.go(-1);
-                                    }
-                                });
-                            }
-                        })
-                        .error(() => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Algo salió mal al intentar subir la verificación.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        });
+                        "X-UUID": keycloak.tokenParsed.sub,
                     }
-                );
-            } catch (e) {
-                console.log("dbg: ",e);
-                // TODO: show error 
-            }
+                });
 
+                let formData = new FormData();
+                formData.append('title', this.formData.title);
+                formData.append('file', this.pdfFile);
+                formData.append('description', this.formData.description);
+                formData.append('schoolOrInstitution', this.formData.schoolOrInstitution);
+
+                const attachmentResponse = await axios.post(`http://localhost:8081/api/v1/verification-request/${response.data.id}/attachment`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`,
+                        "X-UUID": keycloak.tokenParsed.sub,
+                    }
+                });
+
+                Swal.close();
+
+                if (attachmentResponse.status === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Contenido agregado!',
+                        text: 'El curso ha sido actualizado con éxito.',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.router.go(-1);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("dbg: ", e);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al procesar',
+                    text: 'Algo salió mal al intentar subir la verificación.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
         }
     }
 }
 </script>
+
 <style>
 .form-input {
     margin: 15px;
