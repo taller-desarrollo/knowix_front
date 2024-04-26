@@ -46,6 +46,8 @@
     import { useVerificationStore } from "@/stores/verificationStore";
     import { onMounted, computed, ref } from "vue";
     import { keycloak } from "@/main";
+    import Swal from "sweetalert2";
+    import axios from 'axios';
     
     const router = useRouter();
     const verificationStore = useVerificationStore();
@@ -64,12 +66,84 @@
         return verification.verificationRequestAttachmentDTOList[0].s3ObjectDTO.url;
     }
 
-    const acceptVerification = (verification) => {
-        //TODO: call accept verification endpoint
+    const acceptVerification = async (verification) => {
+        const result = await Swal.fire({
+            title: 'Aceptar verificación',
+            text: '¿Estás seguro aceptar la verificación?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'No, cancelar',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'confirm-button',
+                cancelButton: 'cancel-button'
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (result.isConfirmed) {
+            let token = keycloak.token; 
+            await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/approve`,{}, {
+                headers: {
+                            'Authorization': `Bearer ${token}`,
+                            "X-UUID":  keycloak.tokenParsed.sub,
+                }, 
+            }).then((response) => {
+                if(response.status === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Aprovado con normalidad!',
+                        text: 'La verificación ha sido aprobada.',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            router.go(-1);
+                        }
+                    });
+                }
+            });
+        }
     }
 
-    const rejectVerification = (verification) => {
-        //TODO: open reject verification form  
+    const rejectVerification = async (verification) => {
+        const result = await Swal.fire({
+            title: 'Rechazar verificación',
+            text: '¿Estás seguro de rechazar la verificación?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'No, cancelar',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'confirm-button',
+                cancelButton: 'cancel-button'
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+      if (result.isConfirmed) {
+        let token = keycloak.token; 
+        await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/reject`,{}, {
+            headers: {
+                        'Authorization': `Bearer ${token}`,
+                        "X-UUID":  keycloak.tokenParsed.sub,
+            }, 
+        }).then((response) => {
+            if(response.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Rechazado con normalidad!',
+                    text: 'La verificación ha sido rechazada.',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.go(-1);
+                    }
+                });
+            }
+        });
+      }
     }
 
     const isLoading = computed(() => verificationStore.isLoading);

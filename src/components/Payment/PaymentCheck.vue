@@ -176,7 +176,7 @@ methods: {
 
       const result = await Swal.fire({
         title: 'Confirmar compra',
-        text: '¿Estás seguro de confirmar la compra y de haber recibido el monto solicitado en tu número de cuenta?',
+        text: '¿Estás seguro de confirmar la compra y de haber recibido el monto solicitado en tu número de cuenta?. Después de confirmar, no podrás revertir esta acción.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí, confirmar',

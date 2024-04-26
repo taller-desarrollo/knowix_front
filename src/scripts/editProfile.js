@@ -2,6 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
+import { keycloak } from "@/main";
 
 axios.interceptors.response.use(response => {
     return response;
@@ -55,6 +56,26 @@ export default {
             if (url.includes("github")) return require("@/assets/socialMedia/GitHub.png");
             return require("@/assets/socialMedia/General.png");
         },
+        
+        // async checkVerifiedEducator() {
+        //     let token = keycloak.token;
+
+        //     if (this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles.includes('educator')) {
+        //         await axios.get('http://localhost:8081/api/v1/user', {}, {
+        //             headers: {
+        //                 'Authorization': `Bearer ${token}`,
+        //                 "X-UUID":  keycloak.tokenParsed.sub,
+        //         }, })
+        //             .then((response) => {
+        //                 console.log("dbg: ", response);
+        //                 // this.isVerifiedEducator = resposne
+        //             });
+                
+        //     }
+        //     else this.isVerifiedEducator = false;
+            
+        // },
+
         setupUserProfile() {
             this.username = this.$keycloak.tokenParsed.preferred_username;
             this.firstName = this.$keycloak.tokenParsed.given_name;
@@ -64,6 +85,7 @@ export default {
             this.password = '';
             this.roles = this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles;
         },
+
         determineUserRole(roles) {
             let role = '';
             if (roles?.includes('educator')) role += 'Educador';
