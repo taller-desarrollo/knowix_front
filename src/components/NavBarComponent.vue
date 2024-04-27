@@ -21,7 +21,6 @@
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
         <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
-        <a href="/payment-check" @click="toggleMenu">Administrar Pagos</a>
         <a href="/verification-list" @click="toggleMenu">Solicitar verificación</a>
       </div>
       
