@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x, 18.x]
 
     steps:
       - name: Checkout 🛎️ 
@@ -31,5 +31,4 @@ jobs:
         with:
           folder: dist
           ssh-key: ${{ secrets.FRONT_DEPLOY_KEY }}
-          branch: main
   
