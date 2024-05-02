@@ -10,8 +10,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build 🔧
+  build-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     strategy:
       matrix:
