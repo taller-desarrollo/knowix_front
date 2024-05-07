@@ -23,6 +23,7 @@ jobs:
         
       - name: Build 🔧
         run: |
+          mv src/environments/config-prod.js src/config.js
           npm install --legacy-peer-deps
           npm run build --if-present
 
