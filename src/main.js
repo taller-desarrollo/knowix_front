@@ -15,6 +15,8 @@ import { createPinia } from 'pinia';
 import * as components from 'vuetify/components'; 
 import * as directives from 'vuetify/directives'; 
 
+import environment from 'config/js';
+
 library.add(faPencilAlt);
 
 const vuetify = createVuetify({
@@ -27,7 +29,7 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 const keycloak = new Keycloak({
-  url: 'http://localhost:8080/',
+  url: environment.keycloakUrl,
   realm: 'Knowix',
   clientId: 'knowix_frontend'
 });
