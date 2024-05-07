@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { environment } from '../../config.js';
+import environment from '../../config.js';
 
 export let backendInterceptor = axios;
 

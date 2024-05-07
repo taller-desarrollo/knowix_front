@@ -19,6 +19,8 @@ import environment from './config.js';
 
 library.add(faPencilAlt);
 
+console.log(environment);
+
 const vuetify = createVuetify({
   components,
   directives,
