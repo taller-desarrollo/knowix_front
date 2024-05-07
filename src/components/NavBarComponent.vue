@@ -29,6 +29,9 @@
         <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
       </div>
 
+
+      <a v-if="authenticated" href="/my-purchase" @click="toggleMenu">Mis compras</a>
+
       <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
       <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
       <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>

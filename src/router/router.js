@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
 import EducatorVerificationRequestComponent from '@/components/EducatorVerificationRequestComponent.vue';
 import EducatorVerificationListComponent from '@/components/EducatorVerificationListComponent.vue';
+import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
 
 const routes = [
   {
@@ -144,6 +145,13 @@ const routes = [
     component: EducatorVerificationRequestComponent,
     meta: { requiresAuth: true, role: 'educator'}
   },
+  {
+    path: '/my-purchase',
+    name: 'PaymentStatusBuyer',
+    component: PaymentStatusBuyer,
+    meta: { requiresAuth: true, role: ['educator', 'student']}
+  }
+
 ];
 
 const router = (keycloak) => {
