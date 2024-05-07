@@ -69,7 +69,7 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faUser } from '@fortawesome/free-solid-svg-icons'; 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import environment from './config.js';
+  import environment from '../config.js';
 
   library.add(faUser); 
 
