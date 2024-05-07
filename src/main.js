@@ -36,7 +36,7 @@ const keycloak = new Keycloak({
   clientId: 'knowix_frontend'
 });
 
-keycloak.init({ onLoad: 'check-sso' }).then(authenticated => {
+keycloak.init({ onLoad: 'check-sso', initOptions: { checkLoginIframe: false} }).then(authenticated => {
   console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
   app.config.globalProperties.$keycloak = keycloak;
   app.config.globalProperties.$axios = backendInterceptor;
