@@ -69,6 +69,7 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faUser } from '@fortawesome/free-solid-svg-icons'; 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+  import environment from './config.js';
 
   library.add(faUser); 
 
@@ -97,7 +98,7 @@
             return;
           }
   
-          const tokenResponse = await this.$axios.post('http://localhost:8080/realms/Knowix/protocol/openid-connect/token', 
+          const tokenResponse = await this.$axios.post(environment.keycloakUrl + '/realms/Knowix/protocol/openid-connect/token', 
             new URLSearchParams({
               grant_type: 'client_credentials',
               client_id: 'knowix_applications',

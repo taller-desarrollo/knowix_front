@@ -15,7 +15,7 @@ import { createPinia } from 'pinia';
 import * as components from 'vuetify/components'; 
 import * as directives from 'vuetify/directives'; 
 
-import environment from 'config/js';
+import environment from './config.js';
 
 library.add(faPencilAlt);
 
