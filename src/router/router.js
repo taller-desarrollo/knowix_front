@@ -14,7 +14,6 @@ import UpsertCourseContentComponent from '@/components/UpsertCourseContentCompon
 import CourseDetailsComponent from '@/components/CourseDetailsComponent.vue';
 import PaymentList from '@/components/Payment/PaymentList.vue';
 import PaymentCheck from '@/components/Payment/PaymentCheck.vue';
-import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
 import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 import Swal from 'sweetalert2';
@@ -108,12 +107,6 @@ const routes = [
     name: 'PaymentCheck',
     component: PaymentCheck,
     meta: { requiresAuth: true, role: 'educator' }
-  },
-  {
-    path: '/payment-student',
-    name: 'PaymentStudent',
-    component: PaymentStudent,
-    meta: { requiresAuth: true, role: 'student' }
   },
   {
     path: '/course-student',

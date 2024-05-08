@@ -21,11 +21,7 @@ export default {
         const courseId = this.$route.params.courseId;
         const paymentMethodId = this.$route.params.paymentMethodId;
         const store = usePaymentFormStore();
-
-        // Inicializa el almacén para obtener el UUID y otros datos necesarios
         store.initializeStore();
-
-        // Cargar los datos del curso
         axios.get(`http://localhost:8081/api/v1/course/${courseId}`)
             .then(response => {
                 this.course = response.data;
@@ -36,8 +32,6 @@ export default {
             .catch(error => {
                 console.error('Error al obtener el curso:', error);
             });
-
-        // Cargar los datos del método de pago
         axios.get(`http://localhost:8081/api/v1/paymentmethod/${paymentMethodId}`)
             .then(response => {
                 this.paymentMethod = response.data;
@@ -69,22 +63,25 @@ export default {
         submitForm() {
             const formData = new FormData();
             const store = usePaymentFormStore();
-
-            // Verificar si el UUID está disponible
             if (!store.isUuidReady) {
                 console.error('UUID no disponible, no se puede proceder.');
                 return;
             }
-
-            // Completa los datos para enviar el formulario
             formData.append('kcUserKcUuid', store.userUuid);
             formData.append('amount', this.purchase.amount);
             formData.append('courseId', this.purchase.courseId);
             formData.append('paymentMethodId', this.purchase.paymentMethodId);
             formData.append('datePurchase', new Date().toISOString());
             formData.append('Image', this.purchase.imageFile);
-
-            // Envía la solicitud POST al backend
+            Swal.fire({
+                title: 'Procesando...',
+                text: 'Su pago está siendo procesado, por favor espere.',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             axios.post('http://localhost:8081/api/v1/purchase', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -99,7 +96,6 @@ export default {
                     }).then(() => {
                         this.$router.push({ path: '/' });
                     });
-                    console.log(response.data);
                 })
                 .catch(error => {
                     console.error('Error durante la compra:', error);
