@@ -121,6 +121,7 @@ import { useRouter } from "vue-router";
 import axios from 'axios';
 // En la parte superior de tu script
 import defaultCourseImage from '@/assets/icon/logocourse.png';
+import { ENDPOINTS } from '@/shared/endpoints';
 
 
 export default {
@@ -247,7 +248,7 @@ export default {
 
       try {
         const response = await axios.post(
-          'http://localhost:8081/api/v1/courseimage',
+          ENDPOINTS.courseImage,
           formData,
           {
             headers: {

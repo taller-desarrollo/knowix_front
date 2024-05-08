@@ -2,7 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
-import { keycloak } from "@/main";
+import { ENDPOINTS } from '@/shared/endpoints';
 
 axios.interceptors.response.use(response => {
     return response;
@@ -56,25 +56,7 @@ export default {
             if (url.includes("github")) return require("@/assets/socialMedia/GitHub.png");
             return require("@/assets/socialMedia/General.png");
         },
-        
-        // async checkVerifiedEducator() {
-        //     let token = keycloak.token;
 
-        //     if (this.$keycloak.tokenParsed.resource_access['knowix_frontend']?.roles.includes('educator')) {
-        //         await axios.get('http://localhost:8081/api/v1/user', {}, {
-        //             headers: {
-        //                 'Authorization': `Bearer ${token}`,
-        //                 "X-UUID":  keycloak.tokenParsed.sub,
-        //         }, })
-        //             .then((response) => {
-        //                 console.log("dbg: ", response);
-        //                 // this.isVerifiedEducator = resposne
-        //             });
-                
-        //     }
-        //     else this.isVerifiedEducator = false;
-            
-        // },
 
         setupUserProfile() {
             this.username = this.$keycloak.tokenParsed.preferred_username;
@@ -103,7 +85,7 @@ export default {
         async initializeSocialLinks() {
             const kcUserUuid = this.$keycloak.tokenParsed.sub;
             try {
-                const response = await axios.get(`http://localhost:8081/api/v1/social-media/user/${kcUserUuid}`);
+                const response = await axios.get(`${ENDPOINTS.socialMedia}/user/${kcUserUuid}`);
                 if (response.status === 200 && response.data.length > 0) {
                     this.socialLinks = response.data.map((link) => ({
                         socialMediaId: link.socialMediaId,
@@ -125,7 +107,7 @@ export default {
                     socialMediaUrl: "-",
                     status: true,
                 };
-                await axios.post('http://localhost:8081/api/v1/social-media', postData);
+                await axios.post(ENDPOINTS.socialMedia, postData);
             }
             await this.initializeSocialLinks();
         },
@@ -180,14 +162,14 @@ export default {
                     password: this.password,
                     roles: this.roles
                 };
-                await axios.put(`http://localhost:8081/api/v1/user`, profileUpdatePayload, {
+                await axios.put(ENDPOINTS.user, profileUpdatePayload, {
                     headers: {
                         'X-UUID': this.$keycloak.tokenParsed.sub,
                     }
                 });
 
                 for (const link of this.socialLinks) {
-                    const url = `http://localhost:8081/api/v1/social-media/${link.socialMediaId}`;
+                    const url = `${ENDPOINTS.socialMedia}/${link.socialMediaId}`;
                     const payload = {
                         kcUserUuid: this.$keycloak.tokenParsed.sub,
                         socialMediaUrl: link.url,
@@ -213,7 +195,7 @@ export default {
             this.editing = false;
         },
         async getProfileData(){
-            var response = await axios.get('http://localhost:8081/api/v1/user', {
+            var response = await axios.get(ENDPOINTS.user, {
                 headers: {
                     'X-UUID': this.$keycloak.tokenParsed.sub,
                     Authorization: `Bearer ${this.$keycloak.token}`,

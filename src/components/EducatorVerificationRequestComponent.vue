@@ -66,6 +66,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { keycloak } from "@/main";
 import Swal from "sweetalert2";
+import { ENDPOINTS } from '@/shared/endpoints';
 
 export default {
     data() {
@@ -120,7 +121,7 @@ export default {
 
             let token = keycloak.token;
             try {
-                const response = await axios.post("http://localhost:8081/api/v1/verification-request", {}, { 
+                const response = await axios.post(ENDPOINTS.verificationRequest, {}, { 
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         "X-UUID": keycloak.tokenParsed.sub,
@@ -133,7 +134,7 @@ export default {
                 formData.append('description', this.formData.description);
                 formData.append('schoolOrInstitution', this.formData.schoolOrInstitution);
 
-                const attachmentResponse = await axios.post(`http://localhost:8081/api/v1/verification-request/${response.data.id}/attachment`, formData, {
+                const attachmentResponse = await axios.post(`${ENDPOINTS.verificationRequest}/${response.data.id}/attachment`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`,
@@ -156,7 +157,6 @@ export default {
                     });
                 }
             } catch (e) {
-                console.error("dbg: ", e);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error al procesar',

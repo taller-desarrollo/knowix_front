@@ -33,7 +33,7 @@
             <div class="sale-actions">
               <button @click="confirmPurchaseWithCheckbox(purchase.purchaseId)" class="btn btn-sm btn-success text-dark">Confirmar</button>
               <button @click="rejectPurchaseWithComment(purchase.purchaseId)" class="btn btn-sm btn-danger text-dark">Rechazar</button>
-              <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+              <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
             </div>
           </div>
         </li>
@@ -58,7 +58,7 @@
         <p class="text-dark">Aceptado el: {{ formatDate(purchase.reply.date) }}</p>
         <p class="text-dark">{{ purchase.reply.coment }}</p>
 
-        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+        <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
       </div>
     </div>
   </li>
@@ -86,7 +86,7 @@
         <h5 class="text-dark">Detalles del rechazo</h5>
         <p class="text-dark">Rechazado el: {{ formatDate(purchase.reply.date) }}</p>
         <p class="text-dark" style="color: red;">{{ purchase.reply.coment }}</p>
-        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+        <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
       </div>
     </div>
   </li>
@@ -106,8 +106,8 @@ import moment from "moment";
 import Swal from 'sweetalert2'
 import { useRoute } from 'vue-router';
 import { getCurrentInstance } from "vue";
-
-
+import { ENDPOINTS } from '@/shared/endpoints';
+import { environment } from '@/config.js';
 
 export default {
 data() {
@@ -137,7 +137,7 @@ async created() {
   try {
     const { proxy } = getCurrentInstance();
     this.userUuid = proxy.$keycloak.tokenParsed.sub;
-    const response = await axios.get(`http://localhost:8081/api/v1/purchase/seller/${this.userUuid}`);
+    const response = await axios.get(`${ENDPOINTS.purchaseSeller}/${this.userUuid}`);
     const responseData = response.data;
     if (typeof responseData === 'string' && (responseData === "" || responseData.trim() === "No hay registros para esta solicitud")) {
       this.purchases = [];
@@ -155,7 +155,7 @@ async created() {
     // Fetch replies for each purchase
     for (const purchase of this.purchases) {
       if (purchase.reply) continue;
-      const replyResponse = await axios.get(`http://localhost:8081/api/v1/reply/purchase/${purchase.purchaseId}`);
+      const replyResponse = await axios.get(`${ENDPOINTS.replyPurchase}/${purchase.purchaseId}`);
       purchase.reply = replyResponse.data;
     }
   } catch (error) {
@@ -200,7 +200,7 @@ methods: {
         const purchase = this.purchases.find((p) => p.purchaseId === purchaseId);
         purchase.reply = reply;
 
-        await axios.post('http://localhost:8081/api/v1/reply', reply);
+        await axios.post(ENDPOINTS.reply, reply);
 
         Swal.fire({
           icon: 'success',
@@ -269,7 +269,7 @@ methods: {
     const purchase = this.purchases.find(p => p.purchaseId === purchaseId);
     purchase.reply = reply;
 
-    await axios.post('http://localhost:8081/api/v1/reply', reply).then(response => {
+    await axios.post(ENDPOINTS.reply, reply).then(response => {
       Swal.fire({
         icon: 'success',
         title: 'Respuesta enviada',
@@ -300,7 +300,7 @@ methods: {
     purchase.reply = reply;
 
     // send POST request to reject the purchase
-    await axios.post('http://localhost:8081/api/v1/reply', reply);
+    await axios.post(ENDPOINTS.reply, reply);
     },
 
     setup() {

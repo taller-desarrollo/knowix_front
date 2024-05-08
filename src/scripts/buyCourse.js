@@ -20,7 +20,7 @@ export default {
         const courseId = this.$route.params.courseId;
         const paymentMethodId = this.$route.params.paymentMethodId;
 
-        axios.get(`http://localhost:8081/api/v1/course/${courseId}`)
+        axios.get(`${ENDPOINTS.course}/${courseId}`)
             .then(response => {
                 this.course = response.data;
                 this.purchase.amount = this.course.courseStandardPrice;
@@ -31,7 +31,7 @@ export default {
                 console.error(error);
             });
 
-        axios.get(`http://localhost:8081/api/v1/paymentmethod/${paymentMethodId}`)
+        axios.get(`${ENDPOINTS.paymentMethod}/${paymentMethodId}`)
             .then(response => {
                 this.paymentMethod = response.data;
                 this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
@@ -68,7 +68,7 @@ export default {
             formData.append('datePurchase', new Date().toISOString());
             formData.append('Image', this.purchase.imageFile);
 
-            axios.post('http://localhost:8081/api/v1/purchase', formData, {
+            axios.post(ENDPOINTS.purchase, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

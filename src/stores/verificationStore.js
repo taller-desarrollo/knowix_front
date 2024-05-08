@@ -13,7 +13,7 @@ export const useVerificationStore = defineStore('verification', {
 
             this.isLoading = true;
             try {
-                let url = 'http://localhost:8081/api/v1/verification-request/educator';
+                let url = `${ENDPOINTS.verificationRequest}/educator`;
                 
                 const response = await axios.get(url, {
                     headers: {
@@ -36,9 +36,8 @@ export const useVerificationStore = defineStore('verification', {
             let token = keycloak.token;
             this.isLoading = true;
             try {
-                let url = 'http://localhost:8081/api/v1/verification-request';
                 
-                const response = await axios.get(url, {
+                const response = await axios.get(ENDPOINTS.verificationRequest, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         "X-UUID": sub,

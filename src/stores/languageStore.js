@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { ENDPOINTS } from '@/shared/endpoints';
 
 export const useLanguageStore = defineStore('language', {
   state: () => ({
@@ -8,7 +9,7 @@ export const useLanguageStore = defineStore('language', {
   actions: {
     async fetchLanguages() {
       try {
-        const response = await axios.get('http://localhost:8081/api/v1/language');
+        const response = await axios.get(ENDPOINTS.language);
         console.log('mostrando languages: ', response.data);
         this.languages = response.data;
       } catch (error) {

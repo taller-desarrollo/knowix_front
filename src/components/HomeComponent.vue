@@ -62,6 +62,8 @@ import { useCategoryStore } from "@/stores/categoryStore";
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
+import { ENDPOINTS } from '@/shared/endpoints';
+import { environment } from '@/config.js';
 
 const coursesStore = useCoursesStore();
 const categoryStore = useCategoryStore();
@@ -84,9 +86,9 @@ onMounted(async () => {
 const updateCourseImages = async () => {
   for (const course of coursesStore.courses) {
     try {
-      const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${course.courseId}`);
+      const response = await axios.get(`${ENDPOINTS.courseImage}/course/${course.courseId}`);
       if (response.data.length > 0 && response.data[0].image) {
-        courseImages[course.courseId] = `http://localhost:8081/${response.data[0].image}`;
+        courseImages[course.courseId] = `${environment.backendUrl}/${response.data[0].image}`;
       } else {
         courseImages[course.courseId] = defaultImage;
       }

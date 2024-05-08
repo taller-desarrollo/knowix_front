@@ -43,6 +43,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
+import { environment } from '@/config.js';
 
 const paymentStore = usePaymentStore();
 const isLoading = ref(true);
@@ -55,7 +56,7 @@ onMounted(async () => {
 });
 
 function getImageUrl(relativePath) {
-  const baseUrl = "http://localhost:8081/";
+  const baseUrl = `${environment.backendUrl}/`;
   return baseUrl + relativePath;
 }
 

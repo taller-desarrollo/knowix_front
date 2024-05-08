@@ -48,6 +48,7 @@
     import { keycloak } from "@/main";
     import Swal from "sweetalert2";
     import axios from 'axios';
+    import { ENDPOINTS } from '@/shared/endpoints';
     
     const router = useRouter();
     const verificationStore = useVerificationStore();
@@ -84,7 +85,7 @@
 
         if (result.isConfirmed) {
             let token = keycloak.token; 
-            await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/approve`,{}, {
+            await axios.put(`${ENDPOINTS.verificationRequest}/${verification.id}/approve`,{}, {
                 headers: {
                             'Authorization': `Bearer ${token}`,
                             "X-UUID":  keycloak.tokenParsed.sub,
@@ -124,7 +125,7 @@
 
       if (result.isConfirmed) {
         let token = keycloak.token; 
-        await axios.put(`http://localhost:8081/api/v1/verification-request/${verification.id}/reject`,{}, {
+        await axios.put(`${ENDPOINTS.verificationRequest}/${verification.id}/reject`,{}, {
             headers: {
                         'Authorization': `Bearer ${token}`,
                         "X-UUID":  keycloak.tokenParsed.sub,

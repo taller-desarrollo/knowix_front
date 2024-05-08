@@ -2,6 +2,8 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
+import { ENDPOINTS } from '@/shared/endpoints';
+import { environment } from '@/config.js';
 
 export default function useCourseDetails() {
     const router = useRouter();
@@ -17,7 +19,7 @@ export default function useCourseDetails() {
 
     async function fetchCourseDetails() {
         try {
-            const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
+            const response = await axios.get(`${ENDPOINTS.course}/${courseId}`);
             course.value = response.data;
         } catch (error) {
             console.error("Error fetching course details:", error);
@@ -26,9 +28,9 @@ export default function useCourseDetails() {
 
     async function fetchCourseImage() {
         try {
-            const response = await axios.get(`http://localhost:8081/api/v1/courseimage/course/${courseId}`);
+            const response = await axios.get(`${ENDPOINTS.courseImage}/course/${courseId}`);
             if (response.data && response.data.length > 0) {
-                courseImage.value = `http://localhost:8081/${response.data[0].image}`;
+                courseImage.value = `${environment.backendUrl}/${response.data[0].image}`;
             }
         } catch (error) {
             console.error("Error fetching course image:", error);

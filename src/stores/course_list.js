@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { ENDPOINTS } from '@/shared/endpoints';
 
 export const useCoursesStore = defineStore('courses', {
   state: () => ({
@@ -14,7 +15,7 @@ export const useCoursesStore = defineStore('courses', {
   actions: {
     async fetchCourses(page = 0, size = 12, sort = "asc", minPrice = null, maxPrice = null, searchTerm = "", categoryIds = []) {
       try {
-        let url = 'http://localhost:8081/api/v1/course?page=' + page + '&size=' + size + '&sort=' + sort;
+        let url = `${ENDPOINTS.course}?page=` + page + '&size=' + size + '&sort=' + sort;
         
         if (minPrice !== null && maxPrice !== null && minPrice <= maxPrice && minPrice >= 0 && maxPrice >= 0) {
           url += '&minPrice=' + minPrice;
@@ -39,7 +40,7 @@ export const useCoursesStore = defineStore('courses', {
     },
     async searchCourses(name, page = 1) {
       try {
-        const response = await axios.post('http://localhost:8081/api/v1/course/search', {
+        const response = await axios.post(`${ENDPOINTS.course}/search`, {
           name: name,
           page: page,
           size: 5
