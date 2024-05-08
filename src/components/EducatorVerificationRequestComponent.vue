@@ -66,7 +66,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { keycloak } from "@/main";
 import Swal from "sweetalert2";
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     data() {

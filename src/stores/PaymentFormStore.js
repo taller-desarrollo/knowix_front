@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { getCurrentInstance } from "vue";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 export const usePaymentFormStore = defineStore('paymentForm', {
   state: () => ({

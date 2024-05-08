@@ -36,7 +36,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Swal from "sweetalert2";
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     setup() {

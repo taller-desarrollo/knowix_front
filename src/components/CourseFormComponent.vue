@@ -121,7 +121,7 @@ import { useRouter } from "vue-router";
 import axios from 'axios';
 // En la parte superior de tu script
 import defaultCourseImage from '@/assets/icon/logocourse.png';
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 
 export default {

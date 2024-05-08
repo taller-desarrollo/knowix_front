@@ -106,7 +106,7 @@ import moment from "moment";
 import Swal from 'sweetalert2'
 import { useRoute } from 'vue-router';
 import { getCurrentInstance } from "vue";
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 import { environment } from '@/config.js';
 
 export default {

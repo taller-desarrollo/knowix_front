@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import CardComponent from "../components/widgets/card.vue";
 import Swal from "sweetalert2";
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     name: "EditCourseView",

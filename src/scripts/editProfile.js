@@ -2,7 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 axios.interceptors.response.use(response => {
     return response;

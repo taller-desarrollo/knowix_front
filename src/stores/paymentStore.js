@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getCurrentInstance } from "vue";
 import axios from 'axios';
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 
 export const usePaymentStore = defineStore('payment', {
   state: () => ({

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ENDPOINTS } from '@/shared/endpoints';
+import ENDPOINTS from '@/shared/endpoints';
 import axios from 'axios';
 
 export const useCourseStore = defineStore('course', {

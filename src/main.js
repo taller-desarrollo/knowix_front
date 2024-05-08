@@ -37,7 +37,7 @@ const keycloak = new Keycloak({
 });
 
 keycloak.init(
-  { onLoad: 'check-sso', checkLoginIframe: false}).then(authenticated => {
+  { onLoad: 'check-sso', checkLoginIframe: false }).then(authenticated => {
   console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
   app.config.globalProperties.$keycloak = keycloak;
   app.config.globalProperties.$axios = backendInterceptor;

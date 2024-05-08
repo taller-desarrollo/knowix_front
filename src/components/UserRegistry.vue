@@ -69,7 +69,7 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faUser } from '@fortawesome/free-solid-svg-icons'; 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { ENDPOINTS } from '@/shared/endpoints';
+  import ENDPOINTS from '@/shared/endpoints';
 
   library.add(faUser); 
 
@@ -124,7 +124,7 @@
           this.$router.push('/');
         } catch (error) {
           alert('Error al registrar usuario. Por favor, inténtalo de nuevo.');
-          console.error(error);
+          console.log(error);
         }
       }
     },

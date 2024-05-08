@@ -48,7 +48,7 @@
     import { keycloak } from "@/main";
     import Swal from "sweetalert2";
     import axios from 'axios';
-    import { ENDPOINTS } from '@/shared/endpoints';
+    import ENDPOINTS from '@/shared/endpoints';
     
     const router = useRouter();
     const verificationStore = useVerificationStore();
