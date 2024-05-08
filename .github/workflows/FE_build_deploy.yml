@@ -9,27 +9,62 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+  GAR_LOCATION: us-central1
+  GKE_CLUSTER: knowix-cluster
+  GKE_ZONE: us-central1-c
+  DEPLOYMENT_NAME: git-gke-deploy
+  REPOSITORY: knowix-repo
+  IMAGE: knowix_frontend
+
 jobs:
   build-deploy:
-    name: Build and Deploy
+    name: Setup, Build, Publish and Deploy
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
+    environment: production
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Checkout 🛎️ 
         uses: actions/checkout@v4
-        
-      - name: Build 🔧
-        run: |
-          mv src/environments/config-prod.js src/config.js
-          npm install --legacy-peer-deps
-          npm run build --if-present
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - id: 'auth'
+        name: Setup 📑 gcp auth
+        uses: 'google-github-actions/auth@v2'
         with:
-          folder: dist
-          ssh-key: ${{ secrets.FRONT_DEPLOY_KEY }}
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Setup 📑 Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Setup 📑 Docker configuration
+        run: |-
+          gcloud auth configure-docker $GAR_LOCATION-docker.pkg.dev --quiet
+
+      - name: Setup 📑 Config file
+        run: mv src/environments/config-prod.js src/config.js
+
+      - name: Setup 📑 GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: 'knowix-cluster'
+          location: 'us-central1'
+      
+      - name: Build 🔧 Docker image
+        run: docker build --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE" .
+
+      - name: Publish to Artifact registry 🧾
+        run: |-
+          docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
+
+      - name: Deploy 🚀 
+        run: |-
+          kubectl delete deployment knowix-frontend
+          kubectl apply -f knowix-frontend.yaml
+          kubectl get services -o wide
+          kubectl get deployments
   
