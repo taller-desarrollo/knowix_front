@@ -22,4 +22,4 @@ const ENDPOINTS = {
     }
 }
 
-module.exports = ENDPOINTS;
+export default ENDPOINTS;
