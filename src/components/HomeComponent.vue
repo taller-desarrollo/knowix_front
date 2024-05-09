@@ -5,21 +5,57 @@
       <input type="number" v-model="minPrice" placeholder="Precio mínimo" class="search-input" />
       <input type="number" v-model="maxPrice" placeholder="Precio máximo" class="search-input" />
       <button class="search-button" @click="clearPrices">Limpiar Precios</button>
-      <div class="dropdown">
+
+
+
+
+      <div class="dropdown" style="position: relative; display: inline-block;">
         <button class="dropbtn">Filtrar por categoría</button>
-        <div class="dropdown-content">
-          <div>
-            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories"
-              @change="toggleAllCategories">
-            <label for="all-categories">Todas las categorías</label>
-          </div>
-          <div v-for="category in categoryStore.categories" :key="category.categoryId">
-            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId"
-              v-model="selectedCategories" :disabled="isCategoryDisabled">
-            <label :for="'category-' + category.categoryId">{{ category.categoryName }}</label>
-          </div>
+    <div class="dropdown-content" style="
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 150px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 10px;
+        z-index: 1;
+        margin-top: 10px;
+    ">
+        <div style="
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        ">
+            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories" @change="toggleAllCategories" style="
+                margin-right: 10px;
+                cursor: pointer;
+            ">
+            <label for="all-categories" style="
+                cursor: pointer;
+                font-size: 14px;
+            ">Todas las categorías</label>
         </div>
-      </div>
+        <div v-for="category in categoryStore.categories" :key="category.categoryId" style="
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        ">
+            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId" v-model="selectedCategories" :disabled="isCategoryDisabled" style="
+                margin-right: 10px;
+                cursor: pointer;
+            ">
+            <label :for="'category-' + category.categoryId" style="
+                cursor: pointer;
+                font-size: 14px;
+            ">{{ category.categoryName }}</label>
+        </div>
+    </div>
+</div>
+
+
+
+
     </div>
     <div class="row" style="padding: 50px;">
       <div v-if="!filteredCourses.length">
@@ -73,13 +109,34 @@ const router = useRouter();
 const page = ref(0);
 const categoriesLoaded = ref(false);
 const courseImages = reactive({});
+const dropdownVisible = ref(false);
 
 onMounted(async () => {
   await categoryStore.fetchCategories();
   categoriesLoaded.value = true;
   await coursesStore.fetchCourses();
   updateCourseImages();
+  initializeDropdownEvent();
 });
+
+const initializeDropdownEvent = () => {
+  // Muestra/oculta el dropdown al hacer clic en el botón.
+  const dropbtn = document.querySelector('.dropbtn');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
+  dropbtn.addEventListener('click', () => {
+    dropdownVisible.value = !dropdownVisible.value;
+    dropdownContent.style.display = dropdownVisible.value ? 'block' : 'none';
+  });
+
+  // Oculta el dropdown al hacer clic fuera de su contenedor.
+  window.addEventListener('click', (event) => {
+    if (!dropbtn.contains(event.target) && !dropdownContent.contains(event.target)) {
+      dropdownVisible.value = false;
+      dropdownContent.style.display = 'none';
+    }
+  });
+};
 
 const updateCourseImages = async () => {
   for (const course of coursesStore.courses) {
@@ -105,7 +162,7 @@ watchEffect(() => {
     coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value)
       .then(updateCourseImages)
       .catch(error => {
-        console.log(error)
+        console.log(error);
       });
   }
 });
@@ -147,6 +204,7 @@ const fetchNextPage = async () => {
   }
   await coursesStore.fetchCourses(page.value, 12, "asc", minPrice.value, maxPrice.value, searchTerm.value, selectedCategories.value);
 };
+
 function goToCourseDetails(courseId) {
   router.push(`/course-details/${courseId}`);
 }
