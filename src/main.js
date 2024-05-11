@@ -17,7 +17,7 @@ import * as directives from 'vuetify/directives';
 
 library.add(faPencilAlt);
 
-console.log(environment);
+console.log(process.env.VUE_APP_CUSTOM_ENV);  // Replace 'environment' with 'process.env.VUE_APP_CUSTOM_ENV'
 
 const vuetify = createVuetify({
   components,
