@@ -24,7 +24,7 @@ export const usePaymentFormStore = defineStore('paymentForm', {
       const instance = getCurrentInstance();
       if (instance && instance.proxy.$keycloak && instance.proxy.$keycloak.tokenParsed) {
         this.userUuid = instance.proxy.$keycloak.tokenParsed.sub;
-        this.isUuidReady = true; // Se establece que el UUID está listo
+        this.isUuidReady = true; 
         console.log('UUID set:', this.userUuid);
       } else {
         console.error('Unable to set UUID: Keycloak instance not available or not ready');

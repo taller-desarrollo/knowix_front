@@ -14,13 +14,13 @@ import UpsertCourseContentComponent from '@/components/UpsertCourseContentCompon
 import CourseDetailsComponent from '@/components/CourseDetailsComponent.vue';
 import PaymentList from '@/components/Payment/PaymentList.vue';
 import PaymentCheck from '@/components/Payment/PaymentCheck.vue';
-import PaymentStudent from '@/components/Payment/PaymentStudent.vue';
 import CourseStudentComponent from '@/components/CourseStudentComponent.vue';
 import BuyCourseComponent from '@/components/BuyCourseComponent.vue';
 import Swal from 'sweetalert2';
 import PendingVerificationListComponent from '@/components/PendingVerification/PendingVerificationListComponent.vue';
 import EducatorVerificationRequestComponent from '@/components/EducatorVerificationRequestComponent.vue';
 import EducatorVerificationListComponent from '@/components/EducatorVerificationListComponent.vue';
+import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
 
 const routes = [
   {
@@ -109,12 +109,6 @@ const routes = [
     meta: { requiresAuth: true, role: 'educator' }
   },
   {
-    path: '/payment-student',
-    name: 'PaymentStudent',
-    component: PaymentStudent,
-    meta: { requiresAuth: true, role: 'student' }
-  },
-  {
     path: '/course-student',
     name: 'CourseStudentComponent',
     component: CourseStudentComponent,
@@ -144,6 +138,13 @@ const routes = [
     component: EducatorVerificationRequestComponent,
     meta: { requiresAuth: true, role: 'educator'}
   },
+  {
+    path: '/my-purchase',
+    name: 'PaymentStatusBuyer',
+    component: PaymentStatusBuyer,
+    meta: { requiresAuth: true, role: ['educator', 'student']}
+  }
+
 ];
 
 const router = (keycloak) => {

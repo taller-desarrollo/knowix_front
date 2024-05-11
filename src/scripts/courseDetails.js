@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, getCurrentInstance } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
@@ -11,11 +11,25 @@ export default function useCourseDetails() {
     const courseId = route.params.id;
     const course = ref(null);
     const courseImage = ref(defaultImage);
+    const newComment = ref('');
+    const comments = ref([]);
+    const userUuid = ref('');
 
     onMounted(async () => {
+        setUserUuid();
         await fetchCourseDetails();
         await fetchCourseImage();
+        await fetchParentComments();
     });
+
+    function setUserUuid() {
+        const instance = getCurrentInstance();
+        if (instance && instance.proxy.$keycloak && instance.proxy.$keycloak.tokenParsed) {
+            userUuid.value = instance.proxy.$keycloak.tokenParsed.sub;
+        } else {
+            console.error('Keycloak instance not available or not ready');
+        }
+    }
 
     async function fetchCourseDetails() {
         try {
@@ -37,15 +51,41 @@ export default function useCourseDetails() {
         }
     }
 
+    async function fetchParentComments() {
+        if (!course.value) return;
+        try {
+            const response = await axios.get(`http://localhost:8081/api/v1/comment/course/${courseId}/parents`);
+            comments.value = response.data;
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    }
+
+    async function postComment() {
+        if (!newComment.value.trim()) return;
+        const commentData = {
+            content: newComment.value,
+            status: true,
+            kcUserKcUuid: userUuid.value // Use the dynamically set user UUID
+        };
+        try {
+            await axios.post(`http://localhost:8081/api/v1/comment/parent?courseId=${courseId}`, commentData);
+            newComment.value = ''; // Clear the input after sending
+            await fetchParentComments(); // Refresh comments list
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        }
+    }
+
     function goBack() {
         router.back();
     }
 
     function paymentCourse() {
-        if (course.value && course.value.kcUserKcUuid && course.value.courseId) {
+        if (course.value && userUuid.value && course.value.courseId) {
             router.push({
                 name: 'PaymentList',
-                params: { kcUserKcUuid: course.value.kcUserKcUuid, courseId: course.value.courseId}
+                params: { kcUserKcUuid: userUuid.value, courseId: course.value.courseId }
             });
         }
     }
@@ -55,5 +95,8 @@ export default function useCourseDetails() {
         courseImage,
         goBack,
         paymentCourse,
+        newComment,
+        comments,
+        postComment
     };
 }

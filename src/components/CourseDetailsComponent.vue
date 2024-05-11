@@ -10,7 +10,7 @@
                 <h2>{{ course.courseName }}</h2>
                 <p>{{ course.courseDescription }}</p>
                 <p><strong>Requisitos:</strong> {{ course.courseRequirements }}</p>
-                <p><strong>Precio:</strong>Bs. {{ course.courseStandardPrice }}</p>
+                <p><strong>Precio:</strong> Bs. {{ course.courseStandardPrice }}</p>
                 <p><strong>Categoría:</strong> {{ course.category.categoryName }}</p>
                 <p><strong>Idioma:</strong> {{ course.language.languageName }}</p>
             </div>
@@ -31,8 +31,11 @@
         <div v-if="course" class="course-comments">
             <h3>Comentarios</h3>
             <div class="comment-input">
-                <input type="text" placeholder="Escribe un comentario...">
-                <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" />
+                <input type="text" v-model="newComment" placeholder="Escribe un comentario...">
+                <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" @click="postComment" />
+            </div>
+            <div v-for="comment in comments" :key="comment.id" class="comment">
+                <p>{{ comment.content }}</p>
             </div>
         </div>
         <div v-else class="loading">Cargando detalles del curso...</div>
@@ -46,7 +49,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 library.add(faPaperPlane, faArrowLeft);
 
-const { course, courseImage, goBack, paymentCourse } = useCourseDetails();
+const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment } = useCourseDetails();
 </script>
 
 <style scoped>
