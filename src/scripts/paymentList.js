@@ -9,7 +9,7 @@ export default {
     },
     methods: {
         fetchPaymentMethods(kcUserKcUuid) {
-            axios.get(`http://localhost:8081/api/v1/paymentmethod/user/${kcUserKcUuid}`)
+            axios.get(`${ENDPOINTS.paymentMethod}/user/${kcUserKcUuid}`)
                 .then(response => {
                     this.paymentMethods = response.data;
                 })

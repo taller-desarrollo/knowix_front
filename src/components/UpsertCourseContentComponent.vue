@@ -36,6 +36,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Swal from "sweetalert2";
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     setup() {
@@ -65,7 +66,7 @@ export default {
 
         async function createSection() {
             try {
-                await axios.post(`http://localhost:8081/api/v1/course/${courseId}/section`, this.formDetails.section).
+                await axios.post(`${ENDPOINTS.course}/${courseId}/section`, this.formDetails.section).
                 then((response) => {
                     if (response.status === 200) {
                         Swal.fire({
@@ -94,7 +95,7 @@ export default {
         };
         async function createContent() {
             try {
-                axios.post(`http://localhost:8081/api/v1/course/section/${id}/content`, this.formDetails.content).
+                axios.post(`${ENDPOINTS.course}/section/${id}/content`, this.formDetails.content).
                 then((response) => {
                     if(response.status === 200) {
                         Swal.fire({
@@ -133,10 +134,7 @@ export default {
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     let utf8Encode = new TextEncoder();
-                    // utf8Encode.encode(reader.result)
                     this.formDetails.content.attachments[index].attachment = stringToBytes(reader.result);
-                    
-                    console.log("dbg: ", this.formDetails.content);
                     resolve(reader.result);
                 }
                 reader.onerror = (error) => reject(error);

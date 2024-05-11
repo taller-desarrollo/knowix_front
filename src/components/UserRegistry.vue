@@ -69,7 +69,7 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faUser } from '@fortawesome/free-solid-svg-icons'; 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import environment from '../config.js';
+  import ENDPOINTS from '@/shared/endpoints';
 
   library.add(faUser); 
 
@@ -98,7 +98,7 @@
             return;
           }
   
-          const tokenResponse = await this.$axios.post(environment.keycloakUrl + '/realms/Knowix/protocol/openid-connect/token', 
+          const tokenResponse = await this.$axios.post(ENDPOINTS.keycloak.token, 
             new URLSearchParams({
               grant_type: 'client_credentials',
               client_id: 'knowix_applications',
@@ -114,7 +114,7 @@
           this.token = tokenResponse.data.access_token;
           console.log(this.token);
   
-          const response = await this.$axios.post('http://localhost:8081/api/v1/user', this.userData, {
+          const response = await this.$axios.post(ENDPOINTS.user, this.userData, {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
@@ -124,7 +124,7 @@
           this.$router.push('/');
         } catch (error) {
           alert('Error al registrar usuario. Por favor, inténtalo de nuevo.');
-          console.error(error);
+          console.log(error);
         }
       }
     },

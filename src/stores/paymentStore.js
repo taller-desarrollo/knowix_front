@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { getCurrentInstance } from "vue";
 import axios from 'axios';
+import ENDPOINTS from '@/shared/endpoints';
 
 export const usePaymentStore = defineStore('payment', {
   state: () => ({
@@ -23,8 +24,8 @@ export const usePaymentStore = defineStore('payment', {
     },
     async fetchStaticData() {
       try {
-        const accountTypesResponse = await axios.get('http://localhost:8081/api/v1/accounttype');
-        const banksResponse = await axios.get('http://localhost:8081/api/v1/bank');
+        const accountTypesResponse = await axios.get(ENDPOINTS.accountType);
+        const banksResponse = await axios.get(ENDPOINTS.bank);
         this.accountTypes = accountTypesResponse.data;
         this.banks = banksResponse.data;
       } catch (error) {
@@ -34,7 +35,7 @@ export const usePaymentStore = defineStore('payment', {
     async fetchPaymentMethods() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`http://localhost:8081/api/v1/paymentmethod/user/${this.userUuid}`);
+        const response = await axios.get(`${ENDPOINTS.paymentMethod}/user/${this.userUuid}`);
         if (response.data.length === 0) {
           throw new Error('No payment methods');
         }

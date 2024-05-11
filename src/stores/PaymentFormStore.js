@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { getCurrentInstance } from "vue";
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import ENDPOINTS from '@/shared/endpoints';
 
 export const usePaymentFormStore = defineStore('paymentForm', {
   state: () => ({
@@ -31,7 +32,7 @@ export const usePaymentFormStore = defineStore('paymentForm', {
       }
     },
     fetchBanks() {
-      return axios.get('http://localhost:8081/api/v1/bank')
+      return axios.get(ENDPOINTS.bank)
         .then(response => {
           this.banks = response.data;
         })
@@ -40,7 +41,7 @@ export const usePaymentFormStore = defineStore('paymentForm', {
         });
     },
     fetchAccountTypes() {
-      return axios.get('http://localhost:8081/api/v1/accounttype')
+      return axios.get(ENDPOINTS.accountType)
         .then(response => {
           this.accountTypes = response.data;
         })
@@ -59,7 +60,7 @@ export const usePaymentFormStore = defineStore('paymentForm', {
         data.append('paymentMethod', JSON.stringify({ ...formData, kcUserKcUuid: this.userUuid }));
         data.append('qrImage', qrImage);
 
-        const response = await axios.post('http://localhost:8081/api/v1/paymentmethod', data, {
+        const response = await axios.post(ENDPOINTS.paymentMethod, data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

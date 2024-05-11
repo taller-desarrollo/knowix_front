@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import ENDPOINTS from '@/shared/endpoints';
 
 export const useCourseStore = defineStore('course', {
   state: () => ({
@@ -9,7 +10,7 @@ export const useCourseStore = defineStore('course', {
   actions: {
     async registerCourse(courseData) {
       try {
-        const response = await axios.post('http://localhost:8081/api/v1/course', courseData, {
+        const response = await axios.post(ENDPOINTS.course, courseData, {
           headers: {
             'Content-Type': 'application/json',
           },

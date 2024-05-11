@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import CardComponent from "../components/widgets/card.vue";
 import Swal from "sweetalert2";
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     name: "EditCourseView",
@@ -41,7 +42,7 @@ export default {
 
         async function fetchCourseDetails() {
             try {
-                const response = await axios.get(`http://localhost:8081/api/v1/course/${courseId}`);
+                const response = await axios.get(`${ENDPOINTS.course}/${courseId}`);
                 proxy.courseDetails.courseName = response.data.courseName;
                 proxy.courseDetails.basePrice = response.data.courseStandardPrice.toString();
                 proxy.courseDetails.courseLanguage = response.data.languageLanguageId;
@@ -78,7 +79,7 @@ export default {
             };
 
             try {
-                const response = await axios.put(`http://localhost:8081/api/v1/course/${courseId}`, payload);
+                const response = await axios.put(`${ENDPOINTS.course}/${courseId}`, payload);
 
                 if (response.status === 200 && courseDetails.value.courseImageFile) {
                     await uploadCourseImage(courseId);
@@ -125,7 +126,7 @@ export default {
 
             try {
                 await axios.put(
-                    `http://localhost:8081/api/v1/courseimage/course/${courseId}`,
+                    `${ENDPOINTS.courseImage}/course/${courseId}`,
                     formData,
                     {
                         headers: {

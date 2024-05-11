@@ -17,6 +17,8 @@ import * as directives from 'vuetify/directives';
 
 library.add(faPencilAlt);
 
+console.log(environment);
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -31,8 +33,9 @@ const keycloak = new Keycloak({
   realm: 'Knowix',
   clientId: 'knowix_frontend'
 });
-
-keycloak.init({ onLoad: 'check-sso' }).then(authenticated => {
+keycloak.init(
+  { onLoad: 'check-sso', checkLoginIframe: false }).then(authenticated => {
+  console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
   app.config.globalProperties.$keycloak = keycloak;
   app.config.globalProperties.$axios = backendInterceptor;
   app.use(router(keycloak));

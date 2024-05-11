@@ -6,7 +6,7 @@
       <div class="detailsofcourse">
         <div class="form-group-qr">
           <label for="qrImage">Código QR:</label>
-          <img v-if="paymentMethod && paymentMethod.qrImage" :src="`http://localhost:8081/${paymentMethod.qrImage}`"
+          <img v-if="paymentMethod && paymentMethod.qrImage" :src="`${environment.backendUrl}/${paymentMethod.qrImage}`"
             alt="QR Code" class="qr-image" />
         </div>
         <div class="datacourse">
@@ -42,6 +42,7 @@
 
 <script>
 import buyCourse from '@/scripts/buyCourse.js';
+import environment from "@/config";
 export default buyCourse;
 </script>
 

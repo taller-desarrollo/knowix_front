@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios'; 
+import ENDPOINTS from '@/shared/endpoints';
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
@@ -8,7 +9,7 @@ export const useCategoryStore = defineStore('category', {
   actions: {
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:8081/api/v1/category');
+        const response = await axios.get(ENDPOINTS.category);
         this.categories = response.data;
       } catch (error) {
         console.error('Hubo un error al obtener las categorias: ', error);

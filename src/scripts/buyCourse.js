@@ -20,9 +20,7 @@ export default {
     mounted() {
         const courseId = this.$route.params.courseId;
         const paymentMethodId = this.$route.params.paymentMethodId;
-        const store = usePaymentFormStore();
-        store.initializeStore();
-        axios.get(`http://localhost:8081/api/v1/course/${courseId}`)
+        axios.get(`${ENDPOINTS.course}/${courseId}`)
             .then(response => {
                 this.course = response.data;
                 this.purchase.amount = this.course.courseStandardPrice;
@@ -32,7 +30,7 @@ export default {
             .catch(error => {
                 console.error('Error al obtener el curso:', error);
             });
-        axios.get(`http://localhost:8081/api/v1/paymentmethod/${paymentMethodId}`)
+        axios.get(`${ENDPOINTS.paymentMethod}/${paymentMethodId}`)
             .then(response => {
                 this.paymentMethod = response.data;
                 this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
@@ -82,7 +80,7 @@ export default {
                     Swal.showLoading();
                 }
             });
-            axios.post('http://localhost:8081/api/v1/purchase', formData, {
+            axios.post(ENDPOINTS.purchase, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
