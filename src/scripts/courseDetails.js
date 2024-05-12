@@ -1,4 +1,4 @@
-import { ref, onMounted, getCurrentInstance } from 'vue';
+import { ref, onMounted, onUnmounted, getCurrentInstance } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
@@ -14,12 +14,18 @@ export default function useCourseDetails() {
     const newComment = ref('');
     const comments = ref([]);
     const userUuid = ref('');
+    const commentsUpdateInterval = ref(null);
 
     onMounted(async () => {
         setUserUuid();
         await fetchCourseDetails();
         await fetchCourseImage();
         await fetchParentComments();
+        commentsUpdateInterval.value = setInterval(fetchParentComments, 5000);
+    });
+
+    onUnmounted(() => {
+        clearInterval(commentsUpdateInterval.value);
     });
 
     function setUserUuid() {
@@ -66,12 +72,12 @@ export default function useCourseDetails() {
         const commentData = {
             content: newComment.value,
             status: true,
-            kcUserKcUuid: userUuid.value // Use the dynamically set user UUID
+            kcUserKcUuid: userUuid.value
         };
         try {
-            await axios.post(`http://localhost:8081/api/v1/comment/parent?courseId=${courseId}`, commentData);
-            newComment.value = ''; // Clear the input after sending
-            await fetchParentComments(); // Refresh comments list
+            const response = await axios.post(`http://localhost:8081/api/v1/comment/parent?courseId=${courseId}`, commentData);
+            comments.value.unshift(response.data);
+            newComment.value = '';
         } catch (error) {
             console.error('Error posting comment:', error);
         }

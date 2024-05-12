@@ -35,7 +35,11 @@
                 <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" @click="postComment" />
             </div>
             <div v-for="comment in comments" :key="comment.id" class="comment">
-                <p>{{ comment.content }}</p>
+                <p class="comment-content">{{ comment.content }}</p>
+                <div class="comment-actions">
+                    <button @click="replyToComment(comment.id)">Responder</button>
+                    <button @click="replyToComment(comment.id)">Ver Comentarios ({{ comment.replies }})</button>
+                </div>
             </div>
         </div>
         <div v-else class="loading">Cargando detalles del curso...</div>
@@ -54,4 +58,4 @@ const { course, courseImage, goBack, paymentCourse, newComment, comments, postCo
 
 <style scoped>
 @import '@/styles/CourseDetailsStyle.css';
-</style>
+</style>p
