@@ -1,7 +1,7 @@
 const environment = {
     name: "knowix",
     flavor: "dev",
-    backendUrl: "http://locahost:8081",
+    backendUrl: "http://localhost:8081",
     keycloakUrl: "http://localhost:8080/"
 }
 
