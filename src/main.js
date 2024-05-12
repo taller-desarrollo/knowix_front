@@ -8,16 +8,17 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import 'vuetify/styles'; 
-import { createVuetify } from 'vuetify'; 
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
 import { createPinia } from 'pinia';
 
-import * as components from 'vuetify/components'; 
-import * as directives from 'vuetify/directives'; 
+import environment from './config.js';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
 
 library.add(faPencilAlt);
 
-console.log(process.env.VUE_APP_CUSTOM_ENV);  // Replace 'environment' with 'process.env.VUE_APP_CUSTOM_ENV'
+console.log(environment);
 
 const vuetify = createVuetify({
   components,
@@ -29,22 +30,22 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 const keycloak = new Keycloak({
-  url: 'http://localhost:8080/',
+  url: environment.keycloakUrl,
   realm: 'Knowix',
   clientId: 'knowix_frontend'
 });
 keycloak.init(
   { onLoad: 'check-sso', checkLoginIframe: false }).then(authenticated => {
-  console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
-  app.config.globalProperties.$keycloak = keycloak;
-  app.config.globalProperties.$axios = backendInterceptor;
-  app.use(router(keycloak));
-  app.use(pinia);
-  app.use(vuetify);
-  app.mount('#app');
-}).catch(error => {
-  console.error('Failed to initialize adapter:', error);
-});
+    console.log(`User is ${authenticated ? 'authenticated' : 'not authenticated'}`);
+    app.config.globalProperties.$keycloak = keycloak;
+    app.config.globalProperties.$axios = backendInterceptor;
+    app.use(router(keycloak));
+    app.use(pinia);
+    app.use(vuetify);
+    app.mount('#app');
+  }).catch(error => {
+    console.error('Failed to initialize adapter:', error);
+  });
 
 export { keycloak };
 
