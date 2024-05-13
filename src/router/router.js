@@ -21,6 +21,9 @@ import PendingVerificationListComponent from '@/components/PendingVerification/P
 import EducatorVerificationRequestComponent from '@/components/EducatorVerificationRequestComponent.vue';
 import EducatorVerificationListComponent from '@/components/EducatorVerificationListComponent.vue';
 import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
+import axios from 'axios';
+import ReportsComponent from '@/components/ReportsComponent.vue';
+
 
 const routes = [
   {
@@ -124,25 +127,31 @@ const routes = [
     path: '/pending-verification',
     name: 'pending-verification',
     component: PendingVerificationListComponent,
-    meta: { requiresAuth: true, role: 'administrator'}
+    meta: { requiresAuth: true, role: 'administrator' }
   },
   {
     path: '/verification-list',
     name: 'verification-list',
     component: EducatorVerificationListComponent,
-    meta: { requiresAuth: true, role: 'educator'}
+    meta: { requiresAuth: true, role: 'educator' }
   },
   {
     path: '/verification-request',
     name: 'verification-request',
     component: EducatorVerificationRequestComponent,
-    meta: { requiresAuth: true, role: 'educator'}
+    meta: { requiresAuth: true, role: 'educator' }
   },
   {
     path: '/my-purchase',
     name: 'PaymentStatusBuyer',
     component: PaymentStatusBuyer,
-    meta: { requiresAuth: true, role: ['educator', 'student']}
+    meta: { requiresAuth: true, role: ['educator', 'student'] }
+  },
+  {
+    path: '/reports',
+    name: 'Reports',
+    component: ReportsComponent,
+    meta: { requiresAuth: true, role: 'administrator' }
   }
 
 ];
@@ -158,6 +167,18 @@ const router = (keycloak) => {
       if (!keycloak.authenticated) {
         return keycloak.login();
       } else {
+        const response = await axios.get('http://localhost:8081/api/v1/user', {
+          headers: {
+            'X-UUID': keycloak.tokenParsed.sub,
+          },
+        });
+        const userInfo = response.data;
+        const isBlocked = userInfo.blocked;
+
+        if (isBlocked && (to.name !== 'profile' || to.name !== 'blocked')) {
+          alert('Tu cuenta ha sido bloqueada');
+          return next("/");
+        }
         const roles = to.meta.roles || [];
         const hasRole = roles.length ? roles.some(role => keycloak.hasResourceRole(role)) : true;
 
