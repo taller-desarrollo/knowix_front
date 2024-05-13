@@ -23,7 +23,7 @@ import EducatorVerificationListComponent from '@/components/EducatorVerification
 import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
 import axios from 'axios';
 import ReportsComponent from '@/components/ReportsComponent.vue';
-
+import UserManagementComponent from '@/components/UserManagementComponent.vue';
 
 const routes = [
   {
@@ -152,7 +152,13 @@ const routes = [
     name: 'Reports',
     component: ReportsComponent,
     meta: { requiresAuth: true, role: 'administrator' }
-  }
+  },
+  {
+    path: '/user-management',
+    name: 'UserManagement',
+    component: UserManagementComponent,
+    meta: { requiresAuth: true, role: 'administrator' }
+  },
 
 ];
 

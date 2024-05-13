@@ -11,7 +11,7 @@
 
       <div class="dropdown" style="position: relative; display: inline-block;">
         <button class="dropbtn">Filtrar por categoría</button>
-    <div class="dropdown-content" style="
+        <div class="dropdown-content" style="
         display: none;
         position: absolute;
         background-color: white;
@@ -22,12 +22,13 @@
         z-index: 1;
         margin-top: 10px;
     ">
-        <div style="
+          <div style="
             margin-bottom: 10px;
             display: flex;
             align-items: center;
         ">
-            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories" @change="toggleAllCategories" style="
+            <input type="checkbox" id="all-categories" value="" v-model="selectedCategories"
+              @change="toggleAllCategories" style="
                 margin-right: 10px;
                 cursor: pointer;
             ">
@@ -35,13 +36,14 @@
                 cursor: pointer;
                 font-size: 14px;
             ">Todas las categorías</label>
-        </div>
-        <div v-for="category in categoryStore.categories" :key="category.categoryId" style="
+          </div>
+          <div v-for="category in categoryStore.categories" :key="category.categoryId" style="
             margin-bottom: 8px;
             display: flex;
             align-items: center;
         ">
-            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId" v-model="selectedCategories" :disabled="isCategoryDisabled" style="
+            <input type="checkbox" :id="'category-' + category.categoryId" :value="category.categoryId"
+              v-model="selectedCategories" :disabled="isCategoryDisabled" style="
                 margin-right: 10px;
                 cursor: pointer;
             ">
@@ -49,9 +51,9 @@
                 cursor: pointer;
                 font-size: 14px;
             ">{{ category.categoryName }}</label>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
 
 

@@ -39,6 +39,10 @@
                 <div class="comment-actions">
                     <button @click="replyToComment(comment.id)">Responder</button>
                     <button @click="replyToComment(comment.id)">Ver Comentarios ({{ comment.replies }})</button>
+                    <!--
+                        BUG: comment.id always returns undefined 
+                    -->
+                    <button @click="reportComment(comment.id)" style="color: red;">&#9888;</button>
                 </div>
             </div>
         </div>
@@ -53,7 +57,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 library.add(faPaperPlane, faArrowLeft);
 
-const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment } = useCourseDetails();
+const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment, reportComment } = useCourseDetails();
+
+
 </script>
 
 <style scoped>

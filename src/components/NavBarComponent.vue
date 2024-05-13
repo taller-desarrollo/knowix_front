@@ -1,8 +1,10 @@
 <template>
   <div class="navbar">
     <div class="welcome">
-      <img src="../assets/icon/logo.png" alt="logo" height="50" style="margin-left: 10px; cursor: pointer" @click="redirectToHome" />
-      <strong class="welcome-text">¡Bienvenido {{ name }}!</strong>
+      <img src="../assets/icon/logo.png" alt="logo" height="50" style="margin-left: 10px; cursor: pointer"
+        @click="redirectToHome" />
+
+      <strong style="margin-left: 35px">¡Bienvenido {{ name }}!</strong>
     </div>
     <button class="menu-toggle" @click="toggleMenu">≡</button>
     <div class="optionsNavBar" :class="{ visible: menuOpen }">
@@ -25,9 +27,10 @@
       <a v-if="this.$keycloak.hasResourceRole('administrator')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
       <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('administrator')">
         <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
+        <a href="/reports" @click="toggleMenu">Reportes</a>
+        <a href="/user-management" @click="toggleMenu">Gestion de usuarios</a>
       </div>
 
-      <a v-if="authenticated" href="/my-purchase" @click="toggleMenu">Mis compras</a>
       <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
       <a v-if="authenticated" class="cancel" @click="confirmLogout">Cerrar sesión</a>
       <a v-if="!authenticated" class="register" @click="goToRegister">Registrarse</a>

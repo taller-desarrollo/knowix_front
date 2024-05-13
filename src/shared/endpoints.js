@@ -16,6 +16,9 @@ const ENDPOINTS = {
     bank: `${environment.backendUrl}/api/v1/bank`,
     accountType: `${environment.backendUrl}/api/v1/accounttype`,
     socialMedia: `${environment.backendUrl}/api/v1/social-media`,
+    user: `${environment.backendUrl}/api/v1/user`,
+    commentReport: `${environment.backendUrl}/api/v1/comment-report`,
+    contentReport: `${environment.backendUrl}/api/v1/content-report`,
 
     keycloak: {
         token: `${environment.keycloakUrl}/realms/Knowix/protocol/openid-connect/token`,
