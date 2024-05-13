@@ -10,6 +10,9 @@
         </div>
         <div class="tab-content">
             <div v-if="currentTab === 'Inscritos'">
+                <!-- Add button to report course content 
+                <button @click="reportContent(content)" style="color: red;">&#9888;</button>
+                -->
                 <p>Aquí va el contenido de los cursos Inscritos.</p>
             </div>
             <div v-if="currentTab === 'Finalizados'">
@@ -20,10 +23,47 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+import ENDPOINTS from '@/shared/endpoints';
+import keycloak from '@/main';
+
 export default {
     data() {
         return {
             currentTab: 'Inscritos'
+        }
+    },
+    methods: {
+        // Use this function to report course content
+        async reportContent(contentId) {
+            const { value: formValues } = await Swal.fire({
+            title: 'Reportar contenido',
+            html:
+                '<input id="swal-input1" class="swal2-input" placeholder="Razón del reporte">',
+            focusConfirm: false,
+            preConfirm: () => {
+                return [
+                    document.getElementById('swal-input1').value
+                ]
+            }
+        });
+    
+        if (formValues) {
+            try {
+                const response = await axios.post(`${ENDPOINTS.contentReport}/comment/${contentId}`, {
+                    contentReportReason: formValues[0]
+                },
+                {
+                    headers: {
+                        authorization: `Bearer ${keycloak.token}`
+                    }
+                }
+            );
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }            
         }
     }
 }
