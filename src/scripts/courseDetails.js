@@ -62,7 +62,7 @@ export default function useCourseDetails() {
     async function fetchParentComments() {
         if (!course.value) return;
         try {
-            const response = await axios.get(`http://localhost:8081/api/v1/comment/course/${courseId}/parents`);
+            const response = await axios.get(`${ENDPOINTS.comment}/course/${courseId}/parents`);
             comments.value = response.data;
         } catch (error) {
             console.error('Error fetching comments:', error);
@@ -77,7 +77,7 @@ export default function useCourseDetails() {
             kcUserKcUuid: userUuid.value
         };
         try {
-            const response = await axios.post(`http://localhost:8081/api/v1/comment/parent?courseId=${courseId}`, commentData);
+            const response = await axios.post(`${ENDPOINTS.comment}/parent?courseId=${courseId}`, commentData);
             comments.value.unshift(response.data);
             newComment.value = '';
         } catch (error) {

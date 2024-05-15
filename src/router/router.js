@@ -24,6 +24,7 @@ import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
 import axios from 'axios';
 import ReportsComponent from '@/components/ReportsComponent.vue';
 import UserManagementComponent from '@/components/UserManagementComponent.vue';
+import ENDPOINTS from '@/shared/endpoints';
 
 const routes = [
   {
@@ -173,7 +174,7 @@ const router = (keycloak) => {
       if (!keycloak.authenticated) {
         return keycloak.login();
       } else {
-        const response = await axios.get('http://localhost:8081/api/v1/user', {
+        const response = await axios.get(ENDPOINTS.user, {
           headers: {
             'X-UUID': keycloak.tokenParsed.sub,
           },
