@@ -75,7 +75,11 @@ export default function useCourseDetails(paymentFormStore) {
             kcUserKcUuid: paymentFormStore.userUuid
         };
         try {
-            const response = await axios.post(`${ENDPOINTS.comment}/parent?courseId=${courseId}`, commentData);
+            const response = await axios.post(`${ENDPOINTS.comment}/parent?courseId=${courseId}`, commentData, {
+                headers: {
+                    authorization: `Bearer ${keycloak.token}`
+                }
+            });
             comments.value.unshift({
                 ...response.data,
                 childComments: []
@@ -83,6 +87,12 @@ export default function useCourseDetails(paymentFormStore) {
             newComment.value = '';
         } catch (error) {
             console.error('Error posting comment:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al enviar el comentario. Inténtalo nuevamente más tarde.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
         }
     }
 
@@ -125,7 +135,11 @@ export default function useCourseDetails(paymentFormStore) {
             kcUserKcUuid: paymentFormStore.userUuid
         };
         try {
-            const response = await axios.post(`${ENDPOINTS.comment}/child?parentCommentId=${parentCommentId}`, commentData);
+            const response = await axios.post(`${ENDPOINTS.comment}/child?parentCommentId=${parentCommentId}`, commentData,{
+                headers: {
+                    authorization: `Bearer ${keycloak.token}`
+                }
+            });
             const parentComment = comments.value.find(comment => comment.commentId === parentCommentId);
             if (parentComment) {
                 if (!parentComment.childComments) {
@@ -136,6 +150,12 @@ export default function useCourseDetails(paymentFormStore) {
             }
         } catch (error) {
             console.error('Error posting reply:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al enviar la respuesta. Inténtalo nuevamente más tarde.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
         }
     }
 
