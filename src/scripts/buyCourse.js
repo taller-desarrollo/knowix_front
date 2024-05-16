@@ -17,8 +17,7 @@ export default {
             },
             course: null,
             paymentMethod: null,
-            backUrl: environment.backendUrl,
-            courseCreatorUuid: null,
+            backUrl: environment.backendUrl
         };
     },
     mounted() {
@@ -31,20 +30,15 @@ export default {
                 this.purchase.amount = this.course.courseStandardPrice;
                 this.purchase.courseId = this.course.courseId;
                 this.purchase.courseName = this.course.courseName;
-
-                return axios.get(ENDPOINTS.courseCreator(courseId));
-            })
-            .then(response => {
-                this.courseCreatorUuid = response.data;
             })
             .catch(error => {
-                console.error('Error al obtener el curso o el creador del curso:', error);
+                console.error('Error al obtener el curso:', error);
             });
-
         axios.get(`${ENDPOINTS.paymentMethod}/${paymentMethodId}`)
             .then(response => {
                 this.paymentMethod = response.data;
                 this.purchase.paymentMethodId = this.paymentMethod.paymentMethodId;
+                this.purchase.kcUserKcUuid = this.paymentMethod.kcUserKcUuid;
                 this.purchase.accountNumber = this.paymentMethod.accountNumber;
                 this.paymentMethod.qrImage = response.data.qrImage;
             })
@@ -75,7 +69,7 @@ export default {
                 console.error('UUID no disponible, no se puede proceder.');
                 return;
             }
-            formData.append('kcUserKcUuid', this.courseCreatorUuid);
+            formData.append('kcUserKcUuid', store.userUuid);
             formData.append('amount', this.purchase.amount);
             formData.append('courseId', this.purchase.courseId);
             formData.append('paymentMethodId', this.purchase.paymentMethodId);
