@@ -33,7 +33,7 @@
             <div class="sale-actions">
               <button @click="confirmPurchaseWithCheckbox(purchase.purchaseId)" class="btn btn-sm btn-success text-dark">Confirmar</button>
               <button @click="rejectPurchaseWithComment(purchase.purchaseId)" class="btn btn-sm btn-danger text-dark">Rechazar</button>
-              <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+              <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
             </div>
           </div>
         </li>
@@ -58,7 +58,7 @@
         <p class="text-dark">Aceptado el: {{ formatDate(purchase.reply.date) }}</p>
         <p class="text-dark">{{ purchase.reply.coment }}</p>
 
-        <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
       </div>
     </div>
   </li>
@@ -86,7 +86,7 @@
         <h5 class="text-dark">Detalles del rechazo</h5>
         <p class="text-dark">Rechazado el: {{ formatDate(purchase.reply.date) }}</p>
         <p class="text-dark" style="color: red;">{{ purchase.reply.coment }}</p>
-        <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
+        <a :href="'http://localhost:8081/' + purchase.imageComprobante" target="_blank" class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
       </div>
     </div>
   </li>
