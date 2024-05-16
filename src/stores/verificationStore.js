@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { keycloak } from "@/main";
+import ENDPOINTS from '@/shared/endpoints';
 
 export const useVerificationStore = defineStore('verification', {
     state: () => ({

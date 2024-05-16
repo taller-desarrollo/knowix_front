@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { usePaymentFormStore } from '@/stores/PaymentFormStore';
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     data() {
