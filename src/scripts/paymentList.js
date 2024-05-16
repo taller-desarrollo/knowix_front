@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import ENDPOINTS from '@/shared/endpoints';
 
 export default {
     data() {
