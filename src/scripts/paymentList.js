@@ -5,7 +5,8 @@ import ENDPOINTS from '@/shared/endpoints';
 export default {
     data() {
         return {
-            paymentMethods: []
+            paymentMethods: [],
+            courseCreatorUuid: null
         };
     },
     methods: {
@@ -20,23 +21,31 @@ export default {
         },
         getpaymentMethod(paymentMethodId) {
             return this.paymentMethods.find(paymentMethod => paymentMethod.paymentMethodId === paymentMethodId);
+        },
+        fetchCourseCreator(courseId) {
+            axios.get(ENDPOINTS.courseCreator(courseId))
+                .then(response => {
+                    this.courseCreatorUuid = response.data;
+                    this.fetchPaymentMethods(this.courseCreatorUuid);
+                })
+                .catch(error => {
+                    console.error('Error fetching course creator:', error);
+                });
         }
     },
     setup() {
         const route = useRoute();
-        const kcUserKcUuid = route.params.kcUserKcUuid;
         const courseId = route.params.courseId;
         const paymentMethodId = route.params.paymentMethodId;
         return {
-            kcUserKcUuid,
             courseId,
             paymentMethodId
         };
     },
     mounted() {
-        const kcUserKcUuid = this.$route.params.kcUserKcUuid;
-        if (kcUserKcUuid) {
-            this.fetchPaymentMethods(kcUserKcUuid);
+        const courseId = this.$route.params.courseId;
+        if (courseId) {
+            this.fetchCourseCreator(courseId);
         }
     },
 };

@@ -12,137 +12,74 @@
             <!-- CI Person -->
             <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="ciPerson"
-                  v-model="formData.ciPerson"
-                  placeholder="CI Person"
-                />
-                <label for="ciPerson"
-                  ><i class="bi bi-person-fill"></i> Carnet de Identidad</label
-                >
+                <input type="text" class="form-control" id="ciPerson" v-model="formData.ciPerson"
+                  placeholder="CI Person" />
+                <label for="ciPerson"><i class="bi bi-person-fill"></i> Carnet de Identidad</label>
               </div>
             </div>
 
             <!-- Nombre del Propietario -->
             <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nameOwner"
-                  v-model="formData.nameOwner"
-                  placeholder="Nombre del Propietario"
-                />
-                <label for="nameOwner"
-                  ><i class="bi bi-pencil-square"></i> Nombre del
-                  Propietario</label
-                >
+                <input type="text" class="form-control" id="nameOwner" v-model="formData.nameOwner"
+                  placeholder="Nombre del Propietario" />
+                <label for="nameOwner"><i class="bi bi-pencil-square"></i> Nombre del Propietario</label>
               </div>
             </div>
 
             <!-- Número de Teléfono -->
             <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="phoneNumber"
-                  v-model="formData.phoneNumber"
-                  placeholder="Número de Teléfono"
-                />
-                <label for="phoneNumber"
-                  ><i class="bi bi-telephone-fill"></i> Número de
-                  Teléfono</label
-                >
+                <input type="text" class="form-control" id="phoneNumber" v-model="formData.phoneNumber"
+                  placeholder="Número de Teléfono" />
+                <label for="phoneNumber"><i class="bi bi-telephone-fill"></i> Número de Teléfono</label>
               </div>
             </div>
 
             <!-- Número de Cuenta -->
             <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="accountNumber"
-                  v-model="formData.accountNumber"
-                  placeholder="Número de Cuenta"
-                />
-                <label for="accountNumber"
-                  ><i class="bi bi-bank2"></i> Número de Cuenta</label
-                >
+                <input type="text" class="form-control" id="accountNumber" v-model="formData.accountNumber"
+                  placeholder="Número de Cuenta" />
+                <label for="accountNumber"><i class="bi bi-bank2"></i> Número de Cuenta</label>
               </div>
             </div>
 
             <!-- Banco -->
             <div class="col-md-6">
               <div class="form-floating">
-                <select
-                  class="form-select"
-                  id="bankBankId"
-                  v-model="formData.bankBankId"
-                >
+                <select class="form-select" id="bankBankId" v-model="formData.bankBankId">
                   <option disabled value="">Seleccione un banco</option>
-                  <option
-                    v-for="bank in banks"
-                    :value="bank.bankId"
-                    :key="bank.bankId"
-                  >
+                  <option v-for="bank in banks" :value="bank.bankId" :key="bank.bankId">
                     {{ bank.bankName }}
                   </option>
                 </select>
-                <label for="bankBankId"
-                  ><i class="bi bi-building"></i> Banco</label
-                >
+                <label for="bankBankId"><i class="bi bi-building"></i> Banco</label>
               </div>
             </div>
 
             <!-- Tipo de Cuenta -->
             <div class="col-md-6">
               <div class="form-floating">
-                <select
-                  class="form-select"
-                  id="accountTypeAccountTypeId"
-                  v-model="formData.accountTypeAccountTypeId"
-                >
+                <select class="form-select" id="accountTypeAccountTypeId" v-model="formData.accountTypeAccountTypeId">
                   <option disabled value="">Seleccione tipo de cuenta</option>
-                  <option
-                    v-for="accountType in accountTypes"
-                    :value="accountType.accountTypeId"
-                    :key="accountType.accountTypeId"
-                  >
+                  <option v-for="accountType in accountTypes" :value="accountType.accountTypeId"
+                    :key="accountType.accountTypeId">
                     {{ accountType.description }}
                   </option>
                 </select>
-                <label for="accountTypeAccountTypeId"
-                  ><i class="bi bi-sort-down"></i> Tipo de Cuenta</label
-                >
+                <label for="accountTypeAccountTypeId"><i class="bi bi-sort-down"></i> Tipo de Cuenta</label>
               </div>
             </div>
 
             <!-- Imagen QR -->
             <div class="col-md-12">
               <div class="form-floating">
-                <input
-                  type="file"
-                  class="form-control"
-                  id="qrImage"
-                  @change="handleFileUpload"
-                  placeholder="Imagen QR"
-                  accept=".jpg, .jpeg, .png"
-                  :max="5242880"
-                />
-                <label for="qrImage"
-                  ><i class="bi bi-qr-code"></i> Imagen QR</label
-                >
+                <input type="file" class="form-control" id="qrImage" @change="handleFileUpload" placeholder="Imagen QR"
+                  accept=".jpg, .jpeg, .png" :max="5242880" />
+                <label for="qrImage"><i class="bi bi-qr-code"></i> Imagen QR</label>
                 <div v-if="qrImage" class="mt-2">
-                  <img
-                    :src="previewUrl"
-                    class="img-thumbnail"
-                    alt="QR Image Preview"
-                    style="max-width: 200px"
-                  />
+                  <img :src="previewUrl" class="img-thumbnail" alt="QR Image Preview" style="max-width: 200px" />
                 </div>
               </div>
             </div>
@@ -159,8 +96,9 @@
 </template>
 
 <script>
-import { usePaymentFormStore } from "../../stores/PaymentFormStore"; // Asegúrate de tener la ruta correcta al archivo store
+import { usePaymentFormStore } from "../../stores/PaymentFormStore";
 import { useRouter } from "vue-router";
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -199,7 +137,7 @@ export default {
         reader.readAsDataURL(this.qrImage);
       }
     },
-    submitForm() {
+    async submitForm() {
       if (
         !this.formData.ciPerson ||
         !this.formData.nameOwner ||
@@ -209,18 +147,44 @@ export default {
         !this.formData.accountTypeAccountTypeId ||
         !this.qrImage
       ) {
-        alert("Por favor, complete todos los campos y suba una imagen QR.");
+        Swal.fire({
+          icon: 'warning',
+          title: 'Campos incompletos',
+          text: 'Debe llenar todos los campos antes de enviar el formulario.',
+        });
         return;
       }
-      this.store
-        .submitPaymentMethod(this.formData, this.qrImage)
-        .then(() => {
+
+      let loadingSwal;
+      Swal.fire({
+        title: 'Cargando',
+        text: 'Creando la forma de pago...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          loadingSwal = Swal.getPopup();
+        }
+      });
+
+      try {
+        await this.store.submitPaymentMethod(this.formData, this.qrImage);
+        loadingSwal && Swal.close(loadingSwal);
+        Swal.fire({
+          icon: 'success',
+          title: 'Forma de pago creada',
+          text: 'La forma de pago se ha creado exitosamente.',
+        }).then(() => {
           this.router.push({ path: "/payment-administrator" });
-        })
-        .catch((error) => {
-          alert(`Error: ${error.message}`);
         });
-    },
+      } catch (error) {
+        loadingSwal && Swal.close(loadingSwal);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la forma de pago',
+          text: 'Ha ocurrido un error al intentar crear la forma de pago. Por favor, inténtalo de nuevo.',
+        });
+      }
+    }
   },
   mounted() {
     this.store.initializeStore();
@@ -231,26 +195,33 @@ export default {
 
 <style scoped>
 .card-header {
-  background-color: #0056b3; /* Un azul oscuro */
+  background-color: #0056b3;
+  /* Un azul oscuro */
   color: #ffffff;
 }
 
 .card {
-  border-color: #0056b3; /* Bordes azul oscuro */
+  border-color: #0056b3;
+  /* Bordes azul oscuro */
 }
 
 .btn-primary {
-  background-color: #48db74; /* Color crema para los botones */
-  border-color: #48db74; /* Borde del mismo color */
+  background-color: #48db74;
+  /* Color crema para los botones */
+  border-color: #48db74;
+  /* Borde del mismo color */
 }
 
 .form-control,
 .form-select {
-  background-color: #f8f9fa; /* Un ligero crema para los campos de entrada */
-  border-color: #ced4da; /* Borde suave */
+  background-color: #f8f9fa;
+  /* Un ligero crema para los campos de entrada */
+  border-color: #ced4da;
+  /* Borde suave */
 }
 
 .form-label {
-  color: #343a40; /* Texto oscuro para mayor contraste */
+  color: #343a40;
+  /* Texto oscuro para mayor contraste */
 }
 </style>

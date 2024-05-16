@@ -24,7 +24,7 @@ export const usePaymentFormStore = defineStore('paymentForm', {
       const instance = getCurrentInstance();
       if (instance && instance.proxy.$keycloak && instance.proxy.$keycloak.tokenParsed) {
         this.userUuid = instance.proxy.$keycloak.tokenParsed.sub;
-        this.isUuidReady = true; 
+        this.isUuidReady = true;
         console.log('UUID set:', this.userUuid);
       } else {
         console.error('Unable to set UUID: Keycloak instance not available or not ready');
@@ -52,9 +52,36 @@ export const usePaymentFormStore = defineStore('paymentForm', {
     async submitPaymentMethod(formData, qrImage) {
       if (!this.isUuidReady) {
         console.error('UUID not set. Cannot proceed with submission.');
-        alert('Usuario no identificado. No se puede proceder con el envío del formulario.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Usuario no identificado',
+          text: 'No se puede proceder con el envío del formulario.',
+        });
         return;
       }
+
+      // Validación de campos
+      if (!formData || !qrImage) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Campos incompletos',
+          text: 'Debe llenar todos los campos antes de enviar el formulario.',
+        });
+        return;
+      }
+
+      // Alerta de carga
+      let loadingSwal;
+      Swal.fire({
+        title: 'Cargando',
+        text: 'Creando la forma de pago...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          loadingSwal = Swal.getPopup();
+        }
+      });
+
       try {
         const data = new FormData();
         data.append('paymentMethod', JSON.stringify({ ...formData, kcUserKcUuid: this.userUuid }));
@@ -66,6 +93,9 @@ export const usePaymentFormStore = defineStore('paymentForm', {
           },
         });
 
+        // Cerrar el swal de carga
+        loadingSwal && Swal.close(loadingSwal);
+
         Swal.fire({
           icon: 'success',
           title: 'Forma de pago creada',
@@ -73,6 +103,9 @@ export const usePaymentFormStore = defineStore('paymentForm', {
         });
         console.log('Payment method created:', response.data);
       } catch (error) {
+        // Cerrar el swal de carga en caso de error
+        loadingSwal && Swal.close(loadingSwal);
+
         console.error('Error creating payment method:', error);
         Swal.fire({
           icon: 'error',

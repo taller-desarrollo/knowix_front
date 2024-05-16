@@ -3,7 +3,7 @@
         <div v-if="course" class="course-info">
             <img :src="courseImage" alt="Course image" class="course-image">
             <div class="coursedetail">
-                <div style="display: flex; justify-content: flex-end;">
+                <div style="display: flex; justify-content: flex-end; align-items:center;">
                     <button class="general" @click="paymentCourse">Pagar curso</button>
                     <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="back-button" @click="goBack" />
                 </div>
@@ -28,6 +28,7 @@
                 No se encontraron secciones
             </div>
         </div>
+
         <div v-if="course" class="course-comments">
             <h3>Comentarios</h3>
             <div class="comment-input">
@@ -35,21 +36,36 @@
                 <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" @click="postComment" />
             </div>
             <div v-for="comment in comments" :key="comment.commentId" class="comment">
+                <div class="comment-header">
+                    <div class="author-avatar" :style="{ backgroundColor: comment.avatarColor }">{{ comment.firstName?.charAt(0) || '' }}{{ comment.lastName?.charAt(0) || '' }}</div>
+                    <div class="author-details">
+                        <p class="author-name">{{ comment.firstName }} {{ comment.lastName }}</p>
+                        <p class="comment-date"><i>Publicado el {{ formatDate(comment.creationDate) }}</i></p>
+                    </div>
+                    <button @click="reportComment(comment.commentId)" class="report-button">&#9888;</button>
+                </div>
                 <p class="comment-content">{{ comment.content }}</p>
                 <div class="comment-actions">
-                    <button @click="toggleReplyInput(comment.commentId)">Responder</button>
-                    <button @click="fetchChildComments(comment.commentId)">Ver Comentarios</button>
-                    <button @click="reportComment(comment.commentId)" style="color: red;">&#9888;</button>
+                    <button class="action-button" @click="toggleReplyInput(comment.commentId)">Responder</button>
+                    <button class="action-button" @click="toggleChildComments(comment.commentId)">Ver Respuestas</button>
                 </div>
                 <div v-if="replyInputs[comment.commentId]" class="reply-input">
-                    <input type="text" v-model="replyInputs[comment.commentId].content"
-                        placeholder="Escribe una respuesta...">
-                    <button :disabled="!replyInputs[comment.commentId].content.trim()"
-                        @click="postReply(comment.commentId)">Enviar</button>
+                    <input type="text" v-model="replyInputs[comment.commentId].content" placeholder="Escribe una respuesta...">
+                    <button :disabled="!replyInputs[comment.commentId].content.trim()" @click="postReply(comment.commentId)">Enviar</button>
                 </div>
-                <div v-if="comment.childComments && comment.childComments.length">
-                    <div v-for="child in comment.childComments" :key="child.commentId" class="child-comment">
+                <div v-if="comment.showChildComments" class="child-comments">
+                    <div v-if="comment.childComments && comment.childComments.length" v-for="child in comment.childComments" :key="child.commentId" class="child-comment">
+                        <div class="comment-header">
+                            <div class="author-avatar" :style="{ backgroundColor: child.avatarColor }">{{ child.firstName?.charAt(0) || '' }}{{ child.lastName?.charAt(0) || '' }}</div>
+                            <div class="author-details">
+                                <p class="author-name">{{ child.firstName }} {{ child.lastName }}</p>
+                                <p class="comment-date"><i>Publicado el {{ formatDate(child.creationDate) }}</i></p>
+                            </div>
+                        </div>
                         <p>{{ child.content }}</p>
+                    </div>
+                    <div v-if="!comment.childComments || !comment.childComments.length">
+                        Este comentario no tiene respuestas.
                     </div>
                 </div>
             </div>
@@ -58,7 +74,9 @@
     </div>
 </template>
 
+
 <script setup>
+import { onMounted, watch } from 'vue';
 import useCourseDetails from '../scripts/courseDetails.js';
 import { usePaymentFormStore } from '../stores/PaymentFormStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -69,7 +87,60 @@ library.add(faPaperPlane, faArrowLeft);
 const paymentFormStore = usePaymentFormStore();
 
 const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment, reportComment, fetchChildComments, toggleReplyInput, postReply, replyInputs } = useCourseDetails(paymentFormStore);
+
+const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', options);
+};
+
+const toggleChildComments = async (commentId) => {
+    const comment = comments.value.find(comment => comment.commentId === commentId);
+    if (comment) {
+        if (comment.showChildComments) {
+            comment.showChildComments = false;
+        } else {
+            await fetchChildComments(commentId);
+            comment.showChildComments = true;
+            applyAvatarColors();
+        }
+    }
+};
+
+// Helper function to get avatar color
+const getAvatarColor = (initial) => {
+    const char = initial.toLowerCase();
+    if (char >= 'a' && char <= 'e') return '#ffadad';
+    if (char >= 'f' && char <= 'i') return '#9bf6ff';
+    if (char >= 'j' && char <= 'o') return '#fdffb6';
+    if (char >= 'p' && char <= 't') return '#caffbf';
+    if (char >= 'u' && char <= 'z') return '#ffd6a5';
+    return '#a0c4ff';
+};
+
+// Function to apply avatar color
+const applyAvatarColors = () => {
+    comments.value.forEach(comment => {
+        const initial = comment.firstName ? comment.firstName.charAt(0) : 'a';
+        comment.avatarColor = getAvatarColor(initial);
+        if (comment.childComments) {
+            comment.childComments.forEach(child => {
+                const childInitial = child.firstName ? child.firstName.charAt(0) : 'a';
+                child.avatarColor = getAvatarColor(childInitial);
+            });
+        }
+    });
+};
+
+onMounted(() => {
+    applyAvatarColors();
+});
+
+watch(comments, () => {
+    applyAvatarColors();
+});
 </script>
+
 
 <style scoped>
 @import '@/styles/CourseDetailsStyle.css';

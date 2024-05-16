@@ -3,7 +3,7 @@ import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
 import ENDPOINTS from '@/shared/endpoints';
-import { environment } from '@/config.js';
+import environment from '@/config.js';
 import Swal from 'sweetalert2';
 import { keycloak } from "@/main";
 
@@ -48,10 +48,10 @@ export default function useCourseDetails(paymentFormStore) {
         if (!course.value) return;
         try {
             const response = await axios.get(`${ENDPOINTS.comment}/course/${courseId}/parents`);
-            comments.value = response.data.map(comment => ({
+            comments.value = Array.isArray(response.data) ? response.data.map(comment => ({
                 ...comment,
                 childComments: []
-            }));
+            })) : [];
             Object.keys(replyInputs).forEach(key => {
                 if (!comments.value.some(comment => comment.commentId == key)) {
                     delete replyInputs[key];
@@ -65,8 +65,7 @@ export default function useCourseDetails(paymentFormStore) {
     async function postComment() {
         if (!newComment.value.trim()) return;
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with submission.');
-            alert('Usuario no identificado. No se puede proceder con el envío del comentario.');
+            keycloak.login();
             return;
         }
         const commentData = {
@@ -101,7 +100,7 @@ export default function useCourseDetails(paymentFormStore) {
             const response = await axios.get(`${ENDPOINTS.comment}/parent/${parentCommentId}/children`);
             const parentComment = comments.value.find(comment => comment.commentId === parentCommentId);
             if (parentComment) {
-                parentComment.childComments = response.data;
+                parentComment.childComments = Array.isArray(response.data) ? response.data : [];
             }
         } catch (error) {
             console.error('Error fetching child comments:', error);
@@ -122,8 +121,7 @@ export default function useCourseDetails(paymentFormStore) {
 
     async function postReply(parentCommentId) {
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with submission.');
-            alert('Usuario no identificado. No se puede proceder con el envío del comentario.');
+            keycloak.login();
             return;
         }
         const reply = replyInputs[parentCommentId];
@@ -164,6 +162,11 @@ export default function useCourseDetails(paymentFormStore) {
     }
 
     function paymentCourse() {
+        if (!keycloak.authenticated) {
+            keycloak.login();
+            return;
+        }
+
         if (course.value && paymentFormStore.userUuid && course.value.courseId) {
             router.push({
                 name: 'PaymentList',
@@ -174,8 +177,7 @@ export default function useCourseDetails(paymentFormStore) {
 
     async function reportComment(commentId) {
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with report.');
-            alert('Usuario no identificado. No se puede proceder con el reporte.');
+            keycloak.login();
             return;
         }
 
@@ -201,7 +203,7 @@ export default function useCourseDetails(paymentFormStore) {
             });
 
             try {
-                const response = await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
+                await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
                     commentReportReason: formValues[0]
                 }, {
                     headers: {
