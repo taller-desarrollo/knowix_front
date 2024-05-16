@@ -56,7 +56,7 @@ onMounted(async () => {
 });
 
 function getImageUrl(relativePath) {
-  const baseUrl = `${environment.backendUrl}/`;
+  const baseUrl = `http://localhost:8081/`;
   return baseUrl + relativePath;
 }
 

@@ -2,9 +2,9 @@
   <div class="content">
     <div class="head-courses">
       <h1>Cursos Publicados</h1>
-      <button class="general" @click="createCourse()">Crear Curso</button>
+      <button class="general-button" @click="createCourse()">Crear Curso</button>
     </div>
-    <div v-if="isLoading">
+    <div v-if="isLoading" class="loading-container">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
     <div v-else>
@@ -15,7 +15,7 @@
         <div class="header-item">Idioma</div>
         <div class="header-item">Precio</div>
         <div class="header-item">Editar</div>
-        <div class = "header-item">Estado</div>
+        <div class="header-item">Estado</div>
       </div>
       <div class="courses-container">
         <div v-for="course in courses" :key="course.courseId" class="course-card">
@@ -24,26 +24,25 @@
           <div class="course-item">{{ course.category.categoryName }}</div>
           <div class="course-item">{{ course.language.languageName }}</div>
           <div class="course-item">Bs {{ course.courseStandardPrice }}</div>
-          <div class="course-item">
-            <button @click="navigateToEditCourse(course.courseId)">
+          <div class="course-item course-edit-item">
+            <button class="edit-button" @click="navigateToEditCourse(course.courseId)">
               <font-awesome-icon icon="pencil-alt" />
             </button>
           </div>
-          <div class="course-item">
-            <button v-if="course.courseIsPublic" @click="changeCourseIsPublic(course.courseId)">
-              Publicado
-            </button>
-            <button v-else @click="changeCourseIsPublic(course.courseId)">
-              No Publicado
-            </button>
-          </div>  
+          <div class="course-item course-status-item">
+            <label class="switch">
+              <input type="checkbox" v-model="course.courseIsPublic" @change="changeCourseIsPublic(course.courseId)">
+              <span class="slider round" :class="{ 'checked': course.courseIsPublic }"></span>
+            </label>
+            <span class="status-text">{{ course.courseIsPublic ? 'Publicado' : 'No Publicado' }}</span>
+          </div>
         </div>
         <div class="pagination-container">
           <button :disabled="page <= 0" @click="fetchPreviousPage">Anterior</button>
           <span>Página {{ page + 1 }} de {{ totalPages + 1 }}</span>
           <button :disabled="page >= totalPages" @click="fetchNextPage">Siguiente</button>
         </div>
-        <div v-if="!courses.length && !isLoading">
+        <div v-if="!courses.length && !isLoading" class="no-courses">
           <v-alert type="info" dismissible>No se encontraron cursos para mostrar.</v-alert>
         </div>
       </div>
@@ -55,7 +54,7 @@
 import { useRouter } from 'vue-router';
 import { useCourseStore } from "@/stores/getCourseStore";
 import { onMounted, computed, ref } from "vue";
-import {keycloak} from '@/main'
+import { keycloak } from '@/main'
 
 const router = useRouter();
 const courseStore = useCourseStore();
