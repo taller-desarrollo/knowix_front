@@ -99,6 +99,11 @@ export default function useCourseDetails() {
     }
 
     async function reportComment(commentId) {
+        if (!keycloak.authenticated) {
+            keycloak.login();
+            return;
+        }
+
         const { value: formValues } = await Swal.fire({
             title: 'Reportar comentario',
             html: '<input id="swal-input1" class="swal2-input" placeholder="Razón del reporte">',
@@ -109,7 +114,7 @@ export default function useCourseDetails() {
                 ];
             }
         });
-    
+
         if (formValues) {
             Swal.fire({
                 title: 'Enviando reporte...',
@@ -119,17 +124,16 @@ export default function useCourseDetails() {
                 allowOutsideClick: false,
                 allowEscapeKey: false
             });
-    
+
             try {
                 const response = await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
                     commentReportReason: formValues[0]
-                },
-                {
+                }, {
                     headers: {
                         authorization: `Bearer ${keycloak.token}`
                     }
                 });
-                    Swal.fire({
+                Swal.fire({
                     title: 'Reporte enviado',
                     text: 'Tu reporte ha sido enviado con éxito.',
                     icon: 'success',
@@ -137,7 +141,7 @@ export default function useCourseDetails() {
                 });
             } catch (error) {
                 console.error(error);
-                    Swal.fire({
+                Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema al enviar el reporte. Inténtalo nuevamente más tarde.',
                     icon: 'error',
@@ -146,7 +150,6 @@ export default function useCourseDetails() {
             }
         }
     }
-    
 
     return {
         course,
