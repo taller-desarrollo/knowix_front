@@ -65,8 +65,7 @@ export default function useCourseDetails(paymentFormStore) {
     async function postComment() {
         if (!newComment.value.trim()) return;
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with submission.');
-            alert('Usuario no identificado. No se puede proceder con el envío del comentario.');
+            keycloak.login();
             return;
         }
         const commentData = {

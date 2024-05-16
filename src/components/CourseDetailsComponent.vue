@@ -102,6 +102,7 @@ const toggleChildComments = async (commentId) => {
         } else {
             await fetchChildComments(commentId);
             comment.showChildComments = true;
+            applyAvatarColors();
         }
     }
 };
@@ -122,10 +123,12 @@ const applyAvatarColors = () => {
     comments.value.forEach(comment => {
         const initial = comment.firstName ? comment.firstName.charAt(0) : 'a';
         comment.avatarColor = getAvatarColor(initial);
-        comment.childComments.forEach(child => {
-            const childInitial = child.firstName ? child.firstName.charAt(0) : 'a';
-            child.avatarColor = getAvatarColor(childInitial);
-        });
+        if (comment.childComments) {
+            comment.childComments.forEach(child => {
+                const childInitial = child.firstName ? child.firstName.charAt(0) : 'a';
+                child.avatarColor = getAvatarColor(childInitial);
+            });
+        }
     });
 };
 
@@ -137,6 +140,7 @@ watch(comments, () => {
     applyAvatarColors();
 });
 </script>
+
 
 <style scoped>
 @import '@/styles/CourseDetailsStyle.css';

@@ -87,7 +87,6 @@
     color: #1a1a2e;
     font-weight: bold;
     margin-right: 10px;
-    background-color: steelblue;
 }
 
 .author-details {
@@ -195,7 +194,6 @@
     color: #1a1a2e;
     font-weight: bold;
     margin-right: 10px;
-    background-color: steelblue;
 }
 
 .child-comment .author-name {
@@ -213,12 +211,11 @@
 
 
 :root {
-    --avatar-color-a-d: #ffadad;
-    --avatar-color-e-h: #ffd6a5;
-    --avatar-color-i-l: #fdffb6;
-    --avatar-color-m-p: #caffbf;
-    --avatar-color-q-t: #9bf6ff;
-    --avatar-color-u-z: #a0c4ff;
+    --avatar-color-a-e: #ffadad;
+    --avatar-color-f-i: #9bf6ff;
+    --avatar-color-j-o: #fdffb6;
+    --avatar-color-p-t: #caffbf;
+    --avatar-color-u-z: #ffd6a5;
 }
 
 body {
