@@ -5,12 +5,12 @@ import defaultImage from '@/assets/default.png';
 import ENDPOINTS from '@/shared/endpoints';
 import { environment } from '@/config.js';
 import Swal from 'sweetalert2';
-import {keycloak} from "@/main";
+import { keycloak } from "@/main";
 
 export default function useCourseDetails() {
     const router = useRouter();
     const route = useRoute();
-    const courseId = route.params.id;
+    const courseId = route.params.courseId;
     const course = ref(null);
     const courseImage = ref(defaultImage);
     const newComment = ref('');
@@ -101,17 +101,25 @@ export default function useCourseDetails() {
     async function reportComment(commentId) {
         const { value: formValues } = await Swal.fire({
             title: 'Reportar comentario',
-            html:
-                '<input id="swal-input1" class="swal2-input" placeholder="Razón del reporte">',
+            html: '<input id="swal-input1" class="swal2-input" placeholder="Razón del reporte">',
             focusConfirm: false,
             preConfirm: () => {
                 return [
                     document.getElementById('swal-input1').value
-                ]
+                ];
             }
         });
     
         if (formValues) {
+            Swal.fire({
+                title: 'Enviando reporte...',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+    
             try {
                 const response = await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
                     commentReportReason: formValues[0]
@@ -120,11 +128,21 @@ export default function useCourseDetails() {
                     headers: {
                         authorization: `Bearer ${keycloak.token}`
                     }
-                }
-            );
-                console.log(response.data);
+                });
+                    Swal.fire({
+                    title: 'Reporte enviado',
+                    text: 'Tu reporte ha sido enviado con éxito.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
             } catch (error) {
                 console.error(error);
+                    Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al enviar el reporte. Inténtalo nuevamente más tarde.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
             }
         }
     }
