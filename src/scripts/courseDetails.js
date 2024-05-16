@@ -3,7 +3,7 @@ import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import defaultImage from '@/assets/default.png';
 import ENDPOINTS from '@/shared/endpoints';
-import { environment } from '@/config.js';
+import environment from '@/config.js';
 import Swal from 'sweetalert2';
 import { keycloak } from "@/main";
 

@@ -43,7 +43,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
-import { environment } from '@/config.js';
+import environment from '@/config.js';
 
 const paymentStore = usePaymentStore();
 const isLoading = ref(true);
