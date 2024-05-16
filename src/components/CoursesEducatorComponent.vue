@@ -2,7 +2,7 @@
   <div class="content">
     <div class="head-courses">
       <h1>Cursos Publicados</h1>
-      <button class="general" @click="createCourse()">Crear Curso</button>
+      <button class="general-button" @click="createCourse()">Crear Curso</button>
     </div>
     <div v-if="isLoading" class="loading-container">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -24,16 +24,17 @@
           <div class="course-item">{{ course.category.categoryName }}</div>
           <div class="course-item">{{ course.language.languageName }}</div>
           <div class="course-item">Bs {{ course.courseStandardPrice }}</div>
-          <div class="course-item">
+          <div class="course-item course-edit-item">
             <button class="edit-button" @click="navigateToEditCourse(course.courseId)">
               <font-awesome-icon icon="pencil-alt" />
             </button>
           </div>
-          <div class="course-item">
+          <div class="course-item course-status-item">
             <label class="switch">
               <input type="checkbox" v-model="course.courseIsPublic" @change="changeCourseIsPublic(course.courseId)">
               <span class="slider round" :class="{ 'checked': course.courseIsPublic }"></span>
             </label>
+            <span class="status-text">{{ course.courseIsPublic ? 'Publicado' : 'No Publicado' }}</span>
           </div>
         </div>
         <div class="pagination-container">
@@ -53,7 +54,7 @@
 import { useRouter } from 'vue-router';
 import { useCourseStore } from "@/stores/getCourseStore";
 import { onMounted, computed, ref } from "vue";
-import {keycloak} from '@/main'
+import { keycloak } from '@/main'
 
 const router = useRouter();
 const courseStore = useCourseStore();
