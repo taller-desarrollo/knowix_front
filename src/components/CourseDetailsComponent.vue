@@ -3,7 +3,7 @@
         <div v-if="course" class="course-info">
             <img :src="courseImage" alt="Course image" class="course-image">
             <div class="coursedetail">
-                <div style="display: flex; justify-content: flex-end;">
+                <div style="display: flex; justify-content: flex-end; align-items:center;">
                     <button class="general" @click="paymentCourse">Pagar curso</button>
                     <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="back-button" @click="goBack" />
                 </div>

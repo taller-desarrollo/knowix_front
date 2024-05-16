@@ -142,6 +142,11 @@ export default function useCourseDetails(paymentFormStore) {
     }
 
     function paymentCourse() {
+        if (!keycloak.authenticated) {
+            keycloak.login();
+            return;
+        }
+
         if (course.value && paymentFormStore.userUuid && course.value.courseId) {
             router.push({
                 name: 'PaymentList',
