@@ -48,10 +48,10 @@ export default function useCourseDetails(paymentFormStore) {
         if (!course.value) return;
         try {
             const response = await axios.get(`${ENDPOINTS.comment}/course/${courseId}/parents`);
-            comments.value = response.data.map(comment => ({
+            comments.value = Array.isArray(response.data) ? response.data.map(comment => ({
                 ...comment,
                 childComments: []
-            }));
+            })) : [];
             Object.keys(replyInputs).forEach(key => {
                 if (!comments.value.some(comment => comment.commentId == key)) {
                     delete replyInputs[key];
@@ -91,7 +91,7 @@ export default function useCourseDetails(paymentFormStore) {
             const response = await axios.get(`${ENDPOINTS.comment}/parent/${parentCommentId}/children`);
             const parentComment = comments.value.find(comment => comment.commentId === parentCommentId);
             if (parentComment) {
-                parentComment.childComments = response.data;
+                parentComment.childComments = Array.isArray(response.data) ? response.data : [];
             }
         } catch (error) {
             console.error('Error fetching child comments:', error);
@@ -181,7 +181,7 @@ export default function useCourseDetails(paymentFormStore) {
             });
 
             try {
-                const response = await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
+                await axios.post(`${ENDPOINTS.commentReport}/comment/${commentId}`, {
                     commentReportReason: formValues[0]
                 }, {
                     headers: {
