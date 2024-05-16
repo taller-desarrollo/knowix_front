@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 style="color: white">
-            Hola gestion de usuarios
+            Gestión de usuarios
         </h1>
         <table>
             <thead>
