@@ -38,8 +38,7 @@
                 <p class="comment-content">{{ comment.content }}</p>
                 <div class="comment-actions">
                     <button @click="toggleReplyInput(comment.commentId)">Responder</button>
-                    <button @click="fetchChildComments(comment.commentId)">Ver Comentarios ({{ comment.childComments ?
-                        comment.childComments.length : 0 }})</button>
+                    <button @click="fetchChildComments(comment.commentId)">Ver Comentarios</button>
                     <button @click="reportComment(comment.commentId)" style="color: red;">&#9888;</button>
                 </div>
                 <div v-if="replyInputs[comment.commentId]" class="reply-input">

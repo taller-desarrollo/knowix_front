@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { usePaymentFormStore } from '@/stores/PaymentFormStore';
+import ENDPOINTS from '@/shared/endpoints';
+import environment from "@/config";
 
 export default {
     data() {
@@ -15,11 +17,13 @@ export default {
             },
             course: null,
             paymentMethod: null,
+            backUrl: environment.backendUrl
         };
     },
     mounted() {
         const courseId = this.$route.params.courseId;
         const paymentMethodId = this.$route.params.paymentMethodId;
+
         axios.get(`${ENDPOINTS.course}/${courseId}`)
             .then(response => {
                 this.course = response.data;
