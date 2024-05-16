@@ -17,11 +17,13 @@ export default {
             },
             course: null,
             paymentMethod: null,
+            backUrl: environment.backendUrl
         };
     },
     mounted() {
         const courseId = this.$route.params.courseId;
         const paymentMethodId = this.$route.params.paymentMethodId;
+
         axios.get(`${ENDPOINTS.course}/${courseId}`)
             .then(response => {
                 this.course = response.data;
