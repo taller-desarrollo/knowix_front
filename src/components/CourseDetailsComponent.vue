@@ -34,15 +34,24 @@
                 <input type="text" v-model="newComment" placeholder="Escribe un comentario...">
                 <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" @click="postComment" />
             </div>
-            <div v-for="comment in comments" :key="comment.id" class="comment">
+            <div v-for="comment in comments" :key="comment.commentId" class="comment">
                 <p class="comment-content">{{ comment.content }}</p>
                 <div class="comment-actions">
-                    <button @click="replyToComment(comment.id)">Responder</button>
-                    <button @click="replyToComment(comment.id)">Ver Comentarios ({{ comment.replies }})</button>
-                    <!--
-                        BUG: comment.id always returns undefined 
-                    -->
-                    <button @click="reportComment(comment.id)" style="color: red;">&#9888;</button>
+                    <button @click="toggleReplyInput(comment.commentId)">Responder</button>
+                    <button @click="fetchChildComments(comment.commentId)">Ver Comentarios ({{ comment.childComments ?
+                        comment.childComments.length : 0 }})</button>
+                    <button @click="reportComment(comment.commentId)" style="color: red;">&#9888;</button>
+                </div>
+                <div v-if="replyInputs[comment.commentId]" class="reply-input">
+                    <input type="text" v-model="replyInputs[comment.commentId].content"
+                        placeholder="Escribe una respuesta...">
+                    <button :disabled="!replyInputs[comment.commentId].content.trim()"
+                        @click="postReply(comment.commentId)">Enviar</button>
+                </div>
+                <div v-if="comment.childComments && comment.childComments.length">
+                    <div v-for="child in comment.childComments" :key="child.commentId" class="child-comment">
+                        <p>{{ child.content }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,16 +61,27 @@
 
 <script setup>
 import useCourseDetails from '../scripts/courseDetails.js';
+import { usePaymentFormStore } from '../stores/PaymentFormStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 library.add(faPaperPlane, faArrowLeft);
 
-const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment, reportComment } = useCourseDetails();
+const paymentFormStore = usePaymentFormStore();
 
-
+const { course, courseImage, goBack, paymentCourse, newComment, comments, postComment, reportComment, fetchChildComments, toggleReplyInput, postReply, replyInputs } = useCourseDetails(paymentFormStore);
 </script>
 
 <style scoped>
 @import '@/styles/CourseDetailsStyle.css';
-</style>p
+
+.reply-input {
+    margin-top: 10px;
+}
+
+.child-comment {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #ccc;
+}
+</style>
