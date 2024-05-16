@@ -34,7 +34,7 @@
                 <input type="text" v-model="newComment" placeholder="Escribe un comentario...">
                 <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="send-icon" @click="postComment" />
             </div>
-            <div v-for="comment in comments" :key="comment.comment_id" class="comment">
+            <div v-for="comment in comments" :key="comment.commentId" class="comment">
                 <p class="comment-content">{{ comment.content }}</p>
                 <div class="comment-actions">
                     <button @click="replyToComment()">Responder</button>
@@ -42,7 +42,7 @@
                     <!--
                         BUG: comment.id always returns undefined 
                     -->
-                    <button @click="reportComment(comment.comment_id)" style="color: red;">&#9888;</button>
+                    <button @click="reportComment(comment.commentId)" style="color: red;">&#9888;</button>
                 </div>
             </div>
         </div>
@@ -64,4 +64,4 @@ const { course, courseImage, goBack, paymentCourse, newComment, comments, postCo
 
 <style scoped>
 @import '@/styles/CourseDetailsStyle.css';
-</style>p
+</style>

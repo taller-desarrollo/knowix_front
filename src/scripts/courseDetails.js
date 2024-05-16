@@ -10,7 +10,7 @@ import { keycloak } from "@/main";
 export default function useCourseDetails() {
     const router = useRouter();
     const route = useRoute();
-    const courseId = route.params.courseId;
+    const courseId = route.params.id;
     const course = ref(null);
     const courseImage = ref(defaultImage);
     const newComment = ref('');
