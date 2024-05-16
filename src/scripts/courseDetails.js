@@ -111,8 +111,7 @@ export default function useCourseDetails(paymentFormStore) {
 
     async function postReply(parentCommentId) {
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with submission.');
-            alert('Usuario no identificado. No se puede proceder con el envío del comentario.');
+            keycloak.login();
             return;
         }
         const reply = replyInputs[parentCommentId];
@@ -153,8 +152,7 @@ export default function useCourseDetails(paymentFormStore) {
 
     async function reportComment(commentId) {
         if (!paymentFormStore.isUuidReady) {
-            console.error('UUID not set. Cannot proceed with report.');
-            alert('Usuario no identificado. No se puede proceder con el reporte.');
+            keycloak.login();
             return;
         }
 
