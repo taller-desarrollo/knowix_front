@@ -185,7 +185,7 @@ export default function useCourseDetails(paymentFormStore) {
                     commentReportReason: formValues[0]
                 }, {
                     headers: {
-                        authorization: `Bearer ${paymentFormStore.userUuid}`
+                        authorization: `Bearer ${keycloak.token}`
                     }
                 });
                 Swal.fire({
