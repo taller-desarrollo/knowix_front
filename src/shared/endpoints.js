@@ -19,7 +19,7 @@ const ENDPOINTS = {
     user: `${environment.backendUrl}/api/v1/user`,
     commentReport: `${environment.backendUrl}/api/v1/comment-report`,
     contentReport: `${environment.backendUrl}/api/v1/content-report`,
-    comment: `${environment.backendUrl}/api/v1/comment`,
+    comment: `${environment.backendUrl}/api/v2/comment`,
 
     keycloak: {
         token: `${environment.keycloakUrl}/realms/Knowix/protocol/openid-connect/token`,

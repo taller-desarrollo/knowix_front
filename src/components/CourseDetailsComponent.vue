@@ -28,6 +28,9 @@
                 No se encontraron secciones
             </div>
         </div>
+
+
+
         <div v-if="course" class="course-comments">
             <h3>Comentarios</h3>
             <div class="comment-input">
@@ -36,6 +39,7 @@
             </div>
             <div v-for="comment in comments" :key="comment.commentId" class="comment">
                 <p class="comment-content">{{ comment.content }}</p>
+                Autor: <p> {{ comment.firstName }} {{ comment.lastName }}</p>
                 <div class="comment-actions">
                     <button @click="toggleReplyInput(comment.commentId)">Responder</button>
                     <button @click="fetchChildComments(comment.commentId)">Ver Comentarios</button>
@@ -54,6 +58,9 @@
                 </div>
             </div>
         </div>
+
+
+
         <div v-else class="loading">Cargando detalles del curso...</div>
     </div>
 </template>
