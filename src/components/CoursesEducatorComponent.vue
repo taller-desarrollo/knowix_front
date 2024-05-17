@@ -39,7 +39,7 @@
         </div>
         <div class="pagination-container">
           <button :disabled="page <= 0" @click="fetchPreviousPage">Anterior</button>
-          <span>Página {{ page + 1 }} de {{ totalPages + 1 }}</span>
+          <span>Página {{ page + 1 }} de {{ totalPages }}</span>
           <button :disabled="page >= totalPages" @click="fetchNextPage">Siguiente</button>
         </div>
         <div v-if="!courses.length && !isLoading" class="no-courses">
