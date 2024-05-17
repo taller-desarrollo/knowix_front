@@ -40,7 +40,7 @@
         <div class="pagination-container">
           <button :disabled="page <= 0" @click="fetchPreviousPage">Anterior</button>
           <span>Página {{ page + 1 }} de {{ totalPages }}</span>
-          <button :disabled="page >= totalPages" @click="fetchNextPage">Siguiente</button>
+          <button :disabled="page + 1 >= totalPages" @click="fetchNextPage">Siguiente</button>
         </div>
         <div v-if="!courses.length && !isLoading" class="no-courses">
           <v-alert type="info" dismissible>No se encontraron cursos para mostrar.</v-alert>
