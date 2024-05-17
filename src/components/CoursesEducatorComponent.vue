@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="head-courses">
-      <h1>Cursos Publicados</h1>
+      <h1>Cursos Disponibles</h1>
       <button class="general-button" @click="createCourse()">Crear Curso</button>
     </div>
     <div v-if="isLoading" class="loading-container">
