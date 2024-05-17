@@ -9,23 +9,24 @@
     <button class="menu-toggle" @click="toggleMenu">≡</button>
     <div class="optionsNavBar" :class="{ visible: menuOpen }">
       <a href="/" @click="toggleMenu">Inicio</a>
-      <a v-if="this.$keycloak.hasResourceRole('student')" href="#" @click.prevent="toggleSubMenu">Estudiante</a>
-      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('student')">
+      <a v-if="$keycloak.hasResourceRole('student')" href="#" @click.prevent="toggleSubMenu">Estudiante</a>
+      <div class="submenu" v-if="submenuOpen && $keycloak.hasResourceRole('student')">
         <a href="/course-student" @click="toggleMenu">Cursos Inscritos</a>
-        <a href="/payment-student" @click="toggleMenu">Mis Pagos</a>
       </div>
 
-      <a v-if="this.$keycloak.hasResourceRole('educator')" href="#" @click.prevent="toggleSubMenu">Educador</a>
-      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('educator')">
+      <a v-if="$keycloak.hasResourceRole('educator')" href="#" @click.prevent="toggleSubMenu">Educador</a>
+      <div class="submenu" v-if="submenuOpen && $keycloak.hasResourceRole('educator')">
         <a href="/new-course" @click="toggleMenu">Crear Curso</a>
         <a href="/courses-educator" @click="toggleMenu">Ver mis Cursos</a>
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
         <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
         <a href="/verification-list" @click="toggleMenu">Solicitar verificación</a>
       </div>
-      
-      <a v-if="this.$keycloak.hasResourceRole('administrator')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
-      <div class="submenu" v-if="submenuOpen && this.$keycloak.hasResourceRole('administrator')">
+
+      <a v-if="$keycloak.hasResourceRole('educator') || $keycloak.hasResourceRole('student')" href="/my-purchase" @click="toggleMenu">Mis Pagos</a>
+
+      <a v-if="$keycloak.hasResourceRole('administrator')" href="#" @click.prevent="toggleSubMenu">Administrador</a>
+      <div class="submenu" v-if="submenuOpen && $keycloak.hasResourceRole('administrator')">
         <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
         <a href="/reports" @click="toggleMenu">Reportes</a>
         <a href="/user-management" @click="toggleMenu">Gestion de usuarios</a>
@@ -38,6 +39,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { keycloak } from "@/main";

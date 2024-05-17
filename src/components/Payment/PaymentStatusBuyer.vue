@@ -32,7 +32,7 @@
               </div>
               <div class="sale-actions">
 
-                <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank"
+                <a :href="getImageUrl(purchase.imageComprobante)" target="_blank"
                   class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
               </div>
             </div>
@@ -58,7 +58,7 @@
                 <p class="text-dark">Aceptado el: {{ formatDate(purchase.reply.date) }}</p>
                 <p class="text-dark">{{ purchase.reply.coment }}</p>
 
-                <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank"
+                <a :href="getImageUrl(purchase.imageComprobante)" target="_blank"
                   class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
               </div>
             </div>
@@ -83,7 +83,8 @@
                 <h5 class="text-dark">Detalles del rechazo</h5>
                 <p class="text-dark">Rechazado el: {{ formatDate(purchase.reply.date) }}</p>
                 <p class="text-dark" style="color: red;">{{ purchase.reply.coment }}</p>
-                <a :href="environment.backendUrl + '/' + purchase.imageComprobante" target="_blank"
+                <a :href="getImageUrl(purchase.imageComprobante)" target="_blank"
+
                   class="btn btn-sm btn-secondary text-dark">Ver Comprobante</a>
               </div>
             </div>
@@ -98,6 +99,20 @@
   </div>
 </template>
 
+<script setup>
+
+import environment from '@/config.js';
+
+function getImageUrl(relativePath) {
+  const baseUrl = `${environment.backendUrl}/`;
+  return baseUrl + relativePath;
+}
+
+</script>
+
+
+
+
 <script>
 import axios from "axios";
 import moment from "moment";
@@ -106,6 +121,9 @@ import { useRoute } from 'vue-router';
 import { getCurrentInstance } from "vue";
 import ENDPOINTS from '@/shared/endpoints';
 import environment from '@/config.js';
+
+
+
 
 export default {
   data() {
