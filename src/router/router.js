@@ -24,6 +24,8 @@ import PaymentStatusBuyer from '@/components/Payment/PaymentStatusBuyer.vue';
 import axios from 'axios';
 import ReportsComponent from '@/components/ReportsComponent.vue';
 import UserManagementComponent from '@/components/UserManagementComponent.vue';
+import CuponManagementComponent from '@/components/CuponManagementComponent.vue';
+
 import ENDPOINTS from '@/shared/endpoints';
 
 const routes = [
@@ -160,6 +162,12 @@ const routes = [
     component: UserManagementComponent,
     meta: { requiresAuth: true, role: 'administrator' }
   },
+  {
+    path: '/cupon-management',
+    name: 'CuponManagement',
+    component: CuponManagementComponent,
+    //TODO: Add role
+  }
 
 ];
 
