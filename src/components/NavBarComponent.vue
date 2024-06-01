@@ -21,6 +21,7 @@
         <a href="/payment-administrator" @click="toggleMenu">Mis Formas de Pago</a>
         <a href="/payment-check" @click="toggleMenu">Administrar Ventas</a>
         <a href="/verification-list" @click="toggleMenu">Solicitar verificación</a>
+        <a href="/cupon-management" @click="toggleMenu">Gestión de Cupones</a>
       </div>
 
       <a v-if="$keycloak.hasResourceRole('educator') || $keycloak.hasResourceRole('student')" href="/my-purchase" @click="toggleMenu">Mis Pagos</a>
@@ -30,6 +31,8 @@
         <a href="/pending-verification" @click="toggleMenu">Verificaciones pendientes</a>
         <a href="/reports" @click="toggleMenu">Reportes</a>
         <a href="/user-management" @click="toggleMenu">Gestion de usuarios</a>
+        <a href="/cupon-management" @click="toggleMenu">Gestión de Cupones</a>
+        
       </div>
 
       <a v-if="authenticated" href="/profile" @click="toggleMenu">Perfil</a>
