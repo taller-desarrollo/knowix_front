@@ -25,6 +25,7 @@ import axios from 'axios';
 import ReportsComponent from '@/components/ReportsComponent.vue';
 import UserManagementComponent from '@/components/UserManagementComponent.vue';
 import CuponManagementComponent from '@/components/CuponManagementComponent.vue';
+import CuponFormComponent from '@/components/CuponFormComponent.vue';
 
 import ENDPOINTS from '@/shared/endpoints';
 
@@ -167,6 +168,11 @@ const routes = [
     name: 'CuponManagement',
     component: CuponManagementComponent,
     //TODO: Add role
+  },
+  {
+    path: '/cupon-form',
+    name: 'CuponForm',
+    component: CuponFormComponent,
   }
 
 ];
