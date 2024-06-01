@@ -9,25 +9,21 @@
     </div>
     <div v-else>
       <div class="table-header">
-        <div class="header-item">ID</div>
         <div class="header-item">Código</div>
-        <div class="header-item">Tipo Descuento</div>
-        <div class="header-item">Monto Descuento</div>
-        <div class="header-item">Fecha Inicio</div>
-        <div class="header-item">Fecha Fin</div>
+        <div class="header-item">Fechas</div>
+        <div class="header-item">Descuento</div>
         <div class="header-item">Compra Mínima</div>
         <div class="header-item">Descripción</div>
+        <div class="header-item">Estado</div>
       </div>
       <div class="coupons-container">
         <div v-for="coupon in coupons" :key="coupon.cuponId" class="coupon-card">
-          <div class="coupon-item">{{ coupon.cuponId }}</div>
           <div class="coupon-item">{{ coupon.cuponCode }}</div>
-          <div class="coupon-item">{{ coupon.discountType }}</div>
-          <div class="coupon-item">{{ coupon.discountAmount }}</div>
-          <div class="coupon-item">{{ new Date(coupon.startDate).toLocaleDateString() }}</div>
-          <div class="coupon-item">{{ new Date(coupon.endDate).toLocaleDateString() }}</div>
-          <div class="coupon-item">{{ coupon.minAmountPurchase }}</div>
+          <div class="coupon-item">{{ formatDates(coupon.startDate, coupon.endDate) }}</div>
+          <div class="coupon-item">{{ formatDiscount(coupon.discountType, coupon.discountAmount) }}</div>
+          <div class="coupon-item">{{ coupon.minAmountPurchase }} Bs</div>
           <div class="coupon-item">{{ coupon.descriptionPromotion }}</div>
+          <div :class="['coupon-item', getStatusClass(coupon)]">{{ getStatus(coupon) }}</div>
         </div>
       </div>
     </div>
@@ -60,11 +56,47 @@ const createCoupon = () => {
   // Redirige a la página de creación de cupones
   this.$router.push('/cupon-form');
 };
+
+const formatDates = (startDate, endDate) => {
+  return `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`;
+};
+
+const formatDiscount = (type, amount) => {
+  return type === 'Percentage' ? `${amount}%` : `Bs ${amount}`;
+};
+
+const getStatus = (coupon) => {
+  const currentDate = new Date();
+  const start = new Date(coupon.startDate);
+  const end = new Date(coupon.endDate);
+  
+  if (currentDate >= start && currentDate <= end) {
+    return 'Actualmente activo';
+  } else if (currentDate < start) {
+    const daysUntil = Math.ceil((start - currentDate) / (1000 * 60 * 60 * 24));
+    return `Estará vigente en ${daysUntil} días`;
+  } else {
+    const daysAgo = Math.ceil((currentDate - end) / (1000 * 60 * 60 * 24));
+    return `Venció hace ${daysAgo} días`;
+  }
+};
+
+const getStatusClass = (coupon) => {
+  const currentDate = new Date();
+  const start = new Date(coupon.startDate);
+  const end = new Date(coupon.endDate);
+
+  if (currentDate >= start && currentDate <= end) {
+    return 'status-active';
+  } else if (currentDate < start) {
+    return 'status-upcoming';
+  } else {
+    return 'status-expired';
+  }
+};
 </script>
 
 <style scoped>
-
-
 .content {
   padding: 16px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -95,7 +127,7 @@ const createCoupon = () => {
 
 .table-header {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   margin-bottom: 1rem;
   border-radius: 10px;
@@ -119,7 +151,7 @@ const createCoupon = () => {
 
 .coupon-card {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   background-color: #547993;
   transition: background-color 0.3s, box-shadow 0.3s;
@@ -145,7 +177,18 @@ const createCoupon = () => {
   border-radius: 10px;
 }
 
-.coupon-item:last-child {
-  border-bottom: none;
+.status-active {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.status-upcoming {
+  color: #ffa726;
+  font-weight: bold;
+}
+
+.status-expired {
+  color: #f44336;
+  font-weight: bold;
 }
 </style>
