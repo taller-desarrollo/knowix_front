@@ -33,9 +33,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 const coupons = ref([]);
 const isLoading = ref(true);
+const router = useRouter();
 
 const fetchCoupons = async () => {
   try {
@@ -53,8 +55,7 @@ onMounted(() => {
 });
 
 const createCoupon = () => {
-  // Redirige a la página de creación de cupones
-  this.$router.push('/cupon-form');
+  router.push('/cupon-form');
 };
 
 const formatDates = (startDate, endDate) => {
