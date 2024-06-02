@@ -26,6 +26,7 @@ import ReportsComponent from '@/components/ReportsComponent.vue';
 import UserManagementComponent from '@/components/UserManagementComponent.vue';
 import CuponManagementComponent from '@/components/CuponManagementComponent.vue';
 import CuponFormComponent from '@/components/CuponFormComponent.vue';
+import CoursesEducatorStatisticsComponent from '@/components/CoursesEducatorStatisticsComponent.vue';
 
 import ENDPOINTS from '@/shared/endpoints';
 
@@ -173,8 +174,13 @@ const routes = [
     path: '/cupon-form',
     name: 'CuponForm',
     component: CuponFormComponent,
+  },
+  {
+    path: '/courses-educator-statistics',
+    name: 'CoursesEducatorStatistics',
+    component: CoursesEducatorStatisticsComponent,
+    meta: { requiresAuth: true, role: 'educator' }
   }
-
 ];
 
 const router = (keycloak) => {

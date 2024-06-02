@@ -21,6 +21,7 @@ const ENDPOINTS = {
     contentReport: `${environment.backendUrl}/api/v1/content-report`,
     comment: `${environment.backendUrl}/api/v2/comment`,
     courseCreator: (courseId) => `${environment.backendUrl}/api/v1/course/${courseId}/creator`,
+    statistics: `${environment.backendUrl}/api/v1/statistics`,
 
     keycloak: {
         token: `${environment.keycloakUrl}/realms/Knowix/protocol/openid-connect/token`,
