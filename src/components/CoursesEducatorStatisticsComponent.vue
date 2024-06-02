@@ -22,6 +22,21 @@
                 <Bar id="top-selling-courses-quantity" :options="chartOptions" :data="chartDataQuantity" />
             </div>
         </div>
+        <!--Year selectors-->
+        <div class="date-selectors">
+            <div class="date-selector">
+                <label for="year">Año</label>
+                <select id="year" v-model="year" @change="changeYear">
+                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div v-if="yearStatistics" class="charts">
+            <div class="chart">
+                <Bar id="sells-by-months" :options="chartOptions" :data="chartDataYear" />
+            </div>
+        </div>
     </div>
 </template>
 <script setup>
@@ -38,11 +53,15 @@ const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
 };
-
-
+// Generate an array of years from 2000 to the current year plus 10 years
+const years = Array.from({ length: new Date().getFullYear() - 2010 + 10 }, (_, i) => (2010 + i).toString());
+const year = ref(new Date().getFullYear().toString());
 const statistics = ref(null);
 const chartDataEarnings = ref(null);
 const chartDataQuantity = ref(null);
+
+const yearStatistics = ref(null);
+const chartDataYear = ref(null);
 
 
 const startDate = ref(new Date().toISOString().split('T')[0]);
@@ -51,6 +70,7 @@ const endDate = ref(new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000).to
 
 onMounted(() => {
     fetchStatistics();
+    fetchYearStatistics();
 });
 
 function fetchStatistics() {
@@ -89,6 +109,36 @@ function fetchStatistics() {
     });
 }
 
+function fetchYearStatistics() {
+    axios.get(ENDPOINTS.statistics + '/sells-by-months', {
+        headers: {
+            "X-UUID": `${keycloak.tokenParsed.sub}`
+        },
+        params: {
+            year: year.value
+        }
+    }).then(response => {
+        yearStatistics.value = response.data;
+        chartDataYear.value = {
+            labels: yearStatistics.value.map(stat => stat.label),
+            datasets: [
+                {
+                    label: 'Ganancias',
+                    backgroundColor: '#f87979',
+                    data: yearStatistics.value.map(stat => stat.earnings)
+                },
+                {
+                    label: 'Ventas',
+                    backgroundColor: '#79f8f8',
+                    data: yearStatistics.value.map(stat => stat.y)
+                }
+            ]
+        };
+    }).catch(error => {
+        console.error(error);
+    });
+}
+
 function changeStartDate(newStartDate) {
     startDate.value = newStartDate.target.value;
     fetchStatistics();
@@ -97,6 +147,11 @@ function changeStartDate(newStartDate) {
 function changeEndDate(newEndDate) {
     endDate.value = newEndDate.target.value;
     fetchStatistics();
+}
+
+function changeYear(newYear){
+    year.value = newYear.target.value;
+    fetchYearStatistics();
 }
 
 </script>
@@ -144,6 +199,15 @@ function changeEndDate(newEndDate) {
     color: #ffffff;
 }
 
+.date-selector select {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #162447;
+    color: #ffffff;
+    font-size: 16px;
+}
+
 .date-selector input::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
@@ -153,7 +217,8 @@ function changeEndDate(newEndDate) {
     flex-direction: column;
     gap: 20px;
     width: 100%;
-    max-width: 1200px; /* Increased max-width for better horizontal scaling */
+    max-width: 1200px;
+    /* Increased max-width for better horizontal scaling */
     flex-grow: 1;
 }
 
@@ -162,7 +227,8 @@ function changeEndDate(newEndDate) {
     padding: 20px;
     border-radius: 10px;
     width: 100%;
-    height: 400px; /* Increased height for better vertical size */
+    height: 400px;
+    /* Increased height for better vertical size */
     min-height: 300px;
     flex-grow: 1;
 }
