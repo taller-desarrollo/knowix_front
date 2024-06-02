@@ -19,7 +19,7 @@
                 <Bar id="top-selling-courses-earnings" :options="chartOptions" :data="chartDataEarnings" />
             </div>
             <div class="chart">
-                <Bar id="top-selling-courses-quantity" :options="chartOptions" :data="chartDataQuantity" />
+                <Bar id="top-selling-courses-quantity" :options="chartOptions" :data="chartDataQuantity"/>
             </div>
         </div>
         <!--Year selectors-->
@@ -52,6 +52,32 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    //change color of text to white
+    plugins: {
+        legend: {
+            labels: {
+                color: 'white'
+            }
+        }
+    },
+    scales: {
+        x: {
+            ticks: {
+                color: 'white'
+            },
+            grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+            }
+        },
+        y: {
+            ticks: {
+                color: 'white'
+            },
+            grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+            }
+        }
+    }
 };
 // Generate an array of years from 2000 to the current year plus 10 years
 const years = Array.from({ length: new Date().getFullYear() - 2010 + 10 }, (_, i) => (2010 + i).toString());
