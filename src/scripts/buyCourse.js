@@ -11,13 +11,18 @@ export default {
                 amount: null,
                 imageFile: null,
                 courseId: null,
+                courseName: null,
                 paymentMethodId: null,
                 kcUserKcUuid: null,
+                accountNumber: null,
                 datePurchase: null,
             },
             course: null,
             paymentMethod: null,
-            backUrl: environment.backendUrl
+            backUrl: environment.backendUrl,
+            cuponCode: '',
+            originalAmount: null,
+            cuponApplied: false
         };
     },
     mounted() {
@@ -28,6 +33,7 @@ export default {
             .then(response => {
                 this.course = response.data;
                 this.purchase.amount = this.course.courseStandardPrice;
+                this.originalAmount = this.purchase.amount;
                 this.purchase.courseId = this.course.courseId;
                 this.purchase.courseName = this.course.courseName;
             })
@@ -59,6 +65,48 @@ export default {
                     confirmButtonText: 'Aceptar',
                 }).then(() => {
                     e.target.value = '';
+                });
+            }
+        },
+        async applyCupon() {
+            try {
+                const response = await axios.post('http://localhost:8081/api/cupones/buscar-por-codigo', {
+                    cuponCode: this.cuponCode
+                });
+                if (response.status === 200 && response.data) {
+                    const cupon = response.data;
+                    if (this.purchase.amount >= cupon.minAmountPurchase) {
+                        this.originalAmount = this.purchase.amount; // Asegurar que el originalAmount esté actualizado
+                        let newAmount = this.purchase.amount;
+                        if (cupon.discountType === 'Percentage') {
+                            const discount = (this.purchase.amount * cupon.discountAmount) / 100;
+                            newAmount = this.purchase.amount - discount;
+                        } else if (cupon.discountType === 'Fixed Amount') {
+                            newAmount = this.purchase.amount - cupon.discountAmount;
+                        }
+                        this.purchase.amount = newAmount;
+                        this.cuponApplied = true; // Mostrar mensaje de éxito
+                        Swal.fire({
+                            title: '¡Cupón aplicado!',
+                            text: `Monto original: ${this.originalAmount} Bs, Monto con descuento: ${newAmount} Bs`,
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar',
+                        });
+                    } else {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: `El monto mínimo para aplicar este cupón es de ${cupon.minAmountPurchase} Bs`,
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar',
+                        });
+                    }
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: '¡Error!',
+                    text: `Error al buscar el cupón por código: ${error.response ? error.response.data : error.message}`,
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
                 });
             }
         },
