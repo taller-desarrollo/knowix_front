@@ -22,7 +22,8 @@ export default {
             backUrl: environment.backendUrl,
             cuponCode: '',
             originalAmount: null,
-            cuponApplied: false
+            cuponApplied: false,
+            discountTypeMessage: ''
         };
     },
     mounted() {
@@ -75,20 +76,38 @@ export default {
                 });
                 if (response.status === 200 && response.data) {
                     const cupon = response.data;
+                    const now = new Date();
+                    const startDate = new Date(cupon.startDate);
+                    const endDate = new Date(cupon.endDate);
+
+                    if (now < startDate || now > endDate) {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: `El cupón ha expirado o no es válido en este momento.`,
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar',
+                        });
+                        return;
+                    }
+
                     if (this.purchase.amount >= cupon.minAmountPurchase) {
                         this.originalAmount = this.purchase.amount; // Asegurar que el originalAmount esté actualizado
                         let newAmount = this.purchase.amount;
+                        let discount = 0;
                         if (cupon.discountType === 'Percentage') {
-                            const discount = (this.purchase.amount * cupon.discountAmount) / 100;
+                            discount = (this.purchase.amount * cupon.discountAmount) / 100;
                             newAmount = this.purchase.amount - discount;
+                            this.discountTypeMessage = `${cupon.discountAmount}%`;
                         } else if (cupon.discountType === 'Fixed Amount') {
-                            newAmount = this.purchase.amount - cupon.discountAmount;
+                            discount = cupon.discountAmount;
+                            newAmount = this.purchase.amount - discount;
+                            this.discountTypeMessage = `${discount} Bs`;
                         }
                         this.purchase.amount = newAmount;
                         this.cuponApplied = true; // Mostrar mensaje de éxito
                         Swal.fire({
                             title: '¡Cupón aplicado!',
-                            text: `Monto original: ${this.originalAmount} Bs, Monto con descuento: ${newAmount} Bs`,
+                            text: `Monto original: ${this.originalAmount} Bs, Descuento: ${discount} Bs, Monto con descuento: ${newAmount} Bs`,
                             icon: 'success',
                             confirmButtonText: 'Aceptar',
                         });

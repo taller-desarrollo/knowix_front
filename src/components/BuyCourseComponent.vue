@@ -33,7 +33,14 @@
         <button type="button" @click="applyCupon">Agregar</button>
       </div>
       <div v-if="cuponApplied" class="alert alert-success">
-        ¡Cupón aplicado! Monto original: {{ originalAmount }} Bs, Monto con descuento: {{ purchase.amount }} Bs
+        ¡Cupón aplicado!
+        <div class="detallescompra">
+          <strong><u>DETALLES DE LA COMPRA</u></strong><br>
+          <p><b>Monto original:</b> {{ originalAmount }} Bs<br>
+          <b>Descuento:</b> {{ originalAmount - purchase.amount }} Bs <br>
+          <b>Descuento aplicado:</b> {{ discountTypeMessage }}<br><br>
+          <b>TOTAL:</b> {{ purchase.amount }} Bs</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="image">Comprobante:</label>
@@ -51,7 +58,8 @@ export default {
   mixins: [buyCourse],
   data() {
     return {
-      cuponCode: ''
+      cuponCode: '',
+      discountTypeMessage: ''
     };
   },
   methods: {
