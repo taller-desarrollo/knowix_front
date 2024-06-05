@@ -23,7 +23,8 @@ export default {
             cuponCode: '',
             originalAmount: null,
             cuponApplied: false,
-            discountTypeMessage: ''
+            discountTypeMessage: '',
+            cuponId: null, // Almacenar el ID del cupón aplicado
         };
     },
     mounted() {
@@ -105,6 +106,7 @@ export default {
                         }
                         this.purchase.amount = newAmount;
                         this.cuponApplied = true; // Mostrar mensaje de éxito
+                        this.cuponId = cupon.cuponId; // Almacenar el ID del cupón aplicado
                         Swal.fire({
                             title: '¡Cupón aplicado!',
                             text: `Monto original: ${this.originalAmount} Bs, Descuento: ${discount} Bs, Monto con descuento: ${newAmount} Bs`,
@@ -129,7 +131,7 @@ export default {
                 });
             }
         },
-        submitForm() {
+        async submitForm() {
             const formData = new FormData();
             const store = usePaymentFormStore();
             if (!store.isUuidReady) {
@@ -151,12 +153,25 @@ export default {
                     Swal.showLoading();
                 }
             });
-            axios.post(ENDPOINTS.purchase, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-                .then(response => {
+            try {
+                const purchaseResponse = await axios.post(ENDPOINTS.purchase, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+        
+                if (purchaseResponse.status === 200 || purchaseResponse.status === 201) {
+                    const purchaseId = purchaseResponse.data.purchaseId;
+                    console.log('Purchase ID:', purchaseId);
+        
+                    if (this.cuponId) {
+                        const cuponResponse = await axios.post('http://localhost:8081/api/purchase-cupon', {
+                            purchasePurchaseId: purchaseId,
+                            cuponCuponId: this.cuponId
+                        });
+                        console.log('Cupon Response:', cuponResponse);
+                    }
+        
                     Swal.fire({
                         title: '¡Comprobante enviado!',
                         text: 'Su comprobante de compra ha sido enviado exitosamente. Debe esperar a que el educador valide su comprobante.',
@@ -165,16 +180,16 @@ export default {
                     }).then(() => {
                         this.$router.push({ path: '/' });
                     });
-                })
-                .catch(error => {
-                    console.error('Error durante la compra:', error);
-                    Swal.fire({
-                        title: '¡Error!',
-                        text: 'Ha ocurrido un error al enviar su comprobante de compra.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar',
-                    });
+                }
+            } catch (error) {
+                console.error('Error durante la compra:', error);
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Ha ocurrido un error al enviar su comprobante de compra.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
                 });
-        },
+            }
+        },        
     },
 };
