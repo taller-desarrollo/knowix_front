@@ -2,6 +2,7 @@
   <div class="content">
     <div class="head-courses">
       <h1>Cursos Disponibles</h1>
+      <a class="general-button" style="text-decoration: none;" href="/courses-educator-statistics">Ver Estadisticas</a>
       <button class="general-button" @click="createCourse()">Crear Curso</button>
     </div>
     <div v-if="isLoading" class="loading-container">
