@@ -46,6 +46,7 @@ import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import Swal from 'sweetalert2';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -171,7 +172,15 @@ function changeStartDate(newStartDate) {
 }
 
 function changeEndDate(newEndDate) {
-    endDate.value = newEndDate.target.value;
+    console.log(new Date(endDate.value).getTime() < new Date(startDate.value).getTime());
+    if(new Date(endDate.value).getTime() < new Date(startDate.value).getTime()) {
+        Swal.fire('Error', 'La fecha de fin no puede ser anterior a la de inicio.', 'error');
+        endDate.value = startDate.value;
+        return;
+    }
+    else {
+        endDate.value = newEndDate.target.value;
+    }
     fetchStatistics();
 }
 
