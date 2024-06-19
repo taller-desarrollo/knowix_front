@@ -45,8 +45,8 @@ export default {
                 const response = await axios.get(`${ENDPOINTS.course}/${courseId}`);
                 proxy.courseDetails.courseName = response.data.courseName;
                 proxy.courseDetails.basePrice = response.data.courseStandardPrice.toString();
-                proxy.courseDetails.courseLanguage = response.data.languageLanguageId;
-                proxy.courseDetails.courseCategory = response.data.categoryCategoryId;
+                proxy.courseDetails.courseLanguage = response.data.language.languageId;
+                proxy.courseDetails.courseCategory = response.data.category.categoryId;
                 proxy.courseDetails.detailedDescription = response.data.courseDescription;
                 proxy.courseDetails.courseRequirements = response.data.courseRequirements;
                 proxy.courseDetails.sections = response.data.sections;
